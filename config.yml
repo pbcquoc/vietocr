@@ -1,0 +1,25 @@
+Vocab: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+
+CNN:
+    stride_size:
+        - [2, 2]
+        - [2, 2]
+        - [2, 1]
+        - [2, 1]
+        - [2, 1]          
+    kernel_size:
+        - [2, 2]
+        - [2, 2]
+        - [1, 1]
+        - [1, 1]
+        - [1, 1]
+    
+Transformer:    
+    d_model: 512
+    nhead: 8
+    num_encoder_layers: 6
+    num_decoder_layers: 6
+    dim_feedforward: 2048
+    max_seq_length: 10000
+    pos_dropout: 0.1
+    trans_dropout: 0.1
