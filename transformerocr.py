@@ -1,5 +1,6 @@
 from vgg import CNN
-import transformer import LanguageTransformer
+from transformer import LanguageTransformer
+from torch import nn
 
 class TransformerOCR(nn.Module):
     def __init__(self, vocab_size, d_model=512, nhead=8, 
@@ -8,7 +9,6 @@ class TransformerOCR(nn.Module):
                  pos_dropout=0.1, trans_dropout=0.1):
         
         super(TransformerOCR, self).__init__()
-        vocab_size = len(vocab)
         
         self.cnn = CNN()
         self.transformer=LanguageTransformer(vocab_size, d_model, nhead, num_encoder_layers,

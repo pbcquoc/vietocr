@@ -1,6 +1,8 @@
-Vocab: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+vocab: 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+device: 'cpu'
+weights: /data/quocpbc/downloads/transformerocr.pt
 
-CNN:
+cnn:
     stride_size:
         - [2, 2]
         - [2, 2]
@@ -14,7 +16,7 @@ CNN:
         - [1, 1]
         - [1, 1]
     
-Transformer:    
+transformer:    
     d_model: 512
     nhead: 8
     num_encoder_layers: 6

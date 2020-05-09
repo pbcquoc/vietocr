@@ -1,3 +1,10 @@
+import torch
+import numpy as np
+from PIL import Image
+from transformerocr import TransformerOCR
+from vocab import Vocab
+import yaml
+import argparse
 
 def translate(img, model):
     "data: BxCXHxW"
@@ -25,3 +32,49 @@ def translate(img, model):
     model.train()
     
     return translated_sentence
+
+def build_model(config):
+    vocab = Vocab(config['vocab'])
+    device = config['device']
+    
+    model = TransformerOCR(len(vocab), **config['transformer'])
+    model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
+
+    model = model.to(device)
+
+    return model, vocab
+
+def process_input(image):
+    img = image.convert('RGB')
+    img = np.asarray(img).transpose(2,0, 1)
+    img = img/255
+    img = img[np.newaxis, ...]
+    img = torch.FloatTensor(img)
+    return img
+
+def predict(filename, config):
+    img = Image.open(filename)
+    img = process_input(img)
+
+    img = img.to(config['device'])
+
+    model, vocab = build_model(config)
+    s = translate(img, model)[0].tolist()
+    s = vocab.decode(s)
+    
+    return s
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--img', required=True, help='foo help')
+    parser.add_argument('--config', default='config.yml', help='foo help')
+
+    args = parser.parse_args()
+
+    with open(args.config, 'r') as stream:
+        config = yaml.safe_load(stream)
+
+    s = predict(args.img, config)
+
+    print(s)
+
