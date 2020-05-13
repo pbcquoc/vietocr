@@ -1,8 +1,8 @@
 import torch
 import numpy as np
 from PIL import Image
-from transformerocr import TransformerOCR
-from vocab import Vocab
+from transformerocr.model.transformerocr import TransformerOCR
+from transformerocr.model.vocab import Vocab
 
 def translate(img, model):
     "data: BxCXHxW"
@@ -36,7 +36,7 @@ def build_model(config):
     device = config['device']
     
     model = TransformerOCR(len(vocab), **config['transformer'])
-    model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
+    model.load_state_dict(torch.load(config['weights']['cached'], map_location=torch.device(device)))
 
     model = model.to(device)
 

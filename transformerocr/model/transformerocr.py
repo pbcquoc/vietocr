@@ -1,5 +1,5 @@
-from vgg import CNN
-from transformer import LanguageTransformer
+from transformerocr.model.vgg import CNN
+from transformerocr.model.transformer import LanguageTransformer
 from torch import nn
 
 class TransformerOCR(nn.Module):
