@@ -44,6 +44,10 @@ def build_model(config):
 
 def process_input(image):
     img = image.convert('RGB')
+    w, h = img.size
+    new_w = int(32 * float(w) / float(h))
+    img = img.resize((new_w, 32), Image.ANTIALIAS)
+
     img = np.asarray(img).transpose(2,0, 1)
     img = img/255
     img = img[np.newaxis, ...]

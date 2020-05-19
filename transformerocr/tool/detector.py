@@ -1,9 +1,12 @@
 from transformerocr.tool.translate import build_model, translate, process_input, predict
 from transformerocr.tool.utils import download_weights
-
+import yaml
 
 class TextDetector():
     def __init__(self, config):
+        with open(config, 'r') as stream:
+            config = yaml.safe_load(stream)
+
         download_weights(**config['weights'], quiet=True)
 
         model, vocab = build_model(config)
