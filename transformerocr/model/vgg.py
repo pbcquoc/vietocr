@@ -3,11 +3,9 @@ from torch import nn
 from torchvision import models
 
 class CNN(nn.Module):
-    def __init__(self):
+    def __init__(self, ss, ks):
         super(CNN, self).__init__()
         self.cnn = models.vgg19_bn(pretrained=True)
-        ss = [(2, 2), (2, 2), (2, 1), (2, 1), (2, 1)]
-        ks = [2,2,1,1,1]
         pool_idx = 0
         
         for i, layer in enumerate(self.cnn.features):

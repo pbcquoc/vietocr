@@ -35,8 +35,12 @@ def build_model(config):
     vocab = Vocab(config['vocab'])
     device = config['device']
     
-    model = TransformerOCR(len(vocab), **config['transformer'])
-    model.load_state_dict(torch.load(config['weights']['cached'], map_location=torch.device(device)))
+    model = TransformerOCR(len(vocab), 
+            ss=config['cnn']['pooling_stride_size'], ks=config['cnn']['pooling_kernel_size'], 
+            **config['transformer'])
+    
+    if config['weights']:
+        model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
 
     model = model.to(device)
 
