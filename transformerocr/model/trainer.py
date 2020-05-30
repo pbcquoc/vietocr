@@ -60,6 +60,7 @@ class Trainer():
                 loss = self.step(batch)
                 
                 total_loss += loss
+                print(loss)
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
