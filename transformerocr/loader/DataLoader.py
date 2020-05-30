@@ -152,11 +152,3 @@ class DataGen(object):
 
         return img_bw, word
 
-if __name__ == '__main__':
-    chars = 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ '
-    vocab = Vocab(chars)
-    s_gen = DataGen('/data/quocpbc/downloads/', 'annotation_train.txt', vocab, 'cpu')
-    iterator = s_gen.gen(30)
-    for batch in iterator:
-        print(batch)
-
