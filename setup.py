@@ -16,7 +16,6 @@ setuptools.setup(
     install_requires=[
         'einops==0.2.0',
         'gdown==3.11.0',
-        'PyYAML==5.1.2'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
