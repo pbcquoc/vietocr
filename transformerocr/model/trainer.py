@@ -8,6 +8,7 @@ import yaml
 import torch
 from transformerocr.loader.DataLoader import DataGen
 import numpy as np
+import os
 
 class Trainer():
     def __init__(self, config, pretrain=True):
@@ -47,7 +48,6 @@ class Trainer():
 
     def train(self):
         
-        
         for epoch in range(self.num_epochs):
             total_loss = 0
             self.epoch = epoch
@@ -60,16 +60,16 @@ class Trainer():
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
-                    info = 'iter: {} epoch: {} - train loss: {}'.format(self.iter, epoch, total_loss/self.print_every)
+                    info = 'iter: {} - epoch: {} - train loss: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every)
                     total_loss = 0
                     print(info) 
                 
                 if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
                     val_loss = self.validate()
-                    info = 'epoch: {} - val loss: {}'.format(epoch, val_loss)
+                    info = 'iter: {} - epoch: {} - val loss: {:.4f}'.format(self.iter, epoch, val_loss)
                     print(info)
                     self.save_checkpoint(self.checkpoint)
-                    torch.save(self.model.state_dict(), self.export_weights)
+                    self.save_weight(self.export_weights)
         
     def validate(self):
         self.model.eval()
@@ -105,14 +105,25 @@ class Trainer():
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.model.load_state_dict(checkpoint['state_dict'])
         self.epoch = checkpoint['epoch']
+        self.iter = checkpoint['iter']
+
         self.train_losses = checkpoint['train_losses']
 
     def save_checkpoint(self, filename):
-        state = {'epoch': self.epoch, 'state_dict': self.model.state_dict(),
+        state = {'iter':self.iter, 'epoch': self.epoch, 'state_dict': self.model.state_dict(),
                 'optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
         
+        path, _ = os.path.split(filename)
+        os.makedirs(path, exist_ok=True)
+
         torch.save(state, filename)
 
+    
+    def save_weight(self, filename):
+        path, _ = os.path.split(filename)
+        os.makedirs(path, exist_ok=True)
+       
+        torch.save(self.model.state_dict(), filename)
 
     def step(self, batch):
         self.model.train()
