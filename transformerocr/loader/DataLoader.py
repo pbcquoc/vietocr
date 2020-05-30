@@ -131,8 +131,9 @@ class DataGen(object):
 
         if last_batch: 
             for bucket in self.bucket_data.values():
-                b = bucket.flush_out()
-                yield b
+                if len(bucket) > 0:
+                    b = bucket.flush_out()
+                    yield b
 
         self.clear()
 

@@ -6,6 +6,7 @@ def test_loader():
 
     vocab = Vocab(chars)
     s_gen = DataGen('./transformerocr/tests/', 'sample.txt', vocab, 'cpu')
+
     iterator = s_gen.gen(30)
     for batch in iterator:
         assert batch['img'].shape[1]==3, 'image must have 3 channels'
