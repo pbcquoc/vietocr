@@ -50,9 +50,9 @@ class Trainer():
         self.train_losses = []
 
     def train(self):
-        
+        total_loss = 0
+       
         for epoch in range(self.num_epochs):
-            total_loss = 0
             self.epoch = epoch
             for batch in self.train_gen.gen(self.batch_size, last_batch=False):
                 self.iter += 1
@@ -60,7 +60,6 @@ class Trainer():
                 loss = self.step(batch)
                 
                 total_loss += loss
-                print(total_loss, loss)
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
