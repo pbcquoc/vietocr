@@ -31,6 +31,8 @@ class Trainer():
             self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
 
         self.epoch = 0 
+        self.iter = 0
+
         self.optimizer = ScheduledOptim(
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             0.2, config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
@@ -44,23 +46,25 @@ class Trainer():
         self.train_losses = []
 
     def train(self):
-
+        
+        
         for epoch in range(self.num_epochs):
             total_loss = 0
             self.epoch = epoch
-            for idx, batch in enumerate(self.train_gen.gen(self.batch_size)):
-                        
+            for batch in self.train_gen.gen(self.batch_size):
+                self.iter += 1
+
                 loss = self.step(batch)
                 
                 total_loss += loss
-                self.train_losses.append((idx, loss))
+                self.train_losses.append((self.iter, loss))
 
-                if idx % self.print_every == self.print_every - 1:
-                    info = 'epoch: {} iter: {} - train loss: {}'.format(epoch, idx, total_loss/self.print_every)
+                if self.iter % self.print_every == self.print_every - 1:
+                    info = 'iter: {} epoch: {} - train loss: {}'.format(self.iter, epoch, total_loss/self.print_every)
                     total_loss = 0
                     print(info) 
                 
-                if self.valid_annotation and idx % self.valid_every == self.valid_every - 1:
+                if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
                     val_loss = self.validate()
                     info = 'epoch: {} - val loss: {}'.format(epoch, val_loss)
                     print(info)
