@@ -26,7 +26,7 @@ def translate(img, model):
 
             translated_sentence.append(indices)   
 
-            del ouput
+            del output
 
         translated_sentence = np.asarray(translated_sentence).T
     
