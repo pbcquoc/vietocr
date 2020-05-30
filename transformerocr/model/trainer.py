@@ -104,21 +104,21 @@ class Trainer():
     
     def precision(self):
         pred_sents = []
-	actual_sents = []
-	img_files = []
+        actual_sents = []
+        img_files = []
 
-	for batch in  self.valid_gen.gen(self.batch_size):
-	    translated_sentence = translate(batch['img'], self.model)
-	    pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
-	    actual_sent = self.vocab.batch_decode(batch['tgt_input'].T.tolist())
+        for batch in  self.valid_gen.gen(self.batch_size):
+            translated_sentence = translate(batch['img'], self.model)
+            pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
+            actual_sent = self.vocab.batch_decode(batch['tgt_input'].T.tolist())
 
-	    img_files.extend(batch['filenames'])
+            img_files.extend(batch['filenames'])
 
-	    pred_sents.extend(pred_sent)
-	    actual_sents.extend(actual_sent)
-	
-	acc_full_seq = compute_accuracy(actual_sents, pred_sents, mode='full_sequence')
-	acc_per_char = compute_accuracy(actual_sents, pred_sents, mode='per_char')
+            pred_sents.extend(pred_sent)
+            actual_sents.extend(actual_sent)
+        
+        acc_full_seq = compute_accuracy(actual_sents, pred_sents, mode='full_sequence')
+        acc_per_char = compute_accuracy(actual_sents, pred_sents, mode='per_char')
     
         return acc_full_seq, acc_per_char
 
