@@ -12,9 +12,6 @@ import numpy as np
 class Trainer():
     def __init__(self, config, pretrain=True):
 
-        with open(config, 'r') as stream:
-            config = yaml.safe_load(stream)
-
         self.config = config
         self.model, self.vocab = build_model(config)
 

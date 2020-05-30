@@ -1,6 +1,7 @@
 import argparse
 
 from transformerocr.model.trainer import Trainer
+from transformerocr.tool.config import Cfg
 
 def main():
     parser = argparse.ArgumentParser()
@@ -8,8 +9,10 @@ def main():
     parser.add_argument('--checkpoint', required=False, help='your checkpoint')
 
     args = parser.parse_args()
+    config = Cfg(args.config)
 
-    trainer = Trainer(args.config)
+    trainer = Trainer(config)
+
     if args.checkpoint:
         trainer.load_checkpoint(args.checkpoint)
         
