@@ -9,7 +9,7 @@ def main():
     parser.add_argument('--checkpoint', required=False, help='your checkpoint')
 
     args = parser.parse_args()
-    config = Cfg(args.config)
+    config = Cfg.load_config_from_file(args.config)
 
     trainer = Trainer(config)
 

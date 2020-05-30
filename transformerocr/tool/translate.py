@@ -42,9 +42,6 @@ def build_model(config):
             ss=config['cnn']['pooling_stride_size'], ks=config['cnn']['pooling_kernel_size'], 
             **config['transformer'])
     
-    if config['weights']:
-        model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
-
     model = model.to(device)
 
     return model, vocab

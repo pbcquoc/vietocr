@@ -3,8 +3,12 @@ import yaml
 
 class TextDetector():
     def __init__(self, config):
+        
+        device = config['device']
 
         model, vocab = build_model(config)
+        
+        model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
 
         self.config = config
         self.model = model
