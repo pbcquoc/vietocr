@@ -3,8 +3,6 @@ import yaml
 
 class TextDetector():
     def __init__(self, config):
-        with open(config, 'r', encoding="utf8") as stream:
-            config = yaml.safe_load(stream)
 
         model, vocab = build_model(config)
 

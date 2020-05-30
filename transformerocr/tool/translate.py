@@ -24,7 +24,10 @@ def translate(img, model):
             indices = indices[:, -1, 0]
             indices = indices.tolist()
 
-            translated_sentence.append(indices)    
+            translated_sentence.append(indices)   
+
+            del ouput
+
         translated_sentence = np.asarray(translated_sentence).T
     
     model.train()

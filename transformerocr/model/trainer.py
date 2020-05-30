@@ -82,7 +82,10 @@ class Trainer():
                 loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
 
                 total_loss.append(loss.item())
-        
+                
+                del outputs
+                del loss
+
         total_loss = np.mean(total_loss)
         self.model.train()
         
@@ -118,5 +121,10 @@ class Trainer():
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step_and_update_lr()
-         
-        return loss.item()
+        
+        loss_item = loss.item()
+
+        del outputs
+        del loss
+
+        return loss_item
