@@ -1,5 +1,6 @@
 import gdown
 import yaml
+import numpy as np
 
 def download_weights(id, md5, cached, quiet=False):
     url = 'https://drive.google.com/uc?id={}'.format(id)
