@@ -60,7 +60,7 @@ class Trainer():
                     total_loss = 0
                     print(info) 
                 
-                if idx % self.valid_every == self.valid_every - 1:
+                if self.valid_annotation and idx % self.valid_every == self.valid_every - 1:
                     val_loss = self.validate()
                     info = 'epoch: {} - val loss: {}'.format(epoch, val_loss)
                     print(info)
@@ -69,7 +69,7 @@ class Trainer():
         
     def validate(self):
         self.model.eval()
-    
+
         total_loss = []
         
         with torch.no_grad():
