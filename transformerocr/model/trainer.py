@@ -147,7 +147,9 @@ class Trainer():
             img = Image.open(open(img_path, 'rb'))
             plt.imshow(img)
             plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
-            plt.show()
+
+        plt.axis('off') 
+        plt.show()
 
 
     def load_checkpoint(self, filename):
