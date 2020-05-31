@@ -139,14 +139,14 @@ class Trainer():
         pred_sents, actual_sents, img_files = self.predict(sample)
         
         for vis_idx in range(0, len(img_files)):
-	    img_path = img_files[vis_idx]
-	    pred_sent = pred_sents[vis_idx]
-	    actual_sent = actual_sents[vis_idx]
+            img_path = img_files[vis_idx]
+            pred_sent = pred_sents[vis_idx]
+            actual_sent = actual_sents[vis_idx]
 
-	    img = Image.open(open(img_path, 'rb'))
-	    plt.imshow(img)
-	    plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
-	    plt.show()
+            img = Image.open(open(img_path, 'rb'))
+            plt.imshow(img)
+            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
+            plt.show()
 
 
     def load_checkpoint(self, filename):
