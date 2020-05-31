@@ -137,7 +137,7 @@ class Trainer():
     def visualize(self, sample=32):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
-        
+        print(len(img_files)) 
         for vis_idx in range(0, len(img_files)):
             img_path = img_files[vis_idx]
             pred_sent = pred_sents[vis_idx]
