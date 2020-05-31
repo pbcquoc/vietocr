@@ -30,8 +30,6 @@ def translate(img, model):
 
         translated_sentence = np.asarray(translated_sentence).T
     
-    model.train()
-    
     return translated_sentence
 
 def build_model(config):
