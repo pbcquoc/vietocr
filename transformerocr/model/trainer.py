@@ -9,9 +9,10 @@ import yaml
 import torch
 from transformerocr.loader.DataLoader import DataGen
 from transformerocr.tool.utils import compute_accuracy
-
+from PIL import Image
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 class Trainer():
     def __init__(self, config, pretrain=True):
@@ -102,11 +103,12 @@ class Trainer():
         
         return total_loss
     
-    def precision(self):
+    def predict(self, sample=None):
         pred_sents = []
         actual_sents = []
         img_files = []
-
+        
+        n = 0
         for batch in  self.valid_gen.gen(self.batch_size):
             translated_sentence = translate(batch['img'], self.model)
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
@@ -116,11 +118,36 @@ class Trainer():
 
             pred_sents.extend(pred_sent)
             actual_sents.extend(actual_sent)
-        
+            n += len(actual_sents)
+            
+            if sample != None and n > sample:
+                break
+
+        return pred_sents, actual_sents, img_files
+
+    def precision(self):
+
+        pred_sents, actual_sents, _ = self.predict(sample=None)
+
         acc_full_seq = compute_accuracy(actual_sents, pred_sents, mode='full_sequence')
         acc_per_char = compute_accuracy(actual_sents, pred_sents, mode='per_char')
     
         return acc_full_seq, acc_per_char
+    
+    def visualize(self, sample=32):
+        
+        pred_sents, actual_sents, img_files = self.predict(sample)
+        
+        for vis_idx in range(0, len(img_files)):
+	    img_path = img_files[vis_idx]
+	    pred_sent = pred_sents[vis_idx]
+	    actual_sent = actual_sents[vis_idx]
+
+	    img = Image.open(open(img_path, 'rb'))
+	    plt.imshow(img)
+	    plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
+	    plt.show()
+
 
     def load_checkpoint(self, filename):
         checkpoint = torch.load(filename)
