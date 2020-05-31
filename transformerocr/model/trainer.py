@@ -145,6 +145,7 @@ class Trainer():
             actual_sent = actual_sents[vis_idx]
 
             img = Image.open(open(img_path, 'rb'))
+            plt.figure()
             plt.imshow(img)
             plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
 
