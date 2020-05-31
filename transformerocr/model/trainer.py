@@ -148,8 +148,8 @@ class Trainer():
             plt.figure()
             plt.imshow(img)
             plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent))
+            plt.axis('off')
 
-        plt.axis('off') 
         plt.show()
 
 
