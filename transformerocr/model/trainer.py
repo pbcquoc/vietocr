@@ -13,6 +13,7 @@ from PIL import Image
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import random
 
 class Trainer():
     def __init__(self, config, pretrain=True):
@@ -137,7 +138,8 @@ class Trainer():
     def visualize(self, sample=32):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
-        print(len(img_files)) 
+        img_files = random.sample(img_files, sample)
+
         for vis_idx in range(0, len(img_files)):
             img_path = img_files[vis_idx]
             pred_sent = pred_sents[vis_idx]
