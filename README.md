@@ -8,13 +8,14 @@ Trong project này, mình cài đặt mô hình Transformer OCR nhận dạng ch
 
 # Cài đặt
 ```
-pip install transformerocr
+pip install vietocr
 ```
 # Quick Start
-Các bạn tham khảo notebook [này]() để biết cách sử dụng nhé. 
+Các bạn tham khảo notebook [này](https://colab.research.google.com/drive/1GVRKGFPsmq_xKJbOuSplrIDJZYp-IyzW?usp=sharing) để biết cách sử dụng nhé. 
 
 # Model zoo 
 Mô hình này được huấn luyện trên tập dữ liệu gồm 10m ảnh, bao gồm nhiều loại ảnh khác nhau như ảnh tự phát sinh, chữ viết tay, các văn bản scan thực tế. 
+Pretrain model các bạn download tại [đây]().
 
 Đồng thời mình cũng thử nghiệm kết quả của mô hình trên tập dữ liệu [synth 90k](https://www.robots.ox.ac.uk/~vgg/data/text/) mô hình transformerocr cho có độ chính xác full_sequence là 96% trong khi đó một cài đặt khá phổ biến khác dữ trên cơ chế attention cho kết quả là 93%.
 
