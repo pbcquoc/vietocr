@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from PIL import Image
 import random
-from transformerocr.model.vocab import Vocab
+from vietocr.model.vocab import Vocab
 import os
 from collections import defaultdict
 import math

@@ -1,11 +1,11 @@
-from transformerocr.loader.DataLoader import DataGen
-from transformerocr.model.vocab import Vocab
+from vietocr.loader.DataLoader import DataGen
+from vietocr.model.vocab import Vocab
 
 def test_loader():
     chars = 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ '
 
     vocab = Vocab(chars)
-    s_gen = DataGen('./transformerocr/tests/', 'sample.txt', vocab, 'cpu')
+    s_gen = DataGen('./vietocr/tests/', 'sample.txt', vocab, 'cpu')
 
     iterator = s_gen.gen(30)
     for batch in iterator:

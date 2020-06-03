@@ -1,18 +1,19 @@
 import torch
 import numpy as np
 from PIL import Image
-from transformerocr.model.transformerocr import TransformerOCR
-from transformerocr.model.vocab import Vocab
+from vietocr.model.transformerocr import VietOCR
+from vietocr.model.vocab import Vocab
 
-def translate(img, model):
+def translate(img, model, max_seq_length=128):
     "data: BxCXHxW"
     model.eval()
     device = img.device
     
     with torch.no_grad():
         translated_sentence = [[1]*len(img)]
+        max_length = 0
 
-        while not all(np.any(np.asarray(translated_sentence).T==2, axis=1)):
+        while max_length <= max_seq_length and not all(np.any(np.asarray(translated_sentence).T==2, axis=1)):
 
             tgt_inp = torch.LongTensor(translated_sentence).to(device)
             
@@ -25,6 +26,7 @@ def translate(img, model):
             indices = indices.tolist()
 
             translated_sentence.append(indices)   
+            max_length += 1
 
             del output
 
@@ -36,7 +38,7 @@ def build_model(config):
     vocab = Vocab(config['vocab'])
     device = config['device']
     
-    model = TransformerOCR(len(vocab), 
+    model = VietOCR(len(vocab), 
             ss=config['cnn']['pooling_stride_size'], ks=config['cnn']['pooling_kernel_size'], 
             **config['transformer'])
     

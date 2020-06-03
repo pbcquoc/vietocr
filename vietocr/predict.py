@@ -1,8 +1,8 @@
 import argparse
 from PIL import Image
 
-from transformerocr.tool.detector import TextDetector
-from transformerocr.tool.config import Cfg
+from vietocr.tool.detector import TextDetector
+from vietocr.tool.config import Cfg
 
 def main():
     parser = argparse.ArgumentParser()
@@ -10,7 +10,7 @@ def main():
     parser.add_argument('--config', required=True, help='foo help')
 
     args = parser.parse_args()
-    config = Cfg(args.config)
+    config = Cfg.load_config_from_file(args.config)
 
     detector = TextDetector(config)
 

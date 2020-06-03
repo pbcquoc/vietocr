@@ -1,14 +1,14 @@
-from transformerocr.optim.optim import ScheduledOptim
+from vietocr.optim.optim import ScheduledOptim
 from torch.optim import Adam
 from torch import nn
-from transformerocr.tool.translate import build_model
-from transformerocr.tool.translate import translate
-from transformerocr.tool.utils import download_weights
+from vietocr.tool.translate import build_model
+from vietocr.tool.translate import translate
+from vietocr.tool.utils import download_weights
 from einops import rearrange
 import yaml
 import torch
-from transformerocr.loader.DataLoader import DataGen
-from transformerocr.tool.utils import compute_accuracy
+from vietocr.loader.DataLoader import DataGen
+from vietocr.tool.utils import compute_accuracy
 from PIL import Image
 import numpy as np
 import os
@@ -30,6 +30,7 @@ class Trainer():
         self.valid_every = config['trainer']['valid_every']
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
+        self.metrics = config['trainer']['metrics']
 
         if pretrain:
             download_weights(**config['pretrain'], quiet=config['quiet'])
@@ -70,12 +71,14 @@ class Trainer():
                 
                 if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
                     val_loss = self.validate()
-                    acc_full_seq, acc_per_char = self.precision()
-
-                    info = 'iter: {:06d} - epoch: {:03d} - val loss: {:.4f} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(
-                            self.iter, epoch, val_loss, 
-                            acc_full_seq, acc_per_char)
+                    info = 'iter: {:06d} - epoch: {:03d} - val loss: {:.4f}'.format(self.iter, epoch, val_loss)
                     print(info)
+                    
+                    if self.metrics:
+                        acc_full_seq, acc_per_char = self.precision()
+                        info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
+                        print(info)
+
                     self.save_checkpoint(self.checkpoint)
                     self.save_weight(self.export_weights)
         

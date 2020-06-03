@@ -1,4 +1,4 @@
-from transformerocr.tool.translate import translate
+from vietocr.tool.translate import translate
 
 def visualize(model, vocab, gen, sample=30):
     pred_sents = []

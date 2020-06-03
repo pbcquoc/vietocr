@@ -1,7 +1,7 @@
 import argparse
 
-from transformerocr.model.trainer import Trainer
-from transformerocr.tool.config import Cfg
+from vietocr.model.trainer import Trainer
+from vietocr.tool.config import Cfg
 
 def main():
     parser = argparse.ArgumentParser()

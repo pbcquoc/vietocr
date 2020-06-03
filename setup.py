@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="transformerocr", # Replace with your own username
-    version="0.1.14",
+    name="vietocr",
+    version="0.1.2",
     author="pbcquoc",
     author_email="pbcquoc@gmail.com",
     description="Transformer base text detection",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pbcquoc/transformerocr",
+    url="https://github.com/pbcquoc/vietocr",
     packages=setuptools.find_packages(),
     install_requires=[
         'einops==0.2.0',

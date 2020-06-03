@@ -1,5 +1,6 @@
-from transformerocr.tool.translate import build_model, translate, process_input, predict
+from vietocr.tool.translate import build_model, translate, process_input, predict
 import yaml
+import torch
 
 class TextDetector():
     def __init__(self, config):
