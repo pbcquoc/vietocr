@@ -3,7 +3,7 @@ Trong project này, mình cài đặt mô hình Transformer OCR nhận dạng ch
 
 
 <p align="center">
-<img src="https://raw.githubusercontent.com/pbcquoc/vietocr/master/image/vietocr.jpg" width="618" height="741">
+<img src="https://raw.githubusercontent.com/pbcquoc/vietocr/master/image/vietocr.jpg" width="512" height="614">
 </p>
 
 # Cài đặt
