@@ -37,7 +37,7 @@ class Trainer():
         if logger:
             self.logger = Logger(logger) 
 
-        if pretrain:
+        if pretrained:
             download_weights(**config['pretrain'], quiet=config['quiet'])
             self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
 
