@@ -4,6 +4,7 @@ from torch import nn
 from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate
 from vietocr.tool.utils import download_weights
+from vietocr.tool.logger import Logger
 from einops import rearrange
 import yaml
 import torch
@@ -31,8 +32,11 @@ class Trainer():
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
         self.metrics = config['trainer']['metrics']
-        self.logger = config['trainer']['log']
-        
+        logger = config['trainer']['log']
+    
+        if logger:
+            self.logger = Logger(logger) 
+
         if pretrain:
             download_weights(**config['pretrain'], quiet=config['quiet'])
             self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
@@ -69,16 +73,19 @@ class Trainer():
                     info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every)
                     total_loss = 0
                     print(info) 
-                
+                    self.logger.log(info)
+
                 if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
                     val_loss = self.validate()
                     info = 'iter: {:06d} - epoch: {:03d} - val loss: {:.4f}'.format(self.iter, epoch, val_loss)
                     print(info)
-                    
+                    self.logger.log(info)
+
                     if self.metrics:
                         acc_full_seq, acc_per_char = self.precision()
                         info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
                         print(info)
+                        self.logger.log(info)
 
                     self.save_checkpoint(self.checkpoint)
                     self.save_weight(self.export_weights)
