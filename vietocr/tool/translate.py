@@ -50,6 +50,8 @@ def process_input(image):
     img = image.convert('RGB')
     w, h = img.size
     new_w = int(32 * float(w) / float(h))
+    new_w = math.ceil(new_w/10)*10
+    new_w = min(new_w, 500)
     img = img.resize((new_w, 32), Image.ANTIALIAS)
 
     img = np.asarray(img).transpose(2,0, 1)

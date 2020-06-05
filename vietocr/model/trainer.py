@@ -31,7 +31,8 @@ class Trainer():
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
         self.metrics = config['trainer']['metrics']
-
+        self.logger = config['trainer']['log']
+        
         if pretrain:
             download_weights(**config['pretrain'], quiet=config['quiet'])
             self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
@@ -185,7 +186,7 @@ class Trainer():
         os.makedirs(path, exist_ok=True)
        
         torch.save(self.model.state_dict(), filename)
-
+    
     def step(self, batch):
         self.model.train()
         
