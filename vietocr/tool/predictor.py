@@ -2,7 +2,7 @@ from vietocr.tool.translate import build_model, translate, process_input, predic
 import yaml
 import torch
 
-class TextDetector():
+class Predictor():
     def __init__(self, config):
         
         device = config['device']

@@ -1,7 +1,7 @@
 import argparse
 from PIL import Image
 
-from vietocr.tool.detector import TextDetector
+from vietocr.tool.predictor import Predictor
 from vietocr.tool.config import Cfg
 
 def main():
@@ -12,7 +12,7 @@ def main():
     args = parser.parse_args()
     config = Cfg.load_config_from_file(args.config)
 
-    detector = TextDetector(config)
+    detector = Predictor(config)
 
     img = Image.open(args.img)
     s = detector.predict(img)
