@@ -15,7 +15,7 @@ import os
 import matplotlib.pyplot as plt
 
 class Trainer():
-    def __init__(self, config, pretrain=True):
+    def __init__(self, config, pretrained=True):
 
         self.config = config
         self.model, self.vocab = build_model(config)
