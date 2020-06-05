@@ -19,7 +19,7 @@ def translate(img, model, max_seq_length=128):
             tgt_inp = torch.LongTensor(translated_sentence).to(device)
             
             output = model(img, tgt_inp, tgt_key_padding_mask=None)
-#            output = output.to('cpu')
+            output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
 
