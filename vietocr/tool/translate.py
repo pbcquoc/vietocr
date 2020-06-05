@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import math
 from PIL import Image
 from vietocr.model.transformerocr import VietOCR
 from vietocr.model.vocab import Vocab
