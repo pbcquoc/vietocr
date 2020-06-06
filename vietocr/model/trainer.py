@@ -83,11 +83,10 @@ class Trainer():
                     print(info)
                     self.logger.log(info)
 
-                    if self.metrics:
-                        acc_full_seq, acc_per_char = self.precision(self.metrics)
-                        info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
-                        print(info)
-                        self.logger.log(info)
+                    acc_full_seq, acc_per_char = self.precision(self.metrics)
+                    info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
+                    print(info)
+                    self.logger.log(info)
 
                     self.save_checkpoint(self.checkpoint)
                     self.save_weight(self.export_weights)
