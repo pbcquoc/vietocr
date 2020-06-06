@@ -1,4 +1,5 @@
 from vietocr.optim.optim import ScheduledOptim
+from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
 from torch.optim import Adam
 from torch import nn
 from vietocr.tool.translate import build_model
@@ -48,7 +49,8 @@ class Trainer():
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             0.2, config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
-        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
         self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device)
         if self.valid_annotation:
