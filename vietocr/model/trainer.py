@@ -84,7 +84,7 @@ class Trainer():
                     self.logger.log(info)
 
                     if self.metrics:
-                        acc_full_seq, acc_per_char = self.precision()
+                        acc_full_seq, acc_per_char = self.precision(self.metrics)
                         info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
                         print(info)
                         self.logger.log(info)
@@ -138,9 +138,9 @@ class Trainer():
 
         return pred_sents, actual_sents, img_files
 
-    def precision(self):
+    def precision(self, sample=None):
 
-        pred_sents, actual_sents, _ = self.predict(sample=None)
+        pred_sents, actual_sents, _ = self.predict(sample=sample)
 
         acc_full_seq = compute_accuracy(actual_sents, pred_sents, mode='full_sequence')
         acc_per_char = compute_accuracy(actual_sents, pred_sents, mode='per_char')
