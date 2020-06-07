@@ -56,7 +56,7 @@ class LanguageTransformer(nn.Module):
         memory = self.transformer.encoder(src)
         return memory
     
-    def forward_decoder(self, tgt):
+    def forward_decoder(self, tgt, memory):
         tgt_mask = self.gen_nopeek_mask(tgt.shape[0]).to(tgt.device)
         tgt = self.pos_enc(self.embed_tgt(tgt) * math.sqrt(self.d_model))
         

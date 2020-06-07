@@ -10,7 +10,7 @@ def translate(img, model, max_seq_length=128):
     model.eval()
     device = img.device
     src = model.cnn(img)
-    memory = model.foward_encoder(src)
+    memory = model.transformer.forward_encoder(src)
 
     with torch.no_grad():
         translated_sentence = [[1]*len(img)]
@@ -22,7 +22,7 @@ def translate(img, model, max_seq_length=128):
             
 #            output = model(img, tgt_inp, tgt_key_padding_mask=None)
 #            output = model.transformer(src, tgt_inp, tgt_key_padding_mask=None)
-            output = model.forward_decoder(tgt_input)
+            output = model.transformer.forward_decoder(tgt_inp, memory)
             output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
