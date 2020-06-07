@@ -50,7 +50,21 @@ class LanguageTransformer(nn.Module):
         mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
 
         return mask
-                
+    
+    def forward_encoder(self, src):
+        src = self.pos_enc(src*math.sqrt(self.d_model))
+        memory = self.transformer.encoder(src)
+        return memory
+    
+    def forward_decoder(self, tgt):
+        tgt_mask = self.gen_nopeek_mask(tgt.shape[0]).to(tgt.device)
+        tgt = self.pos_enc(self.embed_tgt(tgt) * math.sqrt(self.d_model))
+        
+        output = self.transformer.decoder(tgt, memory, tgt_mask=tgt_mask)
+        output = rearrange(output, 't n e -> n t e')
+        
+        return self.fc(output)
+
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, dropout=0.1, max_len=100):
         super(PositionalEncoding, self).__init__()
