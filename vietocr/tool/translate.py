@@ -9,7 +9,8 @@ def translate(img, model, max_seq_length=128):
     "data: BxCXHxW"
     model.eval()
     device = img.device
-    
+    src = model.cnn(img)
+
     with torch.no_grad():
         translated_sentence = [[1]*len(img)]
         max_length = 0
@@ -18,7 +19,8 @@ def translate(img, model, max_seq_length=128):
 
             tgt_inp = torch.LongTensor(translated_sentence).to(device)
             
-            output = model(img, tgt_inp, tgt_key_padding_mask=None)
+#            output = model(img, tgt_inp, tgt_key_padding_mask=None)
+            ouput = model.transformer(src, tgt_input, tgt_key_padding_mask=None)
             output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
