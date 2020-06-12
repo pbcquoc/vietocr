@@ -1,22 +1,21 @@
 vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~ '
 
-device: 'cpu'
-
+device: cuda:0
     
 pretrain: 
     id: 12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
     md5: 1cc2bb91d3ef1fb596eb13794d56ea1e
     cached: /tmp/tranformerorc.pth
 
-weights: /data/quocpbc/downloads/transformerocr_cmnd.pt
+weights: ./weights/transformerocr.pth
 
 cnn:
     pooling_stride_size:
+        - [2, 2]
         - [2, 1]
         - [2, 1]
         - [2, 1]
-        - [2, 1]
-        - [2, 1]          
+        - [1, 1]          
     pooling_kernel_size:
         - [2, 2]
         - [2, 2]
@@ -39,13 +38,15 @@ optimizer:
 
 trainer:
     batch_size: 32
-    print_every: 2
-    valid_every: 5
-    epochs: 5
-    export: /data/quocpbc/downloads/transformer_cmnd.pth
-    checkpoint: /data/quocpbc/transformerocr_checkpoint.pth
-    data_root: /data/quocpbc/downloads
+    print_every: 200
+    valid_every: 4000
+    epochs: 10
+    export: ./weights/transformerocr.pth
+    checkpoint: ./checkpoint/transformerocr_checkpoint.pth
+    data_root: ./img/
     train_annotation: annotation_train.txt
     valid_annotation: annotation_val_small.txt
-
+    log: ./train.log
+    metrics: null
+ 
 quiet: False 
