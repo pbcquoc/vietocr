@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 from torchvision import models
+from einops import rearrange
 
 class CNN(nn.Module):
     def __init__(self, ss, ks):
@@ -20,6 +21,8 @@ class CNN(nn.Module):
             - output: (W, N, C)
         """
         conv = self.cnn.features(x)
-        conv = conv.squeeze(2)
-        conv = conv.permute(2, 0, 1)  # [w, b, c]
+#        conv = conv.squeeze(2)
+#        conv = conv.permute(2, 0, 1)  # [w, b, c]
+        conv = rearrange(conv, 'b d h w -> b d (w h)')
+        conv = conv.permute(-1, 0, 1)
         return conv
