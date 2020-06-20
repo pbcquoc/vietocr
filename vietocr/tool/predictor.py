@@ -1,4 +1,6 @@
 from vietocr.tool.translate import build_model, translate, process_input, predict
+from vietocr.tool.utils import download_weights
+
 import yaml
 import torch
 
@@ -8,8 +10,14 @@ class Predictor():
         device = config['device']
 
         model, vocab = build_model(config)
-        
-        model.load_state_dict(torch.load(config['weights'], map_location=torch.device(device)))
+        weights = '/tmp/weights.pth'
+
+        if config['weights'].startswith('http'):
+            weights = download_weights(config['weights'])
+        else:
+            weights = config['weights']
+
+        model.load_state_dict(torch.load(weights, map_location=torch.device(device)))
 
         self.config = config
         self.model = model
