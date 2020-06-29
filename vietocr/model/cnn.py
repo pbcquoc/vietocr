@@ -5,8 +5,7 @@ from vietocr.model.vgg import Vgg
 from vietocr.model.resnet import Resnet50
 
 class CNN(nn.Module):
-    def __init__(self, **kwargs):
-        backbone = kwargs['backbone']
+    def __init__(self, backbone, **kwargs):
 
         if backbone == 'vgg':
             self.model = Vgg(**kwargs)

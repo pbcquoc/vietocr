@@ -4,6 +4,7 @@ from torch import nn
 
 class VietOCR(nn.Module):
     def __init__(self, vocab_size,
+                 backbone,
                  cnn_args, 
                  transformer_args):
 #                 ss=[(2,1), (2,1), (2,1), (2,1), (2,1)], 
@@ -21,7 +22,7 @@ class VietOCR(nn.Module):
 #                                num_decoder_layers, dim_feedforward, max_seq_length,
 #                                pos_dropout, trans_dropout)
 
-        self.cnn = CNN(**cnn_args)
+        self.cnn = CNN(backbone, **cnn_args)
         self.transformer=LanguageTransformer(**transformer_args)
 
     def forward(self, img, tgt_input, tgt_key_padding_mask):

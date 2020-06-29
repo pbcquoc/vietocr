@@ -43,7 +43,8 @@ def build_model(config):
     vocab = Vocab(config['vocab'])
     device = config['device']
     
-    model = VietOCR(len(vocab), 
+    model = VietOCR(len(vocab),
+            config['backbone'],
             config['cnn'], 
             config['transformer'])
     
