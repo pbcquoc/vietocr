@@ -9,11 +9,12 @@ pretrain:
 
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 
-cnn:
-    backbone: resnet
+backbone: resnet
+cnn: 
+    hidden: 256
 
 transformer:    
-    d_model: 512
+    d_model: 256
     nhead: 8
     num_encoder_layers: 6
     num_decoder_layers: 6
