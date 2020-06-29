@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import random
 from vietocr.model.vocab import Vocab
+from vietocr.tool.translate import __process_input
 import os
 from collections import defaultdict
 import math
@@ -33,7 +34,7 @@ class BucketData(object):
             - tgt_padding_mask: (N, T) 
         """
         # encoder part
-        img = np.array(self.data_list)/255                     
+        img = np.array(self.data_list) 
         
         # decoder part
         target_weights = []
@@ -93,10 +94,10 @@ class BucketData(object):
 
 class DataGen(object):
 
-    def __init__(self,data_root, annotation_fn, vocab, device):
+    def __init__(self,data_root, annotation_fn, vocab, device, image_height=32, image_max_width=512):
         
-        self.image_height = 64
-        self.image_max_width = 1024
+        self.image_height = image_height
+        self.image_max_width = image_max_width
 
         self.data_root = data_root
         self.annotation_path = os.path.join(data_root, annotation_fn)
@@ -143,14 +144,15 @@ class DataGen(object):
         
         with open(img_path, 'rb') as img_file:
             img = Image.open(img_file).convert('RGB')
-            w, h = img.size
-            new_w = int(self.image_height * float(w) / float(h))
-            new_w = math.ceil(new_w/10)*10
-            new_w = min(new_w, self.image_max_width)
-            img = img.resize((new_w, self.image_height), Image.ANTIALIAS)
-
-            img_bw = np.asarray(img).transpose(2,0, 1)
-            
+#            w, h = img.size
+#            new_w = int(self.image_height * float(w) / float(h))
+#            new_w = math.ceil(new_w/10)*10
+#            new_w = min(new_w, self.image_max_width)
+#            img = img.resize((new_w, self.image_height), Image.ANTIALIAS)
+#
+#            img_bw = np.asarray(img).transpose(2,0, 1)
+#            img_bw = img_bw/255
+            img_bw = __process_input(img, self.image_height, self.image_max_width) 
         word = self.vocab.encode(lex)
 
         return img_bw, word

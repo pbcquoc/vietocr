@@ -5,7 +5,7 @@ def test_loader():
     chars = 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ '
 
     vocab = Vocab(chars)
-    s_gen = DataGen('./vietocr/tests/', 'sample.txt', vocab, 'cpu')
+    s_gen = DataGen('./vietocr/tests/', 'sample.txt', vocab, 'cpu', 32, 512)
 
     iterator = s_gen.gen(30)
     for batch in iterator:

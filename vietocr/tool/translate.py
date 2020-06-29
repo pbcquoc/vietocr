@@ -52,16 +52,20 @@ def build_model(config):
 
     return model, vocab
 
-def process_input(image):
+def __process_input(image, image_height, image_max_width):
     img = image.convert('RGB')
     w, h = img.size
-    new_w = int(32 * float(w) / float(h))
+    new_w = int(image_height * float(w) / float(h))
     new_w = math.ceil(new_w/10)*10
-    new_w = min(new_w, 500)
-    img = img.resize((new_w, 32), Image.ANTIALIAS)
+    new_w = min(new_w, image_max_width)
+    img = img.resize((new_w, image_height), Image.ANTIALIAS)
 
     img = np.asarray(img).transpose(2,0, 1)
     img = img/255
+    return img
+
+def process_input(image, image_height, image_max_width):
+    img = __process_input(image, image_height, image_max_width)
     img = img[np.newaxis, ...]
     img = torch.FloatTensor(img)
     return img

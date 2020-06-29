@@ -5,9 +5,9 @@ import torch
 
 class Predictor():
     def __init__(self, config):
-        
-        device = config['device']
 
+        device = config['device']
+        
         model, vocab = build_model(config)
         weights = '/tmp/weights.pth'
 
@@ -24,7 +24,7 @@ class Predictor():
         
 
     def predict(self, img):
-        img = process_input(img)
+        img = process_input(img, self.config['dataloader']['image_height'], self.config['dataloader']['image_max_width'])
         img = img.to(self.config['device'])
 
         s = translate(img, self.model)[0].tolist()
