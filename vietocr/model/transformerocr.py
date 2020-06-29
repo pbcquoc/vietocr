@@ -23,7 +23,7 @@ class VietOCR(nn.Module):
 #                                pos_dropout, trans_dropout)
 
         self.cnn = CNN(backbone, **cnn_args)
-        self.transformer=LanguageTransformer(**transformer_args)
+        self.transformer=LanguageTransformer(vocab_size, **transformer_args)
 
     def forward(self, img, tgt_input, tgt_key_padding_mask):
         """
