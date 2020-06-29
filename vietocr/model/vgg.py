@@ -5,7 +5,7 @@ from einops import rearrange
 
 class Vgg(nn.Module):
     def __init__(self, ss, ks):
-        super(CNN, self).__init__()
+        super(Vgg, self).__init__()
         self.cnn = models.vgg19_bn(pretrained=True)
         pool_idx = 0
         

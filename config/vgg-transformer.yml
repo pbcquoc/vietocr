@@ -11,13 +11,13 @@ weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 
 backbone: vgg
 cnn:
-    pooling_stride_size:
+    ss:
         - [2, 2]
         - [2, 1]
         - [2, 1]
         - [2, 1]
         - [1, 1]          
-    pooling_kernel_size:
+    ks:
         - [2, 2]
         - [2, 2]
         - [1, 1]
