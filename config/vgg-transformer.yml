@@ -23,9 +23,10 @@ cnn:
         - [1, 1]
         - [1, 1]
         - [1, 1]
-    
+    hidden: 256
+
 transformer:    
-    d_model: 512
+    d_model: 256
     nhead: 8
     num_encoder_layers: 6
     num_decoder_layers: 6
@@ -49,5 +50,9 @@ trainer:
     valid_annotation: annotation_val_small.txt
     log: ./train.log
     metrics: null
- 
+
+dataloader:
+    image_height: 64
+    image_max_width: 1024
+
 quiet: False 

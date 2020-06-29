@@ -38,5 +38,9 @@ trainer:
     valid_annotation: annotation_val_small.txt
     log: ./train.log
     metrics: null
- 
+
+dataloader:
+    image_height: 64
+    image_max_width: 1024
+        
 quiet: False 

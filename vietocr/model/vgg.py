@@ -4,8 +4,10 @@ from torchvision import models
 from einops import rearrange
 
 class Vgg(nn.Module):
-    def __init__(self, ss, ks):
+    def __init__(self, ss, ks, hidden):
         super(Vgg, self).__init__()
+        self.conv = nn.Conv2d(512, hidden, 1)
+
         self.cnn = models.vgg19_bn(pretrained=True)
         pool_idx = 0
         
@@ -21,6 +23,8 @@ class Vgg(nn.Module):
             - output: (W, N, C)
         """
         conv = self.cnn.features(x)
+        conv = self.conv(conv)
+
 #        conv = conv.squeeze(2)
 #        conv = conv.permute(2, 0, 1)  # [w, b, c]
         conv = rearrange(conv, 'b d h w -> b d (w h)')
