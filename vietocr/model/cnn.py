@@ -5,11 +5,13 @@ from vietocr.model.vgg import Vgg
 from vietocr.model.resnet import Resnet50
 
 class CNN(nn.Module):
-    def __init__(self, backbone, *args, **kwargs):
+    def __init__(self, **kwargs):
+        backbone = kwargs['backbone']
+
         if backbone == 'vgg':
-            self.model = Vgg(*args, **kwargs)
+            self.model = Vgg(**kwargs)
         elif backbone == 'resnet':
-            self.model = Resnet50(*args, **kwargs)
+            self.model = Resnet50(**kwargs)
 
     def forward(self, x):
         return self.model(x)
