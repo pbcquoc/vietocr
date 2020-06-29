@@ -95,7 +95,9 @@ class DataGen(object):
 
     def __init__(self,data_root, annotation_fn, vocab, device):
         
-        self.image_height = 32
+        self.image_height = 64
+        self.image_max_width = 1024
+
         self.data_root = data_root
         self.annotation_path = os.path.join(data_root, annotation_fn)
         
@@ -144,7 +146,7 @@ class DataGen(object):
             w, h = img.size
             new_w = int(self.image_height * float(w) / float(h))
             new_w = math.ceil(new_w/10)*10
-            new_w = min(new_w, 500)
+            new_w = min(new_w, self.image_max_width)
             img = img.resize((new_w, self.image_height), Image.ANTIALIAS)
 
             img_bw = np.asarray(img).transpose(2,0, 1)
