@@ -1,7 +1,10 @@
 import yaml
 from vietocr.tool.utils import download_config
 
-url_config = {'vgg_transformer':'1TF8effeufpgkHqQFlmNWKsQtCMfDiooa'}
+url_config = {
+        'vgg_transformer':'1TF8effeufpgkHqQFlmNWKsQtCMfDiooa',
+        'resnet_transformer':'1GGhQqtMz4WloBh38U4sMlzLN6cpw5iag'
+        }
 
 class Cfg(dict):
     def __init__(self, config_dict):
