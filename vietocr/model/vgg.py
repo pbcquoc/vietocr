@@ -3,7 +3,7 @@ from torch import nn
 from torchvision import models
 from einops import rearrange
 
-class CNN(nn.Module):
+class Vgg(nn.Module):
     def __init__(self, ss, ks):
         super(CNN, self).__init__()
         self.cnn = models.vgg19_bn(pretrained=True)

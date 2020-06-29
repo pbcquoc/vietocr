@@ -44,8 +44,8 @@ def build_model(config):
     device = config['device']
     
     model = VietOCR(len(vocab), 
-            ss=config['cnn']['pooling_stride_size'], ks=config['cnn']['pooling_kernel_size'], 
-            **config['transformer'])
+            config['cnn'], 
+            config['transformer'])
     
     model = model.to(device)
 

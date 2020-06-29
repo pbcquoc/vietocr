@@ -1,7 +1,6 @@
 from vietocr.tool.translate import build_model, translate, process_input, predict
 from vietocr.tool.utils import download_weights
 
-import yaml
 import torch
 
 class Predictor():

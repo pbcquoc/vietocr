@@ -16,7 +16,7 @@ def download_config(id):
     url = 'https://drive.google.com/uc?id={}'.format(id)
     output = gdown.download(url, quiet=True)
     
-    with open(output) as f:
+    with open(output, encoding='utf-8') as f:
         config = yaml.safe_load(f)
 
     return config

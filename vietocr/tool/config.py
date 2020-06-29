@@ -10,7 +10,7 @@ class Cfg(dict):
 
     @staticmethod
     def load_config_from_file(fname):
-        with open(fname) as f:
+        with open(fname, encoding='utf-8') as f:
             config = yaml.safe_load(f)
 
         return Cfg(config)
