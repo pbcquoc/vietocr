@@ -11,19 +11,7 @@ weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 
 cnn:
     backbone: resnet
-    pooling_stride_size:
-        - [2, 2]
-        - [2, 1]
-        - [2, 1]
-        - [2, 1]
-        - [1, 1]          
-    pooling_kernel_size:
-        - [2, 2]
-        - [2, 2]
-        - [1, 1]
-        - [1, 1]
-        - [1, 1]
-    
+
 transformer:    
     d_model: 512
     nhead: 8
