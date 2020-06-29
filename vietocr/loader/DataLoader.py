@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import random
 from vietocr.model.vocab import Vocab
-from vietocr.tool.translate import __process_input
+from vietocr.tool.translate import process_image
 import os
 from collections import defaultdict
 import math
@@ -152,7 +152,7 @@ class DataGen(object):
 #
 #            img_bw = np.asarray(img).transpose(2,0, 1)
 #            img_bw = img_bw/255
-            img_bw = __process_input(img, self.image_height, self.image_max_width) 
+            img_bw = process_image(img, self.image_height, self.image_max_width) 
         word = self.vocab.encode(lex)
 
         return img_bw, word
