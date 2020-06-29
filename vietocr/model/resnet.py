@@ -5,7 +5,7 @@ from torchvision.models import resnet50
 class Resnet50(nn.Module):
     def __init__(self, hidden=256):
         super().__init__()
-        self.backbone = resnet50()
+        self.backbone = resnet50(pretrained=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=(1, 1), padding=1)
         self.conv = nn.Conv2d(2048, hidden, 1)
         
