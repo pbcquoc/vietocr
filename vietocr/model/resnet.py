@@ -21,8 +21,8 @@ class Resnet50(nn.Module):
 
         self.layer1 = self.backbone._make_layer(block, 64, layers[0])
         self.layer2 = self.backbone._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self.backbone._make_layer(block, 256, layers[2], stride=(2,1))
-        self.layer4 = self.backbone._make_layer(block, 512, layers[3], stride=(2,1))
+        self.layer3 = self.backbone._make_layer(block, 256, layers[2], stride=2)
+        self.layer4 = self.backbone._make_layer(block, 512, layers[3], stride=2)
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=(1, 1), padding=1)
         self.conv = nn.Conv2d(2048, hidden, 1)
