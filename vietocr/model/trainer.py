@@ -76,7 +76,7 @@ class Trainer():
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
-                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4f} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, elapsed_time)
+                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, elapsed_time)
                     total_loss = 0
                     print(info) 
                     self.logger.log(info)
