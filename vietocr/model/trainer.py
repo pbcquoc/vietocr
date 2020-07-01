@@ -70,7 +70,7 @@ class Trainer():
 
                 loss = self.step(batch)
                 
-                elapsed_time = time.time() - start_time()
+                elapsed_time = time.time() - start_time
 
                 total_loss += loss
                 self.train_losses.append((self.iter, loss))
