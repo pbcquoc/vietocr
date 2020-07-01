@@ -15,6 +15,7 @@ from PIL import Image
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+import time
 
 class Trainer():
     def __init__(self, config, pretrained=True):
@@ -65,14 +66,17 @@ class Trainer():
             self.epoch = epoch
             for batch in self.train_gen.gen(self.batch_size, last_batch=False):
                 self.iter += 1
+                start_time = time.time()
 
                 loss = self.step(batch)
                 
+                elapsed_time = time.time() - start_time()
+
                 total_loss += loss
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
-                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every)
+                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4f} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, elapsed_time)
                     total_loss = 0
                     print(info) 
                     self.logger.log(info)
