@@ -42,5 +42,8 @@ trainer:
 dataloader:
     image_height: 64
     image_max_width: 1024
-        
+
+optimizer:
+    init_lr: 0.1
+
 quiet: False 

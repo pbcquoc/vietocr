@@ -48,7 +48,7 @@ class Trainer():
 
         self.optimizer = ScheduledOptim(
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            0.1, config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
+            config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)

@@ -37,6 +37,7 @@ transformer:
 
 optimizer:
     n_warmup_steps: 4000
+    init_lr: 0.1
 
 trainer:
     batch_size: 32
