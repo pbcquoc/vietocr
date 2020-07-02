@@ -12,6 +12,12 @@ weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 backbone: resnet
 cnn: 
     hidden: 256
+    ss:
+        - [2, 2]
+        - [2, 2]
+        - [2, 2] 
+        - [2, 2]
+        - [2, 2]
 
 transformer:    
     d_model: 256
@@ -40,8 +46,8 @@ trainer:
     metrics: null
 
 dataloader:
-    image_height: 64
-    image_max_width: 1024
+    image_height: 32
+    image_max_width: 512
 
 optimizer:
     init_lr: 0.1
