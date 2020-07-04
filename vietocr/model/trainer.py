@@ -69,13 +69,7 @@ class Trainer():
 
             for batch in data_iter:
                 self.iter += 1
-                batch = {
-		    'img':batch['img'].to(self.device, non_blocking=True),
-		    'tgt_input':batch['tgt_input'].to(self.device, non_blocking=True),
-		    'tgt_output':batch['tgt_output'].to(self.device, non_blocking=True),
-		    'tgt_padding_mask':batch['tgt_padding_mask'].to(self.device, non_blocking=True),
-		    'filenames': batch['filenames']
-		}                
+                
                 loss = self.step(batch)
                 
 
