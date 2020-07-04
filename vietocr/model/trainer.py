@@ -74,7 +74,7 @@ class Trainer():
 		    'tgt_input':batch['tgt_input'].to(self.device),
 		    'tgt_output':batch['tgt_output'].to(self.device),
 		    'tgt_padding_mask':batch['tgt_padding_mask'].to(self.device),
-		    'filenames': filenames
+		    'filenames': batch['filenames']
 		}                
                 loss = self.step(batch)
                 
