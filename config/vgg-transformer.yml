@@ -3,8 +3,8 @@ vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦ�
 device: cpu
     
 pretrain: 
-    id_or_url: 12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
-    md5: 1cc2bb91d3ef1fb596eb13794d56ea1e
+    id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
+    md5: 7068030afe2e8fc639d0e1e2c25612b3
     cached: /tmp/tranformerorc.pth
 
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY

@@ -7,6 +7,7 @@ from vietocr.tool.translate import process_image
 import os
 from collections import defaultdict
 import math
+from prefetch_generator import BackgroundGenerator, background
 
 class BucketData(object):
     def __init__(self, device):
@@ -109,7 +110,8 @@ class DataGen(object):
 
     def clear(self):
         self.bucket_data = defaultdict(lambda: BucketData(self.device))
-
+    
+    @background(max_prefetch=3)
     def gen(self, batch_size, last_batch=True):
         with open(self.annotation_path, 'r') as ann_file:
             lines = ann_file.readlines()
