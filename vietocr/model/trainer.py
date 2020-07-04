@@ -74,7 +74,6 @@ class Trainer():
                 
 
                 total_loss += loss
-                total_elapsed_time += elapsed_time
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
