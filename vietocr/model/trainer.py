@@ -61,7 +61,8 @@ class Trainer():
 
     def train(self):
         total_loss = 0
-       
+        total_elapsed_time = 0
+
         for epoch in range(self.num_epochs):
             self.epoch = epoch
             for batch in self.train_gen.gen(self.batch_size, last_batch=False):
@@ -73,11 +74,13 @@ class Trainer():
                 elapsed_time = time.time() - start_time
 
                 total_loss += loss
+                total_elapsed_time += elapsed_time
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
-                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, elapsed_time)
+                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, total_elapsed_time)
                     total_loss = 0
+                    total_elapsed_time = 0
                     print(info) 
                     self.logger.log(info)
 
