@@ -111,7 +111,7 @@ class DataGen(object):
     def clear(self):
         self.bucket_data = defaultdict(lambda: BucketData(self.device))
     
-    @background(max_prefetch=3)
+#    @background(max_prefetch=3)
     def gen(self, batch_size, last_batch=True):
         with open(self.annotation_path, 'r') as ann_file:
             lines = ann_file.readlines()
