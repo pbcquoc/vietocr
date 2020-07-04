@@ -3,8 +3,8 @@ vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦ�
 device: cpu
     
 pretrain: 
-    id_or_url: 12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
-    md5: 1cc2bb91d3ef1fb596eb13794d56ea1e
+    id_or_url: 1GQZUJaM_-mWnX5Bt5IajXWcxyIBay4vH
+    md5: e72bdb4909364b13d537415f85885fb8
     cached: /tmp/tranformerorc.pth
 
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
@@ -16,8 +16,8 @@ cnn:
         - [2, 2]
         - [2, 2]
         - [2, 2] 
-        - [2, 2]
-        - [2, 2]
+        - [2, 1]
+        - [1, 1]
 
 transformer:    
     d_model: 256
@@ -31,6 +31,7 @@ transformer:
 
 optimizer:
     n_warmup_steps: 4000
+    init_lr: 0.1
 
 trainer:
     batch_size: 32
@@ -46,10 +47,7 @@ trainer:
     metrics: null
 
 dataloader:
-    image_height: 32
-    image_max_width: 512
-
-optimizer:
-    init_lr: 0.1
+    image_height: 64
+    image_max_width: 1024
 
 quiet: False 
