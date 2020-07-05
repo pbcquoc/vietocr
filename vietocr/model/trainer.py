@@ -70,7 +70,6 @@ class Trainer():
                 self.iter += 1
                 
                 start_time = time.time()
-                print(self.device)
                 batch['img'] = batch['img'].to(self.device, non_blocking=True) 
                 batch['tgt_input'] = batch['tgt_input'].to(self.device, non_blocking=True) 
                 batch['tgt_output'] = batch['tgt_output'].to(self.device, non_blocking=True)
