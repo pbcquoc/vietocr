@@ -67,10 +67,10 @@ class BucketData(object):
         self.max_label_len = 0
         
         rs = {
-            'img': torch.tensor(img, device=self.device, dtype=torch.float), #torch.FloatTensor(img, device=self.device),
-            'tgt_input':torch.tensor(tgt_input, device=self.device, dtype=torch.long), #torch.LongTensor(tgt_input, device=self.device),
-            'tgt_output':torch.tensor(tgt_output, device=self.device, dtype=torch.long), #torch.LongTensor(tgt_output, device=self.device),
-            'tgt_padding_mask':torch.tensor(tgt_padding_mask, device=self.device, dtype=torch.bool), #torch.BoolTensor(tgt_padding_mask, device=self.device),
+            'img': torch.FloatTensor(img).to(device=self.device),
+            'tgt_input': torch.LongTensor(tgt_input).to(device=self.device),
+            'tgt_output': torch.LongTensor(tgt_output).to(device=self.device),
+            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask).to(device=self.device),
             'filenames': filenames
         }
         
@@ -146,14 +146,6 @@ class DataGen(object):
         
         with open(img_path, 'rb') as img_file:
             img = Image.open(img_file).convert('RGB')
-#            w, h = img.size
-#            new_w = int(self.image_height * float(w) / float(h))
-#            new_w = math.ceil(new_w/10)*10
-#            new_w = min(new_w, self.image_max_width)
-#            img = img.resize((new_w, self.image_height), Image.ANTIALIAS)
-#
-#            img_bw = np.asarray(img).transpose(2,0, 1)
-#            img_bw = img_bw/255
             img_bw = process_image(img, self.image_height, self.image_max_width) 
         word = self.vocab.encode(lex)
 
