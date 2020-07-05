@@ -35,7 +35,7 @@ class BucketData(object):
             - tgt_padding_mask: (N, T) 
         """
         # encoder part
-        img = np.array(self.data_list) 
+        img = np.array(self.data_list, dtype=np.float32)
         
         # decoder part
         target_weights = []
@@ -55,11 +55,11 @@ class BucketData(object):
                 np.zeros(self.max_label_len - one_mask_len,dtype=np.float32))))
 
         # reshape to fit input shape
-        tgt_input = np.array(tgt_input).T
+        tgt_input = np.array(tgt_input, dtype=np.int64).T
         tgt_output = np.roll(tgt_input, -1, 0).T
         tgt_output[:, -1]=0
         
-        tgt_padding_mask = np.array(target_weights)==0 
+        tgt_padding_mask = np.array(target_weights)==0
 
         filenames = self.file_list
 
@@ -67,10 +67,10 @@ class BucketData(object):
         self.max_label_len = 0
         
         rs = {
-            'img': torch.FloatTensor(img).pin_memory().to(device=self.device, non_blocking=True),
-            'tgt_input': torch.LongTensor(tgt_input).pin_memory().to(device=self.device, non_blocking=True),
-            'tgt_output': torch.LongTensor(tgt_output).pin_memory().to(device=self.device, non_blocking=True),
-            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask).pin_memory().to(device=self.device, non_blocking=True),
+            'img': torch.from_numpy(img).pin_memory().to(device=self.device, non_blocking=True),
+            'tgt_input': torch.from_numpy(tgt_input).pin_memory().to(device=self.device, non_blocking=True),
+            'tgt_output': torch.from_numpy(tgt_output).pin_memory().to(device=self.device, non_blocking=True),
+            'tgt_padding_mask':torch.from_numpy(tgt_padding_mask).pin_memory().to(device=self.device, non_blocking=True),
             'filenames': filenames
         }
         
