@@ -7,7 +7,7 @@ from vietocr.tool.translate import process_image
 import os
 from collections import defaultdict
 import math
-from prefetch_generator import BackgroundGenerator, background
+#from prefetch_generator import BackgroundGenerator, background
 
 class BucketData(object):
     def __init__(self, device):
@@ -67,10 +67,10 @@ class BucketData(object):
         self.max_label_len = 0
         
         rs = {
-            'img': torch.FloatTensor(img).pin_memory(),
-            'tgt_input': torch.LongTensor(tgt_input).pin_memory(),
-            'tgt_output': torch.LongTensor(tgt_output).pin_memory(),
-            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask).pin_memory(),
+            'img': torch.FloatTensor(img),
+            'tgt_input': torch.LongTensor(tgt_input),
+            'tgt_output': torch.LongTensor(tgt_output),
+            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask),
             'filenames': filenames
         }
         
