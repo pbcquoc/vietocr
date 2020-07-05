@@ -59,8 +59,6 @@ class Trainer():
         
         self.train_losses = []
         
-        torch.cuda.set_device(1)
-
     def train(self):
         total_loss = 0
         total_elapsed_time = 0
