@@ -66,8 +66,6 @@ class BucketData(object):
         self.data_list, self.label_list, self.file_list = [], [], []
         self.max_label_len = 0
         
-        torch.cuda.set_device(self.device)
-
         rs = {
             'img': torch.FloatTensor(img).pin_memory(),
             'tgt_input': torch.LongTensor(tgt_input).pin_memory(),

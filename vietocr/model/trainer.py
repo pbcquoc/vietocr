@@ -58,6 +58,8 @@ class Trainer():
             self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, **config['dataloader'])
         
         self.train_losses = []
+        
+        torch.cuda.set_device(self.device)
 
     def train(self):
         total_loss = 0
