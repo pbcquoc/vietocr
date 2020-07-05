@@ -7,7 +7,7 @@ from vietocr.tool.translate import process_image
 import os
 from collections import defaultdict
 import math
-#from prefetch_generator import BackgroundGenerator, background
+from prefetch_generator import BackgroundGenerator, background
 
 class BucketData(object):
     def __init__(self, device):
