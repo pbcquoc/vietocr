@@ -67,10 +67,10 @@ class BucketData(object):
         self.max_label_len = 0
         
         rs = {
-            'img': torch.from_numpy(img).pin_memory(),
-            'tgt_input': torch.from_numpy(tgt_input).pin_memory(),
-            'tgt_output': torch.from_numpy(tgt_output).pin_memory(),
-            'tgt_padding_mask':torch.from_numpy(tgt_padding_mask).pin_memory(),
+            'img': torch.FloatTensor(img).pin_memory(),
+            'tgt_input': torch.LongTensor(tgt_input).pin_memory(),
+            'tgt_output': torch.LongTensor(tgt_output).pin_memory(),
+            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask).pin_memory(),
             'filenames': filenames
         }
         
@@ -111,7 +111,7 @@ class DataGen(object):
     def clear(self):
         self.bucket_data = defaultdict(lambda: BucketData(self.device))
     
-    @background(max_prefetch=10)
+    @background()
     def gen(self, batch_size, last_batch=True):
         with open(self.annotation_path, 'r') as ann_file:
             lines = ann_file.readlines()
