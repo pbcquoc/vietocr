@@ -66,10 +66,10 @@ class BucketData(object):
         self.max_label_len = 0
         
         rs = {
-            'img': torch.FloatTensor(img),
-            'tgt_input': torch.LongTensor(tgt_input),
-            'tgt_output': torch.LongTensor(tgt_output),
-            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask),
+            'img': torch.FloatTensor(img).to(self.device),
+            'tgt_input': torch.LongTensor(tgt_input).to(self.device),
+            'tgt_output': torch.LongTensor(tgt_output).to(self.device),
+            'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask).to(self.device),
             'filenames': filenames
         }
         
