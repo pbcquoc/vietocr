@@ -210,7 +210,7 @@ class Trainer():
         self.model.train()
         
         img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
-        img, tgt_input, tgt_output, tgt_padding_mask = img.cuda(non_blocking=True), tgt_input.cuda(non_blocking=True), tgt_output.cuda(non_blocking=True), tgt_padding_mask.cuda(non_blocking=True)
+        img, tgt_input, tgt_output, tgt_padding_mask = img.to(device=self.device, non_blocking=True), tgt_input.to(device=self.device, non_blocking=True), tgt_output.to(device=self.device, non_blocking=True), tgt_padding_mask.to(device=self.device, non_blocking=True)
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
         loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
