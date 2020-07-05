@@ -61,42 +61,21 @@ class Trainer():
         
     def train(self):
         total_loss = 0
-        total_elapsed_time = 0
         for epoch in range(self.num_epochs):
             self.epoch = epoch
             data_iter = self.train_gen.gen(self.batch_size, last_batch=False)
-            next_batch = next(data_iter)
-            
-            next_batch['img'] = next_batch['img'].to(self.device, non_blocking=True) 
-            next_batch['tgt_input'] = next_batch['tgt_input'].to(self.device, non_blocking=True) 
-            next_batch['tgt_output'] = next_batch['tgt_output'].to(self.device, non_blocking=True)
-            next_batch['tgt_padding_mask'] = next_batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
-#            for batch in data_iter:
-            for _ in range(1000):
+            for batch in data_iter:
                 self.iter += 1
-                batch = next_batch
-                start_time = time.time()
-
-                next_batch=next(data_iter)
-                next_batch['img'] = next_batch['img'].to(self.device, non_blocking=True)
-                next_batch['tgt_input'] = next_batch['tgt_input'].to(self.device, non_blocking=True)
-                next_batch['tgt_output'] = next_batch['tgt_output'].to(self.device, non_blocking=True)
-                next_batch['tgt_padding_mask'] = next_batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
                 loss = self.step(batch)
-                elapsed_time = time.time() - start_time
-               
-                total_elapsed_time += elapsed_time
 
                 total_loss += loss
                 self.train_losses.append((self.iter, loss))
 
                 if self.iter % self.print_every == self.print_every - 1:
-
-                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e} - time: {:.4f}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr, total_elapsed_time)
+                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr)
                     total_loss = 0
-                    total_elapsed_time = 0
 
                     print(info) 
                     self.logger.log(info)
