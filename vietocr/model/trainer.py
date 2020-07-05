@@ -71,10 +71,10 @@ class Trainer():
                 
                 start_time = time.time()
 
-                batch['img'] = batch['img'].to(self.device, non_blocking=True) 
-                batch['tgt_input'] = batch['tgt_input'].to(self.device, non_blocking=True) 
-                batch['tgt_output'] = batch['tgt_output'].to(self.device, non_blocking=True)
-                batch['tgt_padding_mask'] = batch['tgt_padding_mask'].to(self.device, non_blocking=True)
+                #batch['img'] = batch['img'].to(self.device, non_blocking=True) 
+                #batch['tgt_input'] = batch['tgt_input'].to(self.device, non_blocking=True) 
+                #batch['tgt_output'] = batch['tgt_output'].to(self.device, non_blocking=True)
+                #batch['tgt_padding_mask'] = batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
                 loss = self.step(batch)
                 elapsed_time = time.time() - start_time
