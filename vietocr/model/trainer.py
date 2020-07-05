@@ -65,15 +65,24 @@ class Trainer():
         for epoch in range(self.num_epochs):
             self.epoch = epoch
             data_iter = self.train_gen.gen(self.batch_size, last_batch=False)
+            next_batch = next(data_iter)
+            
+            next_batch['img'] = next_batch['img'].to(self.device, non_blocking=True) 
+            next_batch['tgt_input'] = next_batch['tgt_input'].to(self.device, non_blocking=True) 
+            next_batch['tgt_output'] = next_batch['tgt_output'].to(self.device, non_blocking=True)
+            next_batch['tgt_padding_mask'] = next_batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
-            for batch in data_iter:
+#            for batch in data_iter:
+            for _ in range(1000):
                 self.iter += 1
-                
+                batch = next_batch
                 start_time = time.time()
-                batch['img'] = batch['img'].to(self.device, non_blocking=True) 
-                batch['tgt_input'] = batch['tgt_input'].to(self.device, non_blocking=True) 
-                batch['tgt_output'] = batch['tgt_output'].to(self.device, non_blocking=True)
-                batch['tgt_padding_mask'] = batch['tgt_padding_mask'].to(self.device, non_blocking=True)
+
+                next_batch=next(data_iter)
+                next_batch['img'] = next_batch['img'].to(self.device, non_blocking=True)
+                next_batch['tgt_input'] = next_batch['tgt_input'].to(self.device, non_blocking=True)
+                next_batch['tgt_output'] = next_batch['tgt_output'].to(self.device, non_blocking=True)
+                next_batch['tgt_padding_mask'] = next_batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
                 loss = self.step(batch)
                 elapsed_time = time.time() - start_time
