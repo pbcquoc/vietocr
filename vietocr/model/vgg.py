@@ -8,21 +8,23 @@ class Vgg(nn.Module):
         super(Vgg, self).__init__()
         self.conv = nn.Conv2d(512, hidden, 1)
 
-        self.cnn = models.vgg19_bn(pretrained=True)
+        cnn = models.vgg19_bn(pretrained=True)
         pool_idx = 0
         
-        for i, layer in enumerate(self.cnn.features):
+        for i, layer in enumerate(cnn.features):
             if isinstance(layer, torch.nn.MaxPool2d):        
-                self.cnn.features[i] = torch.nn.AvgPool2d(kernel_size=ks[pool_idx], stride=ss[pool_idx], padding=0)
+                cnn.features[i] = torch.nn.AvgPool2d(kernel_size=ks[pool_idx], stride=ss[pool_idx], padding=0)
                 pool_idx += 1
-                
+ 
+        self.features = cnn.features
+               
     def forward(self, x):
         """
         Shape: 
             - x: (N, C, H, W)
             - output: (W, N, C)
         """
-        conv = self.cnn.features(x)
+        conv = self.features(x)
         conv = self.conv(conv)
 
 #        conv = conv.squeeze(2)
