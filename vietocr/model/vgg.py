@@ -3,12 +3,17 @@ from torch import nn
 from torchvision import models
 from einops import rearrange
 
+
 class Vgg(nn.Module):
-    def __init__(self, ss, ks, hidden):
+    def __init__(self, name, ss, ks, hidden):
         super(Vgg, self).__init__()
         self.conv = nn.Conv2d(512, hidden, 1)
 
-        cnn = models.vgg19_bn(pretrained=True)
+        if name == 'vgg11_bn':
+            cnn = models.vgg11_bn(pretrained=True)
+        elif name == 'vgg19_bn':
+            cnn = models.vgg19_bn(pretrained=True)
+
         pool_idx = 0
         
         for i, layer in enumerate(cnn.features):
@@ -27,8 +32,13 @@ class Vgg(nn.Module):
         conv = self.features(x)
         conv = self.conv(conv)
 
-#        conv = conv.squeeze(2)
-#        conv = conv.permute(2, 0, 1)  # [w, b, c]
         conv = rearrange(conv, 'b d h w -> b d (w h)')
         conv = conv.permute(-1, 0, 1)
         return conv
+
+def vgg11_bn(ss, ks, hidden):
+    return Vgg('vgg11_bn', ss, ks, hidden)
+
+def vgg19_bn(ss, ks, hidden):
+    return Vgg('vgg19_bn', ss, ks, hidden)
+   

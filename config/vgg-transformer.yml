@@ -9,7 +9,7 @@ pretrain:
 
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 
-backbone: vgg
+backbone: vgg19_bn
 cnn:
     ss:
         - [2, 2]

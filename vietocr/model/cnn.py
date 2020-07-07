@@ -1,15 +1,17 @@
 import torch
 from torch import nn
 
-from vietocr.model.vgg import Vgg
+from vietocr.model.vgg as vgg
 from vietocr.model.resnet import Resnet50
 
 class CNN(nn.Module):
     def __init__(self, backbone, **kwargs):
         super(CNN, self).__init__()
 
-        if backbone == 'vgg':
-            self.model = Vgg(**kwargs)
+        if backbone == 'vgg11_bn':
+            self.model = vgg.vgg11_bn(**kwargs)
+        elif backbone == 'vgg19_bn':
+            self.model = vgg.vgg19_bn(**kwargs)
         elif backbone == 'resnet':
             self.model = Resnet50(**kwargs)
 
