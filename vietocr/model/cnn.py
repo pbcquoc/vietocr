@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 
-from vietocr.model.vgg as vgg
+import vietocr.model.vgg as vgg
 from vietocr.model.resnet import Resnet50
 
 class CNN(nn.Module):
