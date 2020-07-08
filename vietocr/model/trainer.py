@@ -51,8 +51,8 @@ class Trainer():
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
-#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
         self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, 
                 image_height=config['dataloader']['image_height'], 
@@ -74,10 +74,6 @@ class Trainer():
 
             for batch in data_iter:
                 self.iter += 1
-                if self.iter < 4000: 
-                    self.model.cnn.freeze() 
-                else: 
-                    self.model.cnn.unfreeze()
 
                 loss = self.step(batch)
 
