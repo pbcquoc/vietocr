@@ -17,3 +17,11 @@ class CNN(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
+    def freeze(self):
+        for param in self.model.features.parameters():
+            param.requires_grad = False
+
+    def unfreeze(self):
+        for param in self.model.features.parameters():
+            param.requires_grad = True
