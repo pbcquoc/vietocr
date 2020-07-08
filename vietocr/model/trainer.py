@@ -54,9 +54,15 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, **config['dataloader'])
+        self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, 
+                image_height=config['dataloader']['image_height'], 
+                image_max_width=config['dataloader']['image_max_width']
+                )
         if self.valid_annotation:
-            self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, **config['dataloader'])
+            self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, 
+                    image_height=config['dataloader']['image_height'], 
+                    image_max_width=config['dataloader']['image_max_width']
+                    )
         
         self.train_losses = []
         
