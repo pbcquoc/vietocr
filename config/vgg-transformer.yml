@@ -55,5 +55,6 @@ trainer:
 dataloader:
     image_height: 32
     image_max_width: 512
+    last_batch: True
 
 quiet: False 

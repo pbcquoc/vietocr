@@ -56,7 +56,8 @@ def process_image(image, image_height, image_max_width):
     img = image.convert('RGB')
     w, h = img.size
     new_w = int(image_height * float(w) / float(h))
-    new_w = math.ceil(new_w/10)*10
+    round_to = 10
+    new_w = math.ceil(new_w/round_to)*round_to
     new_w = min(new_w, image_max_width)
     img = img.resize((new_w, image_height), Image.ANTIALIAS)
 

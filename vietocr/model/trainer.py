@@ -33,6 +33,7 @@ class Trainer():
         self.valid_every = config['trainer']['valid_every']
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
+        self.last_batch = config['dataloader']['last_batch']
         self.metrics = config['trainer']['metrics']
         logger = config['trainer']['log']
     
@@ -63,7 +64,7 @@ class Trainer():
         total_loss = 0
         for epoch in range(self.num_epochs):
             self.epoch = epoch
-            data_iter = self.train_gen.gen(self.batch_size, last_batch=False)
+            data_iter = self.train_gen.gen(self.batch_size, self.last_batch)
 
             for batch in data_iter:
                 self.iter += 1
