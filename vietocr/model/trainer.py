@@ -74,7 +74,11 @@ class Trainer():
 
             for batch in data_iter:
                 self.iter += 1
-                if self.iter < 4000: self.model.cnn.freeze() else: self.model.cnn.unfreeze()
+                if self.iter < 4000: 
+                    self.model.cnn.freeze() 
+                else: 
+                    self.model.cnn.unfreeze()
+
                 loss = self.step(batch)
 
                 total_loss += loss
