@@ -7,7 +7,7 @@ from einops import rearrange
 class Vgg(nn.Module):
     def __init__(self, name, ss, ks, hidden):
         super(Vgg, self).__init__()
-        self.conv = nn.Conv2d(512, hidden, 1)
+        self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
 
         if name == 'vgg11_bn':
             cnn = models.vgg11_bn(pretrained=True)
@@ -30,7 +30,7 @@ class Vgg(nn.Module):
             - output: (W, N, C)
         """
         conv = self.features(x)
-        conv = self.conv(conv)
+        conv = self.last_conv_1x1(conv)
 
         conv = rearrange(conv, 'b d h w -> b d (w h)')
         conv = conv.permute(-1, 0, 1)

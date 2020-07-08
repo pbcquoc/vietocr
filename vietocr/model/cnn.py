@@ -19,8 +19,9 @@ class CNN(nn.Module):
         return self.model(x)
 
     def freeze(self):
-        for param in self.model.features.parameters():
-            param.requires_grad = False
+        for name, param in self.model.features.named_parameters():
+            if name != 'last_conv_1x1':
+                param.requires_grad = False
 
     def unfreeze(self):
         for param in self.model.features.parameters():
