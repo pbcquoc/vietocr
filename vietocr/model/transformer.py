@@ -79,6 +79,5 @@ class PositionalEncoding(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, x):
-        print(x.shape)
         x = x + self.pe[:x.size(0), :]
         return self.dropout(x)
