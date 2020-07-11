@@ -29,7 +29,11 @@ class Vgg(nn.Module):
             - x: (N, C, H, W)
             - output: (W, N, C)
         """
-        conv = self.features(x)
+        try:
+            conv = self.features(x)
+        except:
+            print(x.shape)
+            raise Exception('abc')
         conv = self.last_conv_1x1(conv)
 
         conv = rearrange(conv, 'b d h w -> b d (w h)')
