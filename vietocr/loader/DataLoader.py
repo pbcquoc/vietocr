@@ -95,9 +95,10 @@ class BucketData(object):
 
 class DataGen(object):
 
-    def __init__(self,data_root, annotation_fn, vocab, device, image_height=32, image_max_width=512):
+    def __init__(self,data_root, annotation_fn, vocab, device, image_height=32, image_min_width=32, image_max_width=512):
         
         self.image_height = image_height
+        self.image_min_width = image_min_width
         self.image_max_width = image_max_width
 
         self.data_root = data_root
@@ -146,10 +147,7 @@ class DataGen(object):
         
         with open(img_path, 'rb') as img_file:
             img = Image.open(img_file).convert('RGB')
-            img_bw = process_image(img, self.image_height, self.image_max_width)
-            print(img_bw.shape)
-            if img_bw.shape[2] == 20:
-                print(img_path)
+            img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
 
         word = self.vocab.encode(lex)
 
