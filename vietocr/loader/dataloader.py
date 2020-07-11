@@ -29,8 +29,6 @@ class OCRDataset(Dataset):
     def build_cluster_indices(self):
         self.cluster_indices = defaultdict(list)
         
-        print('build cluster indices')
-
         for i in range(self.__len__()):
             sample = self.__getitem__(i)
             img = sample['img']

@@ -57,18 +57,6 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-#        self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, 
-#                image_height=config['dataloader']['image_height'],
-#                image_min_width = config['dataloader']['image_min_width'],
-#                image_max_width=config['dataloader']['image_max_width']
-#                )
-#        if self.valid_annotation:
-#            self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, 
-#                    image_height=config['dataloader']['image_height'],
-#                    image_min_width = config['dataloader']['image_min_width'],
-#                    image_max_width=config['dataloader']['image_max_width']
-#                    )
-
         train_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.train_annotation, vocab=self.vocab)
         train_sampler = ClusterRandomSampler(train_dataset, self.batch_size, True)
         self.train_gen = DataLoader(
@@ -89,8 +77,8 @@ class Trainer():
                 sampler=valid_sampler,
                 collate_fn = collate_fn,
                 shuffle=False,
-                num_workers=1,
-                pin_memory=False,
+                num_workers=3,
+                pin_memory=True,
                 drop_last=False)
 
         self.train_losses = []
@@ -99,7 +87,6 @@ class Trainer():
         total_loss = 0
         for epoch in range(self.num_epochs):
             self.epoch = epoch
-#            data_iter = self.train_gen.gen(self.batch_size, self.last_batch)
 
             for batch in self.train_gen:
                 self.iter += 1
