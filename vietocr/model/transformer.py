@@ -94,7 +94,7 @@ class LearnedPositionalEncoding(nn.Module):
     def forward(self, x):
         seq_len = x.size(0)
         pos = torch.arange(seq_len, dtype=torch.long, device=x.device)
-        pos = pos.unsqueeze(0).expand_as(x)
+        pos = pos.unsqueeze(0).expand(x.size()[:2])
         print(pos.shape, self.pos_embed(pos).shape, x.shape)
         x = x + self.pos_embed(pos)
         return self.dropout(x) 
