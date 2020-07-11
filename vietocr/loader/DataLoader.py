@@ -148,7 +148,7 @@ class DataGen(object):
             img = Image.open(img_file).convert('RGB')
             img_bw = process_image(img, self.image_height, self.image_max_width)
             print(img_bw.shape)
-            if img_bw.shape[1] == 20:
+            if img_bw.shape[2] == 20:
                 print(img_path)
 
         word = self.vocab.encode(lex)
