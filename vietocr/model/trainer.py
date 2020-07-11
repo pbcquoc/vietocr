@@ -57,29 +57,10 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        train_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.train_annotation, vocab=self.vocab)
-        train_sampler = ClusterRandomSampler(train_dataset, self.batch_size, True)
-        self.train_gen = DataLoader(
-                train_dataset,
-                batch_size=self.batch_size, 
-                sampler=train_sampler,
-                collate_fn = collate_fn,
-                shuffle=False,
-                num_workers=3,
-                pin_memory=True,
-                drop_last=False)
-
-        valid_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.valid_annotation, vocab=self.vocab)
-        valid_sampler = ClusterRandomSampler(valid_dataset, self.batch_size, True)
-        self.valid_gen = DataLoader(
-                valid_dataset,
-                batch_size=self.batch_size, 
-                sampler=valid_sampler,
-                collate_fn = collate_fn,
-                shuffle=False,
-                num_workers=3,
-                pin_memory=True,
-                drop_last=False)
+        self.train_gen = self.data_gen(self.data_root, self.train_annotation)
+   
+        if self.valid_annotation != None:
+            self.valid_gen = self.data_gen(self.data_root, self.valid_annotation)
 
         self.train_losses = []
         
@@ -231,6 +212,21 @@ class Trainer():
         batch = {'img': img, 'tgt_input':tgt_input, 'tgt_output':tgt_output, 'tgt_padding_mask':tgt_padding_mask}
 
         return batch
+
+    def data_gen(self, data_root, annotation):
+        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab)
+        sampler = ClusterRandomSampler(dataset, self.batch_size, True)
+        gen = DataLoader(
+                dataset,
+                batch_size=self.batch_size, 
+                sampler=sampler,
+                collate_fn = collate_fn,
+                shuffle=False,
+                num_workers=3,
+                pin_memory=True,
+                drop_last=False)
+       
+        return gen
 
     def step(self, batch):
         self.model.train()
