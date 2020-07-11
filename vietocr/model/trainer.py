@@ -69,7 +69,7 @@ class Trainer():
 #                    image_max_width=config['dataloader']['image_max_width']
 #                    )
 
-        train_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.train_annotation, vocab=vocab)
+        train_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.train_annotation, vocab=self.vocab)
         train_sampler = ClusterRandomSampler(train_dataset, self.batch_size, True)
         self.train_gen = DataLoader(
                 train_dataset,
@@ -81,7 +81,7 @@ class Trainer():
                 pin_memory=False,
                 drop_last=False)
 
-        valid_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.valid_annotation, vocab=vocab)
+        valid_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.valid_annotation, vocab=self.vocab)
         valid_sampler = ClusterRandomSampler(valid_dataset, self.batch_size, True)
         self.valid_gen = DataLoader(
                 valid_dataset,
