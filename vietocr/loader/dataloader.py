@@ -20,11 +20,6 @@ class OCRDataset(Dataset):
             lines = ann_file.readlines()
             self.annotations = [l.strip().split('\t') for l in lines]
             
-            try:
-                img_bw, word = self.read_data(img_path, lex)
-            except IOError:
-                print('ioread image:{}'.format(img_path))
-
         self.build_cluster_indices()
 
     def build_cluster_indices(self):
