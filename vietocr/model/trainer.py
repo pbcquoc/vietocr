@@ -235,7 +235,7 @@ class Trainer():
        
         torch.save(self.model.state_dict(), filename)
 
-    def batch_to_device(batch):
+    def batch_to_device(self, batch):
         img = batch['img'].to(self.device)
         tgt_input = batch['tgt_input'].to(self.device)
         tgt_output = batch['tgt_output'].to(self.device)
