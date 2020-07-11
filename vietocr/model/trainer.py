@@ -9,7 +9,10 @@ from vietocr.tool.logger import Logger
 from einops import rearrange
 import yaml
 import torch
-from vietocr.loader.DataLoader import DataGen
+#from vietocr.loader.DataLoader import DataGen
+from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
+from torch.utils.data.DataLoader import DataLoader
+
 from vietocr.tool.utils import compute_accuracy
 from PIL import Image
 import numpy as np
@@ -54,18 +57,42 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, 
-                image_height=config['dataloader']['image_height'],
-                image_min_width = config['dataloader']['image_min_width'],
-                image_max_width=config['dataloader']['image_max_width']
-                )
-        if self.valid_annotation:
-            self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, 
-                    image_height=config['dataloader']['image_height'],
-                    image_min_width = config['dataloader']['image_min_width'],
-                    image_max_width=config['dataloader']['image_max_width']
-                    )
-        
+#        self.train_gen = DataGen(self.data_root, self.train_annotation, self.vocab, self.device, 
+#                image_height=config['dataloader']['image_height'],
+#                image_min_width = config['dataloader']['image_min_width'],
+#                image_max_width=config['dataloader']['image_max_width']
+#                )
+#        if self.valid_annotation:
+#            self.valid_gen = DataGen(self.data_root, self.valid_annotation, self.vocab, self.device, 
+#                    image_height=config['dataloader']['image_height'],
+#                    image_min_width = config['dataloader']['image_min_width'],
+#                    image_max_width=config['dataloader']['image_max_width']
+#                    )
+
+        train_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.train_annotation, vocab=vocab)
+        train_sampler = ClusterRandomSampler(train_dataset, self.batch_size, True)
+        self.train_gen = DataLoader(
+                train_dataset,
+                batch_size=self.batch_size, 
+                sampler=train_sampler,
+                collate_fn = collate_fn,
+                shuffle=False,
+                num_workers=1,
+                pin_memory=False,
+                drop_last=False)
+
+        valid_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.valid_annotation, vocab=vocab)
+        valid_sampler = ClusterRandomSampler(valid_dataset, self.batch_size, True)
+        self.valid_gen = DataLoader(
+                valid_dataset,
+                batch_size=self.batch_size, 
+                sampler=valid_sampler,
+                collate_fn = collate_fn,
+                shuffle=False,
+                num_workers=1,
+                pin_memory=False,
+                drop_last=False)
+
         self.train_losses = []
         
     def train(self):
@@ -210,7 +237,10 @@ class Trainer():
     def step(self, batch):
         self.model.train()
         
-        img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
+        img = batch['img'].to(self.device)
+        tgt_input = batch['tgt_input'].to(self.device)
+        tgt_output = batch['tgt_output'].to(self.device)
+        tgt_padding_mask = batch['tgt_padding_mask'].to(self.device)
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
         loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))

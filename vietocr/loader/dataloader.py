@@ -2,6 +2,7 @@ import os
 import random
 from PIL import Image
 from collections import defaultdict
+import numpy as np
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -90,3 +91,46 @@ class ClusterRandomSampler(Sampler):
 
     def __len__(self):
         return len(self.data_source)
+
+def collate_fn(batch):
+    filenames = []
+    img = []
+    target_weights = []
+    tgt_input = []
+    max_label_len = max(len(sample['word']) for sample in batch)
+    for sample in batch:
+        img.append(sample['img'])
+        filenames.append(sample['img_path'])
+        label = sample['word']
+        label_len = len(label)
+        
+        
+        tgt = np.concatenate((
+            label,
+            np.zeros(max_label_len - label_len, dtype=np.int32)))
+        tgt_input.append(tgt)
+
+        one_mask_len = label_len - 1
+
+        target_weights.append(np.concatenate((
+            np.ones(one_mask_len, dtype=np.float32),
+            np.zeros(max_label_len - one_mask_len,dtype=np.float32))))
+        
+    img = np.array(img, dtype=np.float32)
+
+
+    tgt_input = np.array(tgt_input, dtype=np.int64).T
+    tgt_output = np.roll(tgt_input, -1, 0).T
+    tgt_output[:, -1]=0
+
+    tgt_padding_mask = np.array(target_weights)==0
+
+    rs = {
+        'img': torch.FloatTensor(img),
+        'tgt_input': torch.LongTensor(tgt_input),
+        'tgt_output': torch.LongTensor(tgt_output),
+        'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask),
+        'filenames': filenames
+    }   
+    
+    return rs
