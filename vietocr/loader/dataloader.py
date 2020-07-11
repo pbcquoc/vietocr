@@ -3,6 +3,7 @@ import random
 from PIL import Image
 from collections import defaultdict
 import numpy as np
+import torch
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
