@@ -8,7 +8,7 @@ from vietocr.tool.translate import process_image
 class OCRDataset(Dataset):
     def __init__(self, root_dir, annotation_path, vocab, image_height=32, image_min_width=32, image_max_width=512, transform=None):
         self.root_dir = root_dir
-        self.annotation_path = annotation_path
+        self.annotation_path = os.path.join(root_dir, annotation_path)
         self.vocab = vocab
 
         self.image_height = image_height
