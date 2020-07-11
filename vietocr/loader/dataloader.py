@@ -1,6 +1,7 @@
 import os
 import random
 from PIL import Image
+from collections import defaultdict
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -24,7 +25,7 @@ class OCRDataset(Dataset):
         self.build_cluster_indices()
 
     def build_cluster_indices(self):
-        self.cluster_indices = []
+        self.cluster_indices = defaultdict(list)
         
         print('build cluster indices')
 
@@ -33,7 +34,7 @@ class OCRDataset(Dataset):
             img = sample['img']
             width = img.shape[-1]
 
-            self.cluster_indices.append(width)
+            self.cluster_indices[width].append(i)
         
 
     def read_data(self, img_path, lex):
@@ -71,7 +72,7 @@ class ClusterRandomSampler(Sampler):
 
     def __iter__(self):
         batch_lists = []
-        for cluster_indices in self.data_source.cluster_indices:
+        for cluster, cluster_indices in self.data_source.cluster_indices.items():
             batches = [cluster_indices[i:i + self.batch_size] for i in range(0, len(cluster_indices), self.batch_size)]
             batches = [_ for _ in batches if len(_) == self.batch_size]
             if self.shuffle:
