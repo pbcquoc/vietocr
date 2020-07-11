@@ -11,7 +11,7 @@ import yaml
 import torch
 #from vietocr.loader.DataLoader import DataGen
 from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
-from torch.utils.data.DataLoader import DataLoader
+from torch.utils.data import DataLoader
 
 from vietocr.tool.utils import compute_accuracy
 from PIL import Image
