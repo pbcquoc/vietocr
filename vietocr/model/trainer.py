@@ -99,9 +99,9 @@ class Trainer():
         total_loss = 0
         for epoch in range(self.num_epochs):
             self.epoch = epoch
-            data_iter = self.train_gen.gen(self.batch_size, self.last_batch)
+#            data_iter = self.train_gen.gen(self.batch_size, self.last_batch)
 
-            for batch in data_iter:
+            for batch in self.train_gen:
                 self.iter += 1
 
                 loss = self.step(batch)
@@ -136,8 +136,8 @@ class Trainer():
         total_loss = []
         
         with torch.no_grad():
-            for step, batch in enumerate(self.valid_gen.gen(self.batch_size)):
-
+            for step, batch in enumerate(self.valid_gen):
+                batch = self.batch_to_device(batch)
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
                 outputs = self.model(img, tgt_input, tgt_padding_mask)
@@ -160,7 +160,8 @@ class Trainer():
         img_files = []
         
         n = 0
-        for batch in  self.valid_gen.gen(self.batch_size):
+        for batch in  self.valid_gen:
+            batch = self.batch_to_device(batch)
             translated_sentence = translate(batch['img'], self.model)
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
             actual_sent = self.vocab.batch_decode(batch['tgt_input'].T.tolist())
@@ -233,14 +234,22 @@ class Trainer():
         os.makedirs(path, exist_ok=True)
        
         torch.save(self.model.state_dict(), filename)
-    
-    def step(self, batch):
-        self.model.train()
-        
+
+    def batch_to_device(batch):
         img = batch['img'].to(self.device)
         tgt_input = batch['tgt_input'].to(self.device)
         tgt_output = batch['tgt_output'].to(self.device)
         tgt_padding_mask = batch['tgt_padding_mask'].to(self.device)
+
+        batch = {'img': img, 'tgt_input':tgt_input, 'tgt_output':tgt_output, 'tgt_padding_mask':tgt_padding_mask}
+
+        return batch
+
+    def step(self, batch):
+        self.model.train()
+
+        batch = self.batch_to_device(batch)
+        img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']    
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
         loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
