@@ -58,7 +58,6 @@ class Trainer():
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
         self.train_gen = self.data_gen(self.data_root, self.train_annotation)
-   
         if self.valid_annotation != None:
             self.valid_gen = self.data_gen(self.data_root, self.valid_annotation)
 
@@ -209,7 +208,11 @@ class Trainer():
         tgt_output = batch['tgt_output'].to(self.device, non_blocking=True)
         tgt_padding_mask = batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
-        batch = {'img': img, 'tgt_input':tgt_input, 'tgt_output':tgt_output, 'tgt_padding_mask':tgt_padding_mask}
+        batch = {
+                'img': img, 'tgt_input':tgt_input, 
+                'tgt_output':tgt_output, 'tgt_padding_mask':tgt_padding_mask, 
+                'filenames': batch['filenames']
+                }
 
         return batch
 
