@@ -15,6 +15,7 @@ class LanguageTransformer(nn.Module):
         self.d_model = d_model
         self.embed_tgt = nn.Embedding(vocab_size, d_model)
         self.pos_enc = PositionalEncoding(d_model, pos_dropout, max_seq_length)
+        self.learned_pos_enc = LearnedPositionalEncoding(d_model, pos_dropout, max_seq_length)
 
         self.transformer = nn.Transformer(d_model, nhead, 
                                           num_encoder_layers, num_decoder_layers, 
@@ -35,8 +36,9 @@ class LanguageTransformer(nn.Module):
         """
         tgt_mask = self.gen_nopeek_mask(tgt.shape[0]).to(src.device)
         
-        src = self.pos_enc(src*math.sqrt(self.d_model))
-        
+#        src = self.pos_enc(src*math.sqrt(self.d_model))
+        src = self.learned_pos_enc(src*math.sqrt(self.d_model))
+
         tgt = self.pos_enc(self.embed_tgt(tgt) * math.sqrt(self.d_model))
         
         output = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_key_padding_mask,
@@ -81,3 +83,18 @@ class PositionalEncoding(nn.Module):
     def forward(self, x):
         x = x + self.pe[:x.size(0), :]
         return self.dropout(x)
+ 
+class LearnedPositionalEncoding(nn.Module):
+    def __init__(self, d_model, dropout=0.1, max_len=100):
+        super(LearnedPositionalEncoding, self).__init__()
+        self.dropout = nn.Dropout(p=dropout)
+
+        self.pos_embed = nn.Embedding(max_len, d_model)
+
+    def forward(self, x):
+        seq_len = x.size(0)
+        pos = torch.arange(seq_len, dtype=torch.long, device=x.device)
+        pos = pos.unsqueeze(0).expand_as(x)
+        print(pos.shape, self.pos_embed(pos).shape, x.shape)
+        x = x + self.pos_embed(pos)
+        return self.dropout(x) 
