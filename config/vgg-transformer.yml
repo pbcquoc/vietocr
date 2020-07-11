@@ -31,7 +31,7 @@ transformer:
     num_encoder_layers: 6
     num_decoder_layers: 6
     dim_feedforward: 2048
-    max_seq_length: 256
+    max_seq_length: 1024
     pos_dropout: 0.1
     trans_dropout: 0.1
 
