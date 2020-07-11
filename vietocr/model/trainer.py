@@ -65,8 +65,8 @@ class Trainer():
                 sampler=train_sampler,
                 collate_fn = collate_fn,
                 shuffle=False,
-                num_workers=1,
-                pin_memory=False,
+                num_workers=3,
+                pin_memory=True,
                 drop_last=False)
 
         valid_dataset = OCRDataset(root_dir=self.data_root, annotation_path=self.valid_annotation, vocab=self.vocab)
@@ -223,10 +223,10 @@ class Trainer():
         torch.save(self.model.state_dict(), filename)
 
     def batch_to_device(self, batch):
-        img = batch['img'].to(self.device)
-        tgt_input = batch['tgt_input'].to(self.device)
-        tgt_output = batch['tgt_output'].to(self.device)
-        tgt_padding_mask = batch['tgt_padding_mask'].to(self.device)
+        img = batch['img'].to(self.device, non_blocking=True)
+        tgt_input = batch['tgt_input'].to(self.device, non_blocking=True)
+        tgt_output = batch['tgt_output'].to(self.device, non_blocking=True)
+        tgt_padding_mask = batch['tgt_padding_mask'].to(self.device, non_blocking=True)
 
         batch = {'img': img, 'tgt_input':tgt_input, 'tgt_output':tgt_output, 'tgt_padding_mask':tgt_padding_mask}
 
