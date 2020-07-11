@@ -146,7 +146,10 @@ class DataGen(object):
         
         with open(img_path, 'rb') as img_file:
             img = Image.open(img_file).convert('RGB')
-            img_bw = process_image(img, self.image_height, self.image_max_width) 
+            img_bw = process_image(img, self.image_height, self.image_max_width)
+            if img_bw.shape[1] < 32:
+                print(img_path)
+
         word = self.vocab.encode(lex)
 
         return img_bw, word
