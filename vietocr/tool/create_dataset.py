@@ -47,10 +47,10 @@ def createDataset(outputPath, root_dir, annotation_path):
             continue
         with open(imagePath, 'r') as f:
             imageBin = f.read()
-        if checkValid:
-            if not checkImageIsValid(imageBin):
-                print('%s is not a valid image' % imagePath)
-                continue
+#        if checkValid:
+#            if not checkImageIsValid(imageBin):
+#                print('%s is not a valid image' % imagePath)
+#                continue
 
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt
