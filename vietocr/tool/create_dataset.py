@@ -39,7 +39,7 @@ def createDataset(outputPath, root_dir, annotation_path):
     cache = {}
     cnt = 1
     for i in range(nSamples):
-        imagePath, label = annotation[i]
+        imagePath, label = annotations[i]
         imagePath = os.path.join(root_dir, imagePath)
 
         if not os.path.exists(imagePath):
