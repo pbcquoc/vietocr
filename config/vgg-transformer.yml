@@ -43,7 +43,7 @@ trainer:
     batch_size: 32
     print_every: 200
     valid_every: 4000
-    epochs: 10
+    iters: 100000
     export: ./weights/transformerocr.pth
     checkpoint: ./checkpoint/transformerocr_checkpoint.pth
     data_root: ./img/
@@ -52,10 +52,13 @@ trainer:
     log: ./train.log
     metrics: null
 
-dataloader:
+dataset:
     image_height: 32
     image_min_width: 32
     image_max_width: 512
-    last_batch: True
+
+dataloader:
+    num_workers: 3
+    pin_memory: True
 
 quiet: False 

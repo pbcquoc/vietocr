@@ -1,6 +1,6 @@
 from vietocr.optim.optim import ScheduledOptim
 from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 from torch import nn
 from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate
@@ -48,7 +48,8 @@ class Trainer():
         self.iter = 0
 
         self.optimizer = ScheduledOptim(
-            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            #Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            SGD(self.model.parameters()),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
         self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
