@@ -26,7 +26,7 @@ class Trainer():
         self.model, self.vocab = build_model(config)
 
         self.device = config['device']
-        self.num_epochs = config['trainer']['epochs']
+        self.num_iters = config['trainer']['iters']
         self.data_root = config['trainer']['data_root']
         self.train_annotation = config['trainer']['train_annotation']
         self.valid_annotation = config['trainer']['valid_annotation']
@@ -45,7 +45,6 @@ class Trainer():
             download_weights(**config['pretrain'], quiet=config['quiet'])
             self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
 
-        self.epoch = 0 
         self.iter = 0
 
         self.optimizer = ScheduledOptim(
@@ -63,37 +62,49 @@ class Trainer():
         
     def train(self):
         total_loss = 0
-        for epoch in range(self.num_epochs):
-            self.epoch = epoch
+        
+        total_loader_time = 0
+        total_gpu_time = 0
 
-            for batch in self.train_gen:
-                self.iter += 1
+        data_iter = iter(self.train_gen)
+        for i in range(self.num_iters):
+            self.iter += 1
 
-                loss = self.step(batch)
+            start = time.time()
+            batch = next(data_iter)
+            total_loader_time += time.time() - start
 
-                total_loss += loss
-                self.train_losses.append((self.iter, loss))
+            start = time.time()
+            loss = self.step(batch)
+            total_gpu_time += time.time() - start
 
-                if self.iter % self.print_every == self.print_every - 1:
-                    info = 'iter: {:06d} - epoch: {:03d} - train loss: {:.4f} - lr: {:.4e}'.format(self.iter, epoch, total_loss/self.print_every, self.optimizer.lr)
-                    total_loss = 0
+            total_loss += loss
+            self.train_losses.append((self.iter, loss))
 
-                    print(info) 
-                    self.logger.log(info)
+            if self.iter % self.print_every == self.print_every - 1:
+                info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.4e} - gpu time: {:.4e}'.format(self.iter, 
+                        total_loss/self.print_every, self.optimizer.lr, 
+                        total_loader_time, total_gpu_time)
 
-                if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
-                    val_loss = self.validate()
-                    info = 'iter: {:06d} - epoch: {:03d} - val loss: {:.4f}'.format(self.iter, epoch, val_loss)
-                    print(info)
-                    self.logger.log(info)
+                total_loss = 0
+                total_loader_time = 0
+                total_gpu_time = 0
+                print(info) 
+                self.logger.log(info)
 
-                    acc_full_seq, acc_per_char = self.precision(self.metrics)
-                    info = 'iter: {:06d} - epoch: {:03d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, epoch, acc_full_seq, acc_per_char)
-                    print(info)
-                    self.logger.log(info)
+            if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
+                val_loss = self.validate()
+                info = 'iter: {:06d} - val loss: {:.4f}'.format(self.iter, val_loss)
+                print(info)
+                self.logger.log(info)
 
-                    self.save_checkpoint(self.checkpoint)
-                    self.save_weight(self.export_weights)
+                acc_full_seq, acc_per_char = self.precision(self.metrics)
+                info = 'iter: {:06d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, acc_full_seq, acc_per_char)
+                print(info)
+                self.logger.log(info)
+
+                self.save_checkpoint(self.checkpoint)
+                self.save_weight(self.export_weights)
         
     def validate(self):
         self.model.eval()
@@ -183,13 +194,12 @@ class Trainer():
         
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.model.load_state_dict(checkpoint['state_dict'])
-        self.epoch = checkpoint['epoch']
         self.iter = checkpoint['iter']
 
         self.train_losses = checkpoint['train_losses']
 
     def save_checkpoint(self, filename):
-        state = {'iter':self.iter, 'epoch': self.epoch, 'state_dict': self.model.state_dict(),
+        state = {'iter':self.iter, 'state_dict': self.model.state_dict(),
                 'optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
         
         path, _ = os.path.split(filename)
