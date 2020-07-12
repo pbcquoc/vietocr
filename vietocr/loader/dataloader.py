@@ -56,7 +56,7 @@ class OCRDataset(Dataset):
 
     def read_data(self, idx):
 
-        with env.begin(write=False) as txn:
+        with self.env.begin(write=False) as txn:
             img_file = 'image-%09d'%idx
             label_file = 'label-%09d'%idx
             path_file = 'path-%09d'%idx
