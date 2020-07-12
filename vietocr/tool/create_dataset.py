@@ -38,7 +38,7 @@ def createDataset(outputPath, root_dir, annotation_path):
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
     cnt = 1
-    for i in xrange(nSamples):
+    for i in range(nSamples):
         imagePath, label = annotation[i]
         imagePath = os.path.join(root_dir, imagePath)
 
