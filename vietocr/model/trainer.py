@@ -219,7 +219,7 @@ class Trainer():
         return batch
 
     def data_gen(self, data_root, annotation):
-        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **config['dataset'])
+        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **self.config['dataset'])
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
         gen = DataLoader(
                 dataset,
@@ -228,7 +228,7 @@ class Trainer():
                 collate_fn = collate_fn,
                 shuffle=False,
                 drop_last=False,
-                **config['dataloader'])
+                **self.config['dataloader'])
        
         return gen
 
