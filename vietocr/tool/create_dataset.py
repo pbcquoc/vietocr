@@ -45,7 +45,7 @@ def createDataset(outputPath, root_dir, annotation_path):
         if not os.path.exists(imagePath):
             print('%s does not exist' % imagePath)
             continue
-        with open(imagePath, 'r') as f:
+        with open(imagePath, 'rb') as f:
             imageBin = f.read()
 #        if checkValid:
 #            if not checkImageIsValid(imageBin):
