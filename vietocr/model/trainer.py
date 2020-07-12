@@ -35,7 +35,6 @@ class Trainer():
         self.valid_every = config['trainer']['valid_every']
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
-        self.last_batch = config['dataloader']['last_batch']
         self.metrics = config['trainer']['metrics']
         logger = config['trainer']['log']
     
@@ -220,7 +219,7 @@ class Trainer():
         return batch
 
     def data_gen(self, data_root, annotation):
-        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab)
+        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **config['dataset'])
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
         gen = DataLoader(
                 dataset,
@@ -228,9 +227,8 @@ class Trainer():
                 sampler=sampler,
                 collate_fn = collate_fn,
                 shuffle=False,
-                num_workers=3,
-                pin_memory=True,
-                drop_last=False)
+                drop_last=False,
+                **config['dataloader'])
        
         return gen
 
