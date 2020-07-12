@@ -63,7 +63,6 @@ def createDataset(outputPath, root_dir, annotation_path):
         if cnt % 1000 == 0:
             writeCache(env, cache)
             cache = {}
-            print('Written %d / %d' % (cnt, nSamples))
     nSamples = cnt-1
     cache['num-samples'] = str(nSamples).encode()
     writeCache(env, cache)

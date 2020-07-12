@@ -88,7 +88,7 @@ class Trainer():
             self.train_losses.append((self.iter, loss))
 
             if self.iter % self.print_every == self.print_every - 1:
-                info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.3d} - gpu time: {:.3d}'.format(self.iter, 
+                info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.3f} - gpu time: {:.3f}'.format(self.iter, 
                         total_loss/self.print_every, self.optimizer.lr, 
                         total_loader_time, total_gpu_time)
 
