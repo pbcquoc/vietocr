@@ -37,9 +37,9 @@ class OCRDataset(Dataset):
             nSamples = int(txn.get('num-samples'.encode()))
             self.nSamples = nSamples
 
-        with open(self.annotation_path, 'r') as ann_file:
-            lines = ann_file.readlines()
-            self.annotations = [l.strip().split('\t') for l in lines]
+#        with open(self.annotation_path, 'r') as ann_file:
+#            lines = ann_file.readlines()
+#            self.annotations = [l.strip().split('\t') for l in lines]
             
         self.build_cluster_indices()
 
@@ -91,7 +91,7 @@ class OCRDataset(Dataset):
         return sample
 
     def __len__(self):
-        return len(self.annotations)
+        return len(self.nSamples)
 
 class ClusterRandomSampler(Sampler):
     
