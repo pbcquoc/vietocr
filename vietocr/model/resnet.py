@@ -2,7 +2,6 @@ import torch
 from torch import nn
 from torchvision.models import resnet50
 from torchvision.models.resnet import Bottleneck
-from einops import rearrange
 from torch.hub import load_state_dict_from_url
 
 resnet50_url = 'https://download.pytorch.org/models/resnet50-19c8e357.pth'
@@ -49,7 +48,8 @@ class Resnet50(nn.Module):
         x = self.layer4(x)
 
         conv = self.conv(x)
-        conv = rearrange(conv, 'b d h w -> b d (w h)')
+#        conv = rearrange(conv, 'b d h w -> b d (w h)')
+        conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
 
         return conv

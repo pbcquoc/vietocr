@@ -6,7 +6,6 @@ from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate
 from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
-from einops import rearrange
 import yaml
 import torch
 #from vietocr.loader.DataLoader import DataGen
@@ -54,8 +53,8 @@ class Trainer():
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
-#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
         self.train_gen = self.data_gen(self.data_root, self.train_annotation)
         if self.valid_annotation != None:
@@ -108,8 +107,12 @@ class Trainer():
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
                 outputs = self.model(img, tgt_input, tgt_padding_mask)
+                #loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+               
+                outputs = outputs.view(-1, outputs.shape[-1])   
+                tgt_output = tgt_output.view(-1)
 
-                loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+                loss = self.criterion(outputs, tgt_output)
 
                 total_loss.append(loss.item())
                 
@@ -238,7 +241,11 @@ class Trainer():
         img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']    
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
-        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+#        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+        outputs = outputs.view(-1, outputs.shape[-1])   
+        tgt_output = tgt_output.view(-1)
+
+        loss = self.criterion(outputs, tgt_output)
 
         self.optimizer.zero_grad()
         loss.backward()

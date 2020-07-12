@@ -43,12 +43,12 @@ class LanguageTransformer(nn.Module):
         
         output = self.transformer(src, tgt, tgt_mask=tgt_mask, src_key_padding_mask=src_key_padding_mask,
                                   tgt_key_padding_mask=tgt_key_padding_mask, memory_key_padding_mask=memory_key_padding_mask)
-        output = rearrange(output, 't n e -> n t e')
-        
+        #output = rearrange(output, 't n e -> n t e')
+        output = output.transpose(0, 1)
         return self.fc(output)
 
     def gen_nopeek_mask(self, length):
-        mask = rearrange(torch.triu(torch.ones(length, length)) == 1, 'h w -> w h')
+        mask = (torch.triu(torch.ones(length, length)) == 1).tranpose(0, 1)
         mask = mask.float().masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, float(0.0))
 
         return mask
@@ -63,8 +63,9 @@ class LanguageTransformer(nn.Module):
         tgt = self.pos_enc(self.embed_tgt(tgt) * math.sqrt(self.d_model))
         
         output = self.transformer.decoder(tgt, memory, tgt_mask=tgt_mask)
-        output = rearrange(output, 't n e -> n t e')
-        
+#        output = rearrange(output, 't n e -> n t e')
+        output = output.transpose(0, 1)
+
         return self.fc(output)
 
 class PositionalEncoding(nn.Module):

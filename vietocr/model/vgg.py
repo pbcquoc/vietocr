@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 from torchvision import models
-from einops import rearrange
 
 
 class Vgg(nn.Module):
@@ -36,7 +35,8 @@ class Vgg(nn.Module):
             raise Exception('abc')
         conv = self.last_conv_1x1(conv)
 
-        conv = rearrange(conv, 'b d h w -> b d (w h)')
+#        conv = rearrange(conv, 'b d h w -> b d (w h)')
+        conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
         return conv
 
