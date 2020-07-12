@@ -51,12 +51,12 @@ class Trainer():
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
-        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        self.train_gen = self.data_gen(self.data_root, self.train_annotation)
+        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation)
         if self.valid_annotation != None:
-            self.valid_gen = self.data_gen(self.data_root, self.valid_annotation)
+            self.valid_gen = self.data_gen('valid_db', self.data_root, self.valid_annotation)
 
         self.train_losses = []
         
@@ -88,7 +88,7 @@ class Trainer():
             self.train_losses.append((self.iter, loss))
 
             if self.iter % self.print_every == self.print_every - 1:
-                info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.4e} - gpu time: {:.4e}'.format(self.iter, 
+                info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.3d} - gpu time: {:.3d}'.format(self.iter, 
                         total_loss/self.print_every, self.optimizer.lr, 
                         total_loader_time, total_gpu_time)
 
@@ -234,8 +234,8 @@ class Trainer():
 
         return batch
 
-    def data_gen(self, data_root, annotation):
-        dataset = OCRDataset(root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **self.config['dataset'])
+    def data_gen(self, lmdb_path, data_root, annotation):
+        dataset = OCRDataset(lmdb_path=lmdb_path, root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **self.config['dataset'])
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
         gen = DataLoader(
                 dataset,
