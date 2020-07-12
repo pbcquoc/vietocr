@@ -4,7 +4,6 @@ from PIL import Image
 from collections import defaultdict
 import numpy as np
 import torch
-from tabulate import tabulate
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -36,9 +35,7 @@ class OCRDataset(Dataset):
             width = img.shape[-1]
 
             self.cluster_indices[width].append(i)
-        headers = ['cluster', 'size']
-        rows = [(k, len(v)) for k, v in self.cluster_indices.items()]
-        print(tabulate(rows, headers=headers))
+
 
     def read_data(self, img_path, lex):
 
