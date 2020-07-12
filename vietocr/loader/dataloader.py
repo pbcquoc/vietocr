@@ -27,7 +27,7 @@ class OCRDataset(Dataset):
         
         self.env = lmdb.open(
             self.lmdb_path,
-            max_readers=1,
+            max_readers=8,
             readonly=True,
             lock=False,
             readahead=False,
