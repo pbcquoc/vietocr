@@ -87,7 +87,7 @@ class Trainer():
             total_loss += loss
             self.train_losses.append((self.iter, loss))
 
-            if self.iter % self.print_every == self.print_every - 1:
+            if self.iter % self.print_every == 0:
                 info = 'iter: {:06d} - train loss: {:.4f} - lr: {:.4e} - load time: {:.3f} - gpu time: {:.3f}'.format(self.iter, 
                         total_loss/self.print_every, self.optimizer.lr, 
                         total_loader_time, total_gpu_time)
@@ -98,7 +98,7 @@ class Trainer():
                 print(info) 
                 self.logger.log(info)
 
-            if self.valid_annotation and self.iter % self.valid_every == self.valid_every - 1:
+            if self.valid_annotation and self.iter % self.valid_every == 0:
                 val_loss = self.validate()
                 info = 'iter: {:06d} - val loss: {:.4f}'.format(self.iter, val_loss)
                 print(info)
