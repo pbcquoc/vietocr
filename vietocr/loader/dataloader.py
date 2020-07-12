@@ -37,8 +37,8 @@ class OCRDataset(Dataset):
 
             self.cluster_indices[width].append(i)
         headers = ['cluster', 'size']
-
-        print(tabulate(self.cluster_indices.items(), headers=headers))
+        rows = [k, len(v) for k, v in self.cluster_indices.items()]
+        print(tabulate(rows, headers=headers))
 
     def read_data(self, img_path, lex):
 
