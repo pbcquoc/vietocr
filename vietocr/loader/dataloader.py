@@ -76,7 +76,7 @@ class OCRDataset(Dataset):
                 print('Corrupted image for %d' % index)
 
             
-        word = self.vocab.encode(labelbuf)
+        word = self.vocab.encode(label)
 
         return img_bw, word, img_path
 
