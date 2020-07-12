@@ -71,7 +71,13 @@ class Trainer():
             self.iter += 1
 
             start = time.time()
-            batch = next(data_iter)
+
+            try:
+                batch = next(data_iter)
+            except:
+                data_iter = iter(self.train_gen)
+                batch = next(data_iter)
+
             total_loader_time += time.time() - start
 
             start = time.time()
