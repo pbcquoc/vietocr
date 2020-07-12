@@ -91,7 +91,7 @@ class OCRDataset(Dataset):
         return sample
 
     def __len__(self):
-        return len(self.nSamples)
+        return self.nSamples
 
 class ClusterRandomSampler(Sampler):
     
