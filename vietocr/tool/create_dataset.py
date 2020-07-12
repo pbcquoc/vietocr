@@ -37,10 +37,10 @@ def createDataset(outputPath, root_dir, annotation_path):
     nSamples = len(annotations)
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
-    cnt = 1
+    cnt = 0
     for i in range(nSamples):
-        imagePath, label = annotations[i]
-        imagePath = os.path.join(root_dir, imagePath)
+        imageFile, label = annotations[i]
+        imagePath = os.path.join(root_dir, imageFile)
 
         if not os.path.exists(imagePath):
             print('%s does not exist' % imagePath)
@@ -54,13 +54,16 @@ def createDataset(outputPath, root_dir, annotation_path):
 
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt
+        pathKey = 'path-%09d' % cnt
         cache[imageKey] = imageBin
         cache[labelKey] = label.encode()
+        cache[pathKey] = imageFile.encode()
+        cnt += 1
+
         if cnt % 1000 == 0:
             writeCache(env, cache)
             cache = {}
             print('Written %d / %d' % (cnt, nSamples))
-        cnt += 1
     nSamples = cnt-1
     cache['num-samples'] = str(nSamples).encode()
     writeCache(env, cache)

@@ -4,10 +4,13 @@ from PIL import Image
 from collections import defaultdict
 import numpy as np
 import torch
+import lmdb
+import six
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
 from vietocr.tool.translate import process_image
+from vietocr.tool.create_dataset import createDataset
 
 class OCRDataset(Dataset):
     def __init__(self, root_dir, annotation_path, vocab, image_height=32, image_min_width=32, image_max_width=512, transform=None):
@@ -18,7 +21,21 @@ class OCRDataset(Dataset):
         self.image_height = image_height
         self.image_min_width = image_min_width
         self.image_max_width = image_max_width
+
+        self.lmdb_path =  '/tmp/{}'.format(annotation_path)
+        createDataset(self.lmdb_path, root_dir, annotation_path)
         
+        self.env = lmdb.open(
+            self.lmdb_path,
+            max_readers=1,
+            readonly=True,
+            lock=False,
+            readahead=False,
+            meminit=False)
+
+        with self.env.begin(write=False) as txn:
+            nSamples = int(txn.get('num-samples'.encode()))
+            self.nSamples = nSamples
 
         with open(self.annotation_path, 'r') as ann_file:
             lines = ann_file.readlines()
@@ -37,21 +54,37 @@ class OCRDataset(Dataset):
             self.cluster_indices[width].append(i)
 
 
-    def read_data(self, img_path, lex):
+    def read_data(self, idx):
 
-        with open(img_path, 'rb') as img_file:
-            img = Image.open(img_file).convert('RGB')
-            img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
+        with env.begin(write=False) as txn:
+            img_file = 'image-%09d'%idx
+            label_file = 'label-%09d'%idx
+            path_file = 'path-%09d'%idx
 
-        word = self.vocab.encode(lex)
+            imgbuf = txn.get(img_file.encode())
+            label = txn.get(label_file.encode()).decode()
+            img_path = txn.get(path_file.encode()).decode()
 
-        return img_bw, word
+            buf = six.BytesIO()
+            buf.write(imgbuf)
+            buf.seek(0)
+            
+            try:
+                img = Image.open(buf).convert('RGB')
+                img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
+            except IOError:
+                print('Corrupted image for %d' % index)
+
+            
+        word = self.vocab.encode(labelbuf)
+
+        return img_bw, word, img_path
 
     def __getitem__(self, idx):
-        img_path, lex =  self.annotations[idx]
+        #img_path, lex =  self.annotations[idx]
+        img, word, img_path = self.read_data(idx)
+
         img_path = os.path.join(self.root_dir, img_path)
-        
-        img, word = self.read_data(img_path, lex)
 
         sample = {'img': img, 'word': word, 'img_path': img_path}
 
