@@ -55,14 +55,14 @@ def createDataset(outputPath, root_dir, annotation_path):
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt
         cache[imageKey] = imageBin
-        cache[labelKey] = label.encode()
+        cache[labelKey] = label
         if cnt % 1000 == 0:
             writeCache(env, cache)
             cache = {}
             print('Written %d / %d' % (cnt, nSamples))
         cnt += 1
     nSamples = cnt-1
-    cache['num-samples'] = str(nSamples).encode()
+    cache['num-samples'] = str(nSamples)
     writeCache(env, cache)
     print('Created dataset with %d samples' % nSamples)
 
