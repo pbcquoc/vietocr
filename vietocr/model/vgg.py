@@ -29,7 +29,7 @@ class Vgg(nn.Module):
             - output: (W, N, C)
         """
         conv = self.features(x)
-        conv = self.last_conv_1x1(conv)
+#        conv = self.last_conv_1x1(conv)
 
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')
         conv = conv.transpose(-1, -2)
