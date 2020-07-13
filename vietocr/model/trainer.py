@@ -48,8 +48,8 @@ class Trainer():
         self.iter = 0
 
         self.optimizer = ScheduledOptim(
-#            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            SGD(self.model.transformer.parameters(), lr=0.01, momentum=0.9, nesterov=True),
+            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
+#            SGD(self.model.transformer.parameters(), lr=0.01, momentum=0.9, nesterov=True),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 

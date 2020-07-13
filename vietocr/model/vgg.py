@@ -6,7 +6,6 @@ from torchvision import models
 class Vgg(nn.Module):
     def __init__(self, name, ss, ks, hidden):
         super(Vgg, self).__init__()
-        self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
 
         if name == 'vgg11_bn':
             cnn = models.vgg11_bn(pretrained=True)
@@ -21,7 +20,8 @@ class Vgg(nn.Module):
                 pool_idx += 1
  
         self.features = cnn.features
-               
+        self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
+              
     def forward(self, x):
         """
         Shape: 
@@ -29,7 +29,7 @@ class Vgg(nn.Module):
             - output: (W, N, C)
         """
         conv = self.features(x)
-#        conv = self.last_conv_1x1(conv)
+        conv = self.last_conv_1x1(conv)
 
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')
         conv = conv.transpose(-1, -2)
