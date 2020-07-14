@@ -6,6 +6,7 @@ import numpy as np
 import torch
 import lmdb
 import six
+import time
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -62,6 +63,8 @@ class OCRDataset(Dataset):
 
     def read_buffer(self, idx):
         with self.env.begin(write=False) as txn:
+            start = time.time()
+
             img_file = 'image-%09d'%idx
             label_file = 'label-%09d'%idx
             path_file = 'path-%09d'%idx
