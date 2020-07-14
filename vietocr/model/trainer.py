@@ -251,9 +251,9 @@ class Trainer():
 
     def data_gen_v1(self, lmdb_path, data_root, annotation):
         data_gen = DataGen(data_root, annotation, self.vocab, self.device, 
-                image_height = self.config['dataloader']['image_height'],        
-                image_min_width = self.config['dataloader']['image_min_width'],
-                image_max_width = self.config['dataloader']['image_max_width'])
+                image_height = self.config['dataset']['image_height'],        
+                image_min_width = self.config['dataset']['image_min_width'],
+                image_max_width = self.config['dataset']['image_max_width'])
         
         gen = data_gen.gen(self.batch_size)
 
