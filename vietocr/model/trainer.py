@@ -55,9 +55,9 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        self.train_gen = self.data_gen_v1('train_db', self.data_root, self.train_annotation)
+        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation)
         if self.valid_annotation != None:
-            self.valid_gen = self.data_gen_v1('valid_db', self.data_root, self.valid_annotation)
+            self.valid_gen = self.data_gen('valid_db', self.data_root, self.valid_annotation)
 
         self.train_losses = []
         
@@ -67,7 +67,7 @@ class Trainer():
         total_loader_time = 0
         total_gpu_time = 0
 
-        data_iter = iter(self.train_gen.gen(self.batch_size))
+        data_iter = iter(self.train_gen)
         for i in range(self.num_iters):
             self.iter += 1
 
@@ -76,7 +76,7 @@ class Trainer():
             try:
                 batch = next(data_iter)
             except:
-                data_iter = iter(self.train_gen.gen(self.batch_size))
+                data_iter = iter(self.train_gen)
                 batch = next(data_iter)
 
             total_loader_time += time.time() - start
@@ -119,7 +119,7 @@ class Trainer():
         total_loss = []
         
         with torch.no_grad():
-            for step, batch in enumerate(self.valid_gen.gen(self.batch_size)):
+            for step, batch in enumerate(self.valid_gen):
                 batch = self.batch_to_device(batch)
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
@@ -147,7 +147,7 @@ class Trainer():
         img_files = []
         
         n = 0
-        for batch in  self.valid_gen.gen(self.batch_size):
+        for batch in  self.valid_gen:
             batch = self.batch_to_device(batch)
             translated_sentence = translate(batch['img'], self.model)
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
