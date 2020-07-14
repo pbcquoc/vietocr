@@ -67,7 +67,7 @@ class Trainer():
         total_loader_time = 0
         total_gpu_time = 0
 
-        data_iter = iter(self.train_gen)
+        data_iter = iter(self.train_gen.gen(self.batch_size))
         for i in range(self.num_iters):
             self.iter += 1
 
@@ -76,7 +76,7 @@ class Trainer():
             try:
                 batch = next(data_iter)
             except:
-                data_iter = iter(self.train_gen)
+                data_iter = iter(self.train_gen.gen(self.batch_size))
                 batch = next(data_iter)
 
             total_loader_time += time.time() - start
@@ -119,7 +119,7 @@ class Trainer():
         total_loss = []
         
         with torch.no_grad():
-            for step, batch in enumerate(self.valid_gen):
+            for step, batch in enumerate(self.valid_gen.gen(self.batch_size)):
                 batch = self.batch_to_device(batch)
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
@@ -147,7 +147,7 @@ class Trainer():
         img_files = []
         
         n = 0
-        for batch in  self.valid_gen:
+        for batch in  self.valid_gen.gen(self.batch_size):
             batch = self.batch_to_device(batch)
             translated_sentence = translate(batch['img'], self.model)
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
@@ -255,9 +255,9 @@ class Trainer():
                 image_min_width = self.config['dataset']['image_min_width'],
                 image_max_width = self.config['dataset']['image_max_width'])
         
-        gen = data_gen.gen(self.batch_size)
+#        gen = data_gen.gen(self.batch_size)
 
-        return gen
+        return data_gen
 
     def step(self, batch):
         self.model.train()
