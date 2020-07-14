@@ -11,6 +11,7 @@ import torch
 #from vietocr.loader.DataLoader import DataGen
 from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
 from torch.utils.data import DataLoader
+from einops import rearrange
 
 from vietocr.tool.utils import compute_accuracy
 from PIL import Image
@@ -124,12 +125,12 @@ class Trainer():
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
                 outputs = self.model(img, tgt_input, tgt_padding_mask)
-                #loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+                loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
                
-                outputs = outputs.view(-1, outputs.shape[-1])   
-                tgt_output = tgt_output.view(-1)
+#                outputs = outputs.view(-1, outputs.shape[-1])   
+#                tgt_output = tgt_output.view(-1)
 
-                loss = self.criterion(outputs, tgt_output)
+#                loss = self.criterion(outputs, tgt_output)
 
                 total_loss.append(loss.item())
                 
@@ -256,11 +257,11 @@ class Trainer():
         img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']    
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
-#        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
-        outputs = outputs.view(-1, outputs.shape[-1])   
-        tgt_output = tgt_output.view(-1)
-
-        loss = self.criterion(outputs, tgt_output)
+        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+#        outputs = outputs.view(-1, outputs.shape[-1])   
+#        tgt_output = tgt_output.view(-1)
+#
+#        loss = self.criterion(outputs, tgt_output)
 
         self.optimizer.zero_grad()
         loss.backward()
