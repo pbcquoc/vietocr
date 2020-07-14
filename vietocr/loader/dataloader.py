@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
 from vietocr.tool.translate import process_image
 from vietocr.tool.create_dataset import createDataset
+from vietocr.tool.translate import resize
 
 class OCRDataset(Dataset):
     def __init__(self, lmdb_path, root_dir, annotation_path, vocab, image_height=32, image_min_width=32, image_max_width=512, transform=None):
@@ -47,15 +48,19 @@ class OCRDataset(Dataset):
         self.cluster_indices = defaultdict(list)
         
         for i in range(self.__len__()):
-            sample = self.__getitem__(i)
-            img = sample['img']
-            width = img.shape[-1]
+            bucket = self.get_bucket(i)
+            self.cluster_indices[bucket].append(i)
 
-            self.cluster_indices[width].append(i)
+    
+    def get_bucket(self, idx):
+        buf, label, img_path = self.read_buffer(idx)
+        img = Image.open(buf)
+        w, h = img.size
+        new_w, image_height = resize(w, h, self.image_height, self.image_min_width, self.image_max_width)
 
+        return new_w
 
-    def read_data(self, idx):
-
+    def read_buffer(self, idx):
         with self.env.begin(write=False) as txn:
             img_file = 'image-%09d'%idx
             label_file = 'label-%09d'%idx
@@ -68,13 +73,14 @@ class OCRDataset(Dataset):
             buf = six.BytesIO()
             buf.write(imgbuf)
             buf.seek(0)
-            
-            try:
-                img = Image.open(buf).convert('RGB')
-                img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
-            except IOError:
-                print('Corrupted image for %d' % index)
+    
+        return buf, label, img_path
 
+    def read_data(self, idx):
+        buf, label, img_path = self.read_buffer(idx) 
+
+        img = Image.open(buf).convert('RGB')
+        img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
             
         word = self.vocab.encode(label)
 
