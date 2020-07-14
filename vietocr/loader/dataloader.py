@@ -6,6 +6,7 @@ import numpy as np
 import torch
 import lmdb
 import six
+import time
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -57,6 +58,8 @@ class OCRDataset(Dataset):
     def read_data(self, idx):
 
         with self.env.begin(write=False) as txn:
+            start = time.time()
+
             img_file = 'image-%09d'%idx
             label_file = 'label-%09d'%idx
             path_file = 'path-%09d'%idx
@@ -68,10 +71,13 @@ class OCRDataset(Dataset):
             buf = six.BytesIO()
             buf.write(imgbuf)
             buf.seek(0)
-            
+            print('read {}'.format(time.time() - start))
+
             try:
+                start = time.time()
                 img = Image.open(buf).convert('RGB')
                 img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
+                print('process {}'.format(time.time() - start))
             except IOError:
                 print('Corrupted image for %d' % index)
 
