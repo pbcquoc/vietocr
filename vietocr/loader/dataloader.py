@@ -75,7 +75,7 @@ class OCRDataset(Dataset):
 
             try:
                 start = time.time()
-                img = Image.open(buf).convert('RGB')
+                img = Image.open(buf)
                 img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
                 print('process {}'.format(time.time() - start))
             except IOError:
