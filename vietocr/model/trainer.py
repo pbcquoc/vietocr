@@ -8,7 +8,7 @@ from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
 import yaml
 import torch
-#from vietocr.loader.DataLoader import DataGen
+from vietocr.loader.DataLoader import DataGen
 from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
 from torch.utils.data import DataLoader
 from einops import rearrange
@@ -50,15 +50,14 @@ class Trainer():
 
         self.optimizer = ScheduledOptim(
             Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
-#            SGD(self.model.transformer.parameters(), lr=0.01, momentum=0.9, nesterov=True),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
-        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation)
+        self.train_gen = self.data_gen_v1('train_db', self.data_root, self.train_annotation)
         if self.valid_annotation != None:
-            self.valid_gen = self.data_gen('valid_db', self.data_root, self.valid_annotation)
+            self.valid_gen = self.data_gen_v1('valid_db', self.data_root, self.valid_annotation)
 
         self.train_losses = []
         
@@ -250,6 +249,16 @@ class Trainer():
        
         return gen
 
+    def data_gen_v1(self, lmdb_path, data_root, annotation):
+        data_gen = DataGen(data_root, annotation, self.vocab, self.device, 
+                image_height = config['dataloader']['image_height'],        
+                image_min_width = config['dataloader']['image_min_width'],
+                image_max_width = config['dataloader']['image_max_width'])
+        
+        gen = data_gen.gen(self.batch_size)
+
+        return gen
+
     def step(self, batch):
         self.model.train()
 
@@ -264,6 +273,7 @@ class Trainer():
 #        loss = self.criterion(outputs, tgt_output)
 
         self.optimizer.zero_grad()
+        
         loss.backward()
         self.optimizer.step_and_update_lr()
         

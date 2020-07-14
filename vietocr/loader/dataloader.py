@@ -39,10 +39,6 @@ class OCRDataset(Dataset):
             nSamples = int(txn.get('num-samples'.encode()))
             self.nSamples = nSamples
 
-#        with open(self.annotation_path, 'r') as ann_file:
-#            lines = ann_file.readlines()
-#            self.annotations = [l.strip().split('\t') for l in lines]
-            
         self.build_cluster_indices()
 
     def build_cluster_indices(self):
@@ -90,7 +86,6 @@ class OCRDataset(Dataset):
         return img_bw, word, img_path
 
     def __getitem__(self, idx):
-        #img_path, lex =  self.annotations[idx]
         img, word, img_path = self.read_data(idx)
 
         img_path = os.path.join(self.root_dir, img_path)
