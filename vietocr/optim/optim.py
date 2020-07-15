@@ -57,12 +57,10 @@ class ScheduledOptim():
         for param_group in self._optimizer.param_groups:
             print(param_group)
             if param_group['name'] == 'encoder':
-                init_lr = self.encoder_init_lr
-                lr = init_lr * self._get_lr_scale()
+                lr = self.encoder_init_lr * self._get_lr_scale()
                 self.encoder_lr = lr
             elif param_group['name'] == 'decoder':
-                init_lr = self.decoder_init_lr
-                lr = init_lr * self._get_lr_scale()
+                lr = elf.decoder_init_lr* self._get_lr_scale()
                 self.decoder_lr = lr
             else:
                 raise Exception('do not support group name')
