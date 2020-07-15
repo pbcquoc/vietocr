@@ -55,7 +55,6 @@ class ScheduledOptim():
         self.n_steps += 1
 
         for param_group in self._optimizer.param_groups:
-            print(param_group)
             if param_group['name'] == 'encoder':
                 lr = self.encoder_init_lr * self._get_lr_scale()
                 self.encoder_lr = lr
