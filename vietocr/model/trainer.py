@@ -125,12 +125,11 @@ class Trainer():
                 img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']
 
                 outputs = self.model(img, tgt_input, tgt_padding_mask)
-                loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+#                loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
                
-#                outputs = outputs.view(-1, outputs.shape[-1])   
-#                tgt_output = tgt_output.view(-1)
-
-#                loss = self.criterion(outputs, tgt_output)
+                outputs = outputs.flatten(0,1)
+                tgt_output = tgt_output.flatten()
+                loss = self.criterion(outputs, tgt_output)
 
                 total_loss.append(loss.item())
                 
@@ -267,16 +266,16 @@ class Trainer():
         img, tgt_input, tgt_output, tgt_padding_mask = batch['img'], batch['tgt_input'], batch['tgt_output'], batch['tgt_padding_mask']    
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
-        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
-#        outputs = outputs.view(-1, outputs.shape[-1])   
-#        tgt_output = tgt_output.view(-1)
+#        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
+        outputs = outputs.flatten(0, 1)
+        tgt_output = tgt_output.flatten()
 #
-#        loss = self.criterion(outputs, tgt_output)
+        loss = self.criterion(outputs, tgt_output)
 
         self.optimizer.zero_grad()
         
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.5)
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
         self.optimizer.step_and_update_lr()
         
         loss_item = loss.item()
