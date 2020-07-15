@@ -49,8 +49,8 @@ class Trainer():
         self.iter = 0
 
         self.optimizer = ScheduledOptim(
-            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
-#            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+#            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
+            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
             config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
@@ -276,6 +276,7 @@ class Trainer():
         self.optimizer.zero_grad()
         
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.5)
         self.optimizer.step_and_update_lr()
         
         loss_item = loss.item()
