@@ -50,8 +50,11 @@ class Trainer():
 
         self.optimizer = ScheduledOptim(
 #            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
-            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            config['optimizer']['init_lr'], config['transformer']['d_model'], config['optimizer']['n_warmup_steps'])
+            Adam([
+                {'params': self.model.cnn.parameters(), 'name': 'encoder'},
+                {'params': self.model.transformer.parameters(), 'name':'decoder'}
+                ], betas=(0.9, 0.98), eps=1e-09),
+            config['transformer']['d_model'], **config['optimizer'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
