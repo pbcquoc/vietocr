@@ -3,7 +3,8 @@ from vietocr.tool.utils import download_config
 
 url_config = {
         'vgg_transformer':'1TF8effeufpgkHqQFlmNWKsQtCMfDiooa',
-        'resnet_transformer':'1GGhQqtMz4WloBh38U4sMlzLN6cpw5iag'
+        'resnet_transformer':'1GGhQqtMz4WloBh38U4sMlzLN6cpw5iag',
+        'resnet_fpn_transformer':'1I3-m8wfVpsro1c3UupwxW97MYmP5evvh',
         }
 
 class Cfg(dict):
