@@ -5,7 +5,7 @@ from einops import rearrange
 
 
 class Vgg(nn.Module):
-    def __init__(self, name, ss, ks, hidden):
+    def __init__(self, name, ss, ks, hidden, dropout=0.1):
         super(Vgg, self).__init__()
 
         if name == 'vgg11_bn':
@@ -21,8 +21,9 @@ class Vgg(nn.Module):
                 pool_idx += 1
  
         self.features = cnn.features
+        self.dropout = nn.Dropout(dropout)
         self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
-              
+
     def forward(self, x):
         """
         Shape: 
@@ -30,6 +31,7 @@ class Vgg(nn.Module):
             - output: (W, N, C)
         """
         conv = self.features(x)
+        conv = self.dropout(conv)
         conv = self.last_conv_1x1(conv)
 
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')

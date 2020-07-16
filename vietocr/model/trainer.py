@@ -280,7 +280,7 @@ class Trainer():
         self.optimizer.zero_grad()
         
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+#        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
 #        self.optimizer.step_and_update_lr()
         self.optimizer.step()
 
