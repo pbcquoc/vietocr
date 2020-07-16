@@ -51,7 +51,7 @@ class Vgg(nn.Module):
         for i in range(len(self.in_channels)):    
             output = outputs[i]
             output = self.last_conv1x1s[i](output)
-            output = torch.nn.functional.interpolate(output, scale_factor=2**i)
+            output = torch.nn.functional.interpolate(output, size=outputs[0].shape[2:])
             scaled_outputs.append(output)
 
         conv = torch.mean(torch.stack(scaled_outputs), dim=0)
