@@ -28,10 +28,10 @@ class Vgg(nn.Module):
         return_layers = {'13': 'out_layer13', '26':'out_layer26', '39':'out_layer39', '52':'out_layer52'}
         self.features = model_with_multuple_layer = IntermediateLayerGetter(cnn.features, return_layers=return_layers)
         
-        in_channels = [128, 256, 512, 512]
+        self.in_channels = [128, 256, 512, 512]
         self.last_conv1x1s = []
 
-        for i, in_channel in enumerate(in_channels):
+        for i, in_channel in enumerate(self.in_channels):
             conv1x1 = nn.Conv2d(in_channel, 256, 1)    
             self.last_conv1x1s.append(conv1x1)
 
@@ -46,7 +46,7 @@ class Vgg(nn.Module):
 
         
         scaled_outputs = []    
-        for i in range(len(in_channels)):    
+        for i in range(len(self.in_channels)):    
             output = outputs[i]
             output = self.last_conv1x1s[i](output)
             output = torch.nn.functional.interpolate(output, scale_factor=2**i)
