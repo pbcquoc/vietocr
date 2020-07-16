@@ -24,16 +24,16 @@ class Vgg(nn.Module):
 #        self.features = cnn.features
         self.dropout = nn.Dropout(dropout)
 #        self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
-	
-	return_layers = {'13': 'out_layer13', '26':'out_layer26', '39':'out_layer39', '52':'out_layer52'}
-	self.features = model_with_multuple_layer = IntermediateLayerGetter(cnn.features, return_layers=return_layers)
-	
-	in_channels = [128, 256, 512, 512]
-	self.last_conv1x1s = []
+        
+        return_layers = {'13': 'out_layer13', '26':'out_layer26', '39':'out_layer39', '52':'out_layer52'}
+        self.features = model_with_multuple_layer = IntermediateLayerGetter(cnn.features, return_layers=return_layers)
+        
+        in_channels = [128, 256, 512, 512]
+        self.last_conv1x1s = []
 
-	for i, in_channel in enumerate(in_channels):
-	    conv1x1 = nn.Conv2d(in_channel, 256, 1)    
-	    self.last_conv1x1s.append(conv1x1)
+        for i, in_channel in enumerate(in_channels):
+            conv1x1 = nn.Conv2d(in_channel, 256, 1)    
+            self.last_conv1x1s.append(conv1x1)
 
     def forward(self, x):
         """
@@ -44,13 +44,13 @@ class Vgg(nn.Module):
         features = self.features(x)
         outputs = [p for _, p in features.items()]
 
-	
-	scaled_outputs = []    
-	for i in range(len(in_channels)):    
-	    output = outputs[i]
-	    output = self.last_conv1x1s[i](output)
-	    output = torch.nn.functional.interpolate(output, scale_factor=2**i)
-	    scaled_outputs.append(output)
+        
+        scaled_outputs = []    
+        for i in range(len(in_channels)):    
+            output = outputs[i]
+            output = self.last_conv1x1s[i](output)
+            output = torch.nn.functional.interpolate(output, scale_factor=2**i)
+            scaled_outputs.append(output)
 
         conv = torch.mean(torch.stack(scaled_outputs), dim=0)
 
