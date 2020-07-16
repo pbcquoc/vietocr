@@ -12,7 +12,7 @@ class ScheduledOptim():
         self.n_steps = 0
 
 
-    def step_and_update_lr(self):
+    def step(self):
         "Step with the inner optimizer"
         self._update_learning_rate()
         self._optimizer.step()
@@ -56,7 +56,7 @@ class ScheduledOptim():
 
         for param_group in self._optimizer.param_groups:
             if param_group['name'] == 'encoder':
-                lr = self.encoder_init_lr * self._get_lr_scale()
+                lr = self.encoder_init_lr #self._get_lr_scale()
                 self.encoder_lr = lr
             elif param_group['name'] == 'decoder':
                 lr = self.decoder_init_lr* self._get_lr_scale()
