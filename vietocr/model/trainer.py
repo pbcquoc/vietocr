@@ -48,13 +48,11 @@ class Trainer():
 
         self.iter = 0
 
-        self.optimizer = ScheduledOptim(
+        self.optimizer = Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
+
+#        self.optimizer = ScheduledOptim(
 #            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
-            Adam([
-                {'params': self.model.cnn.parameters(), 'name': 'encoder'},
-                {'params': self.model.transformer.parameters(), 'name':'decoder'}
-                ], betas=(0.9, 0.98), eps=1e-09),
-            config['transformer']['d_model'], **config['optimizer'])
+#            config['transformer']['d_model'], **config['optimizer'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
@@ -279,8 +277,9 @@ class Trainer():
         
         loss.backward()
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
-        self.optimizer.step_and_update_lr()
-        
+#        self.optimizer.step_and_update_lr()
+        self.optimizer.step()
+
         loss_item = loss.item()
 
         del outputs
