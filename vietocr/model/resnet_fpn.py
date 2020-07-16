@@ -9,10 +9,10 @@ class resnet_fpn(nn.Module):
         for n, p in backbone.named_parameters():
             p.requires_grad= True
 
-        self.backbone = backbone['0']
+        self.backbone = backbone
 
     def forward(self, x):
-        conv = self.backbone(x)
+        conv = self.backbone(x)['0']
         conv = conv.transpose(-1, -2)
         conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
