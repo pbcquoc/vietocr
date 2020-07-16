@@ -29,11 +29,13 @@ class Vgg(nn.Module):
         self.features = IntermediateLayerGetter(cnn.features, return_layers=return_layers)
         
         self.in_channels = [128, 256, 512, 512]
-        self.last_conv1x1s = []
+        last_conv1x1s = []
 
         for i, in_channel in enumerate(self.in_channels):
             self.conv1x1 = nn.Conv2d(in_channel, 256, 1) 
-            self.last_conv1x1s.append(self.conv1x1)
+            last_conv1x1s.append(self.conv1x1)
+
+        self.last_conv1x1s = nn.ModuleList(last_conv1x1s)
 
     def forward(self, x):
         """
