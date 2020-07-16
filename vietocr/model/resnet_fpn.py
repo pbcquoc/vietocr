@@ -4,7 +4,7 @@ from torchvision.models.detection.backbone_utils import resnet_fpn_backbone
 
 class resnet_fpn(nn.Module):
     def __init__(self, backbone):
-        backbone = resnet_fpn_backbone(backbone, pretrained=True, trainable_layers=5)
+        backbone = resnet_fpn_backbone(backbone, pretrained=True, trainable_backbone_layers=5)
 
         self.backbone = backbone['0']
 
