@@ -22,8 +22,7 @@ class Resnet50(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=(1, 1), padding=1)
 
-        self.conv = nn.Conv2d(2048, hidden, 1)
-        
+                
         state_dict = load_state_dict_from_url(resnet50_url,
                                               progress=True)
         backbone.load_state_dict(state_dict)
@@ -35,6 +34,8 @@ class Resnet50(nn.Module):
         self.layer2 = backbone.layer2
         self.layer3 = backbone.layer3
         self.layer4 = backbone.layer4
+        
+        self.last_conv_1x1 = nn.Conv2d(2048, hidden, 1)
 
     def forward(self, inputs):
         x = self.conv1(inputs)
@@ -47,8 +48,9 @@ class Resnet50(nn.Module):
         x = self.layer3(x)
         x = self.layer4(x)
 
-        conv = self.conv(x)
+        conv = self.last_conv_1x1(x)
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')
+        conv = conv.transpose(-1, -2)
         conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
 
