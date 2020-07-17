@@ -27,7 +27,7 @@ class Trainer():
 
         self.config = config
         self.model, self.vocab = build_model(config)
-
+        
         self.device = config['device']
         self.num_iters = config['trainer']['iters']
         self.data_root = config['trainer']['data_root']
@@ -36,7 +36,7 @@ class Trainer():
         self.batch_size = config['trainer']['batch_size']
         self.print_every = config['trainer']['print_every']
         self.valid_every = config['trainer']['valid_every']
-        self.visualize_every = config['trainer']['visualize_every']
+        self.finetune_backbone = config['trainer']['finetune_backbone']
 
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
@@ -52,20 +52,19 @@ class Trainer():
 
         self.iter = 0
 
-#        self.optimizer = Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
+        self.encoder_optimizer = Adam(self.model.cnn.parameters(), 
+                lr=config['encoder_optimizer']['lr'], betas=(0.9, 0.98), eps=1e-09)
+
 #        self.optimizer = SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9)
 #
 #        self.scheduler = CosineAnnealingLR(
 #                self.optimizer,
 #                T_max=self.num_iters)
 
-        self.optimizer = ScheduledOptim(
+        self.decoder_optimizer = ScheduledOptim(
 #            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
-            Adam([
-                {'params': self.model.cnn.parameters(), 'name': 'encoder'},
-                {'params': self.model.transformer.parameters(), 'name':'decoder'}
-                ], betas=(0.9, 0.98), eps=1e-09),
-            config['transformer']['d_model'], **config['optimizer'])
+            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            config['transformer']['d_model'], **config['decoder_optimizer'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
@@ -109,7 +108,7 @@ class Trainer():
 
             if self.iter % self.print_every == 0:
                 info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.2e} - decoder_lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
-                        total_loss/self.print_every, self.optimizer.encoder_lr, self.optimizer.decoder_lr, 
+                        total_loss/self.print_every, self.encoder_optimizer.param_groups[0]['lr'], self.decoder_optimizer.lr, 
                         total_loader_time, total_gpu_time)
 
                 total_loss = 0
@@ -129,9 +128,6 @@ class Trainer():
                 self.save_checkpoint(self.checkpoint)
                 self.save_weight(self.export_weights)
             
-            if self.valid_annotation and self.iter % self.visualize_every == 0:
-                self.visualize(show_img=False)
-
     def validate(self):
         self.model.eval()
 
@@ -191,7 +187,7 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize(self, sample=16, show_img=True):
+    def visualize(self, sample=16):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
         img_files = img_files[:sample]
@@ -201,15 +197,13 @@ class Trainer():
             pred_sent = pred_sents[vis_idx]
             actual_sent = actual_sents[vis_idx]
 
-            if show_img:
-                img = Image.open(open(img_path, 'rb'))
-                plt.figure()
-                plt.imshow(img)
-                plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left')
-                plt.axis('off')
-            else:
-                print('predict: {} - actual: {}'.format(pred_sent, actual_sent))
+            img = Image.open(open(img_path, 'rb'))
+            plt.figure()
+            plt.imshow(img)
+            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left')
+            plt.axis('off')
 
+        plt.show()
 
     def visualize_dataset(self, sample=16):
         n = 0
@@ -292,7 +286,6 @@ class Trainer():
                 image_min_width = self.config['dataset']['image_min_width'],
                 image_max_width = self.config['dataset']['image_max_width'])
         
-#        gen = data_gen.gen(self.batch_size)
 
         return data_gen
 
@@ -306,13 +299,19 @@ class Trainer():
 #        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
         outputs = outputs.flatten(0, 1)
         tgt_output = tgt_output.flatten()
+        
         loss = self.criterion(outputs, tgt_output)
 
-        self.optimizer.zero_grad()
-        
+        self.encoder_optimizer.zero_grad()
+        self.decoder_optimizer.zero_grad()
+
         loss.backward()
         
-        self.optimizer.step()
+        self.decoder_optimizer.step()
+    
+        if self.iter > self.finetune_backbone:
+            self.encoder_optimizer.step()
+
 #        self.scheduler.step()
 
         loss_item = loss.item()

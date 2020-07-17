@@ -1,12 +1,11 @@
 class ScheduledOptim():
     '''A simple wrapper class for learning rate scheduling'''
 
-    def __init__(self, optimizer, d_model, encoder_init_lr, decoder_init_lr, n_warmup_steps):
+    def __init__(self, optimizer, d_model, init_lr, n_warmup_steps):
         assert n_warmup_steps > 0, 'must be greater than 0'
 
         self._optimizer = optimizer
-        self.encoder_init_lr = encoder_init_lr
-        self.decoder_init_lr = decoder_init_lr
+        self.init_lr = init_lr
         self.d_model = d_model
         self.n_warmup_steps = n_warmup_steps
         self.n_steps = 0
@@ -26,12 +25,11 @@ class ScheduledOptim():
     def _get_lr_scale(self):
         d_model = self.d_model
         n_steps, n_warmup_steps = self.n_steps, self.n_warmup_steps
-        return (d_model ** -0.5) * min(n_steps ** (-0.65), n_steps * n_warmup_steps ** (-1.5))
+        return (d_model ** -0.5) * min(n_steps ** (-0.5), n_steps * n_warmup_steps ** (-1.5))
 
     def state_dict(self):
         optimizer_state_dict = {
-            'encoder_init_lr':self.encoder_init_lr,
-            'decoder_init_lr':self.decoder_init_lr,
+            'init_lr':self.init_lr,
             'd_model':self.d_model,
             'n_warmup_steps':self.n_warmup_steps,
             'n_steps':self.n_steps,
@@ -41,8 +39,7 @@ class ScheduledOptim():
         return optimizer_state_dict
     
     def load_state_dict(self, state_dict):
-        self.encoder_init_lr = state_dict['encoder_init_lr']
-        self.decoder_init_lr = state_dict['decoder_init_lr']
+        self.init_lr = state_dict['init_lr']
         self.d_model = state_dict['d_model']
         self.n_warmup_steps = state_dict['n_warmup_steps']
         self.n_steps = state_dict['n_steps']
@@ -55,13 +52,7 @@ class ScheduledOptim():
         self.n_steps += 1
 
         for param_group in self._optimizer.param_groups:
-            if param_group['name'] == 'encoder':
-                lr = self.encoder_init_lr*self._get_lr_scale()
-                self.encoder_lr = lr
-            elif param_group['name'] == 'decoder':
-                lr = self.decoder_init_lr*self._get_lr_scale()
-                self.decoder_lr = lr
-            else:
-                raise Exception('do not support group name')
+            lr = self.init_lr*self._get_lr_scale()
+            self.lr = lr
 
             param_group['lr'] = lr

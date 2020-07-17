@@ -35,13 +35,16 @@ transformer:
     pos_dropout: 0.1
     trans_dropout: 0.1
 
-optimizer:
+encoder_optimizer:
+    lr: 0.0001
+
+decoder_optimizer:
     n_warmup_steps: 4000
-    encoder_init_lr: 0.1
-    decoder_init_lr: 0.05
+    init_lr: 0.1
 
 trainer:
     batch_size: 32
+    finetune_backbone: 10000
     visualize_every: 200
     print_every: 200
     valid_every: 4000
