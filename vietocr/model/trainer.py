@@ -213,9 +213,10 @@ class Trainer():
                 
                 i += 1
                 if i >= sample:
-                    break
+                    plt.show()
 
-        plt.show()
+                    return
+
 
     def load_checkpoint(self, filename):
         checkpoint = torch.load(filename)
