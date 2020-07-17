@@ -50,8 +50,10 @@ class Trainer():
         self.iter = 0
 
 #        self.optimizer = Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
-        self.optimizer = CosineAnnealingLR(
-                SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9),
+        self.optimizer = SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9)
+
+        self.scheduler = CosineAnnealingLR(
+                self.optimizer,
                 T_max=self.num_iters)
 
 #        self.optimizer = ScheduledOptim(
@@ -278,15 +280,14 @@ class Trainer():
 #        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
         outputs = outputs.flatten(0, 1)
         tgt_output = tgt_output.flatten()
-#
         loss = self.criterion(outputs, tgt_output)
 
         self.optimizer.zero_grad()
         
         loss.backward()
-#        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
-#        self.optimizer.step_and_update_lr()
+        
         self.optimizer.step()
+        self.scheduler.step()
 
         loss_item = loss.item()
 
