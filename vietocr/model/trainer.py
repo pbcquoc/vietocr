@@ -50,22 +50,22 @@ class Trainer():
         self.iter = 0
 
 #        self.optimizer = Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
-        self.optimizer = SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9)
+#        self.optimizer = SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9)
+#
+#        self.scheduler = CosineAnnealingLR(
+#                self.optimizer,
+#                T_max=self.num_iters)
 
-        self.scheduler = CosineAnnealingLR(
-                self.optimizer,
-                T_max=self.num_iters)
-
-#        self.optimizer = ScheduledOptim(
+        self.optimizer = ScheduledOptim(
 #            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
-#            Adam([
-#                {'params': self.model.cnn.parameters(), 'name': 'encoder'},
-#                {'params': self.model.transformer.parameters(), 'name':'decoder'}
-#                ], betas=(0.9, 0.98), eps=1e-09),
-#            config['transformer']['d_model'], **config['optimizer'])
+            Adam([
+                {'params': self.model.cnn.parameters(), 'name': 'encoder'},
+                {'params': self.model.transformer.parameters(), 'name':'decoder'}
+                ], betas=(0.9, 0.98), eps=1e-09),
+            config['transformer']['d_model'], **config['optimizer'])
 
-#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
 
         self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation)
         if self.valid_annotation != None:
@@ -101,8 +101,8 @@ class Trainer():
             self.train_losses.append((self.iter, loss))
 
             if self.iter % self.print_every == 0:
-                info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.3e} - decoder_lr: {:.3e} - load time: {:.3f} - gpu time: {:.3f}'.format(self.iter, 
-                        total_loss/self.print_every, self.optimizer.param_groups[0]['lr'], self.optimizer.param_groups[0]['lr'], 
+                info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.2e} - decoder_lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
+                        total_loss/self.print_every, self.optimizer.encoder_init_lr, self.optimizer.decoder_init_lr, 
                         total_loader_time, total_gpu_time)
 
                 total_loss = 0
@@ -287,7 +287,7 @@ class Trainer():
         loss.backward()
         
         self.optimizer.step()
-        self.scheduler.step()
+#        self.scheduler.step()
 
         loss_item = loss.item()
 
