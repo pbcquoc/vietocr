@@ -80,6 +80,10 @@ class OCRDataset(Dataset):
         buf, label, img_path = self.read_buffer(idx) 
 
         img = Image.open(buf).convert('RGB')        
+       
+        if self.transform:
+            img = self.transform(img)
+
         img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
             
         word = self.vocab.encode(label)
@@ -90,10 +94,7 @@ class OCRDataset(Dataset):
         img, word, img_path = self.read_data(idx)
         
         img_path = os.path.join(self.root_dir, img_path)
-
-        if self.transform:
-            img = self.transform(img)
-
+        
         sample = {'img': img, 'word': word, 'img_path': img_path}
 
         return sample

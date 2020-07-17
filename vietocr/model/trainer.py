@@ -186,7 +186,7 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize(self, sample=32):
+    def visualize(self, sample=16):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
         img_files = img_files[:sample]
@@ -204,7 +204,7 @@ class Trainer():
 
         plt.show()
 
-    def visualize_dataset(self, sample=32):
+    def visualize_dataset(self, sample=16):
         n = 0
         for batch in self.train_gen:
             for i in range(self.batch_size):
