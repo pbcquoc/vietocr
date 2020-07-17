@@ -200,7 +200,7 @@ class Trainer():
         plt.show()
 
     def visualize_dataset(self, sample=32):
-        i = 0
+        n = 0
         for batch in self.train_gen:
             for i in range(self.batch_size):
                 img = batch['img'][i].numpy().transpose(1,2,0)
@@ -211,10 +211,9 @@ class Trainer():
                 plt.imshow(img)
                 plt.axis('off')
                 
-                i += 1
-                if i >= sample:
+                n += 1
+                if n >= sample:
                     plt.show()
-
                     return
 
 
