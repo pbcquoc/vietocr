@@ -36,6 +36,8 @@ class Trainer():
         self.batch_size = config['trainer']['batch_size']
         self.print_every = config['trainer']['print_every']
         self.valid_every = config['trainer']['valid_every']
+        self.visualize_every = config['trainer']['visualize_every']
+
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
         self.metrics = config['trainer']['metrics']
@@ -126,7 +128,10 @@ class Trainer():
 
                 self.save_checkpoint(self.checkpoint)
                 self.save_weight(self.export_weights)
-        
+            
+            if self.valid_annotation and self.iter % self.visualize_every == 0:
+                self.visualize()
+
     def validate(self):
         self.model.eval()
 
@@ -158,7 +163,7 @@ class Trainer():
         pred_sents = []
         actual_sents = []
         img_files = []
-        
+
         n = 0
         for batch in  self.valid_gen:
             batch = self.batch_to_device(batch)

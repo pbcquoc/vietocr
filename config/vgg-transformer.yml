@@ -42,6 +42,7 @@ optimizer:
 
 trainer:
     batch_size: 32
+    visualize_every: 200
     print_every: 200
     valid_every: 4000
     iters: 100000
