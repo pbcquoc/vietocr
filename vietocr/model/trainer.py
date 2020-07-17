@@ -13,6 +13,7 @@ from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_
 from torch.utils.data import DataLoader
 from einops import rearrange
 from torch.optim.lr_scheduler import CosineAnnealingLR
+import torchvision 
 
 from vietocr.tool.utils import compute_accuracy
 from PIL import Image
@@ -66,8 +67,12 @@ class Trainer():
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+        
+        transforms = torchvision.transforms.Compose([
+            torchvision.transforms.ColorJitter(hue=.05, saturation=.05)
+            ])
 
-        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation)
+        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation, transform=transforms)
         if self.valid_annotation != None:
             self.valid_gen = self.data_gen('valid_db', self.data_root, self.valid_annotation)
 
@@ -260,8 +265,8 @@ class Trainer():
 
         return batch
 
-    def data_gen(self, lmdb_path, data_root, annotation):
-        dataset = OCRDataset(lmdb_path=lmdb_path, root_dir=data_root, annotation_path=annotation, vocab=self.vocab, **self.config['dataset'])
+    def data_gen(self, lmdb_path, data_root, annotation, transform=None):
+        dataset = OCRDataset(lmdb_path=lmdb_path, root_dir=data_root, annotation_path=annotation, vocab=self.vocab, transform=transform, **self.config['dataset'])
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
         gen = DataLoader(
                 dataset,

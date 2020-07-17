@@ -19,6 +19,7 @@ class OCRDataset(Dataset):
         self.root_dir = root_dir
         self.annotation_path = os.path.join(root_dir, annotation_path)
         self.vocab = vocab
+        self.transform = transform
 
         self.image_height = image_height
         self.image_min_width = image_min_width
@@ -78,7 +79,7 @@ class OCRDataset(Dataset):
     def read_data(self, idx):
         buf, label, img_path = self.read_buffer(idx) 
 
-        img = Image.open(buf).convert('RGB')
+        img = Image.open(buf).convert('RGB')        
         img_bw = process_image(img, self.image_height, self.image_min_width, self.image_max_width)
             
         word = self.vocab.encode(label)
@@ -87,8 +88,11 @@ class OCRDataset(Dataset):
 
     def __getitem__(self, idx):
         img, word, img_path = self.read_data(idx)
-
+        
         img_path = os.path.join(self.root_dir, img_path)
+
+        if self.transform:
+            img = self.transform(img)
 
         sample = {'img': img, 'word': word, 'img_path': img_path}
 
