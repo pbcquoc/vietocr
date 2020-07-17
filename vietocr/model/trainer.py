@@ -130,7 +130,7 @@ class Trainer():
                 self.save_weight(self.export_weights)
             
             if self.valid_annotation and self.iter % self.visualize_every == 0:
-                self.visualize()
+                self.visualize(show_img=False)
 
     def validate(self):
         self.model.eval()
@@ -191,23 +191,25 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize(self, sample=16):
+    def visualize(self, sample=16, show_img=True):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
         img_files = img_files[:sample]
-
+        
         for vis_idx in range(0, len(img_files)):
             img_path = img_files[vis_idx]
             pred_sent = pred_sents[vis_idx]
             actual_sent = actual_sents[vis_idx]
 
-            img = Image.open(open(img_path, 'rb'))
-            plt.figure()
-            plt.imshow(img)
-            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left')
-            plt.axis('off')
+            if show_img:
+                img = Image.open(open(img_path, 'rb'))
+                plt.figure()
+                plt.imshow(img)
+                plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left')
+                plt.axis('off')
+            else:
+                print('predict: {} - actual: {}'.format(pred_sent, actual_sent))
 
-        plt.show()
 
     def visualize_dataset(self, sample=16):
         n = 0
