@@ -5,18 +5,19 @@ from PIL import Image
 from vietocr.model.transformerocr import VietOCR
 from vietocr.model.vocab import Vocab
 
-def translate(img, model, max_seq_length=128):
+def translate(img, model, max_seq_length=128, sos_token=2):
     "data: BxCXHxW"
     model.eval()
     device = img.device
-    src = model.cnn(img)
-    memory = model.transformer.forward_encoder(src)
 
     with torch.no_grad():
+        src = model.cnn(img)
+        memory = model.transformer.forward_encoder(src)
+
         translated_sentence = [[1]*len(img)]
         max_length = 0
 
-        while max_length <= max_seq_length and not all(np.any(np.asarray(translated_sentence).T==2, axis=1)):
+        while max_length <= max_seq_length and not all(np.any(np.asarray(translated_sentence).T==sos_token, axis=1)):
 
             tgt_inp = torch.LongTensor(translated_sentence).to(device)
             

@@ -87,7 +87,7 @@ class Trainer():
 
             try:
                 batch = next(data_iter)
-            except:
+            except StopIteration:
                 data_iter = iter(self.train_gen)
                 batch = next(data_iter)
 
@@ -113,12 +113,9 @@ class Trainer():
 
             if self.valid_annotation and self.iter % self.valid_every == 0:
                 val_loss = self.validate()
-                info = 'iter: {:06d} - val loss: {:.4f}'.format(self.iter, val_loss)
-                print(info)
-                self.logger.log(info)
-
                 acc_full_seq, acc_per_char = self.precision(self.metrics)
-                info = 'iter: {:06d} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, acc_full_seq, acc_per_char)
+
+                info = 'iter: {:06d} - valid loss: {:.3f} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, val_loss, acc_full_seq, acc_per_char)
                 print(info)
                 self.logger.log(info)
 
@@ -202,6 +199,23 @@ class Trainer():
 
         plt.show()
 
+    def visualize_dataset(self, sample=32):
+        i = 0
+        for batch in self.train_gen:
+            for i in range(self.batch_size):
+                img = batch['img'][i].numpy().transpose(1,2,0)
+                sent = self.vocab.decode(batch['tgt_input'].T[i].tolist())
+                
+                plt.figure()
+                plt.title('sent: {}'.format(sent), loc='center')
+                plt.imshow(img)
+                plt.axis('off')
+                
+                i += 1
+                if i >= sample:
+                    break
+
+        plt.show()
 
     def load_checkpoint(self, filename):
         checkpoint = torch.load(filename)
