@@ -272,7 +272,13 @@ class Trainer():
         return batch
 
     def data_gen(self, lmdb_path, data_root, annotation, transform=None):
-        dataset = OCRDataset(lmdb_path=lmdb_path, root_dir=data_root, annotation_path=annotation, vocab=self.vocab, transform=transform, **self.config['dataset'])
+        dataset = OCRDataset(lmdb_path=lmdb_path, 
+                root_dir=data_root, annotation_path=annotation, 
+                vocab=self.vocab, transform=transform, 
+                image_height=self.config['dataset']['image_height'], 
+                image_min_width=self.config['dataset']['image_min_width'], 
+                image_max_width=self.config['dataset']['image_max_width'])
+
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
         gen = DataLoader(
                 dataset,
