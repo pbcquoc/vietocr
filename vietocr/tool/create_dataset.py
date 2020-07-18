@@ -16,6 +16,7 @@ def checkImageIsValid(imageBin):
         if imgH * imgW == 0:
             return False
     except Exception as e:
+        print(e)
         return False
     return True
 
