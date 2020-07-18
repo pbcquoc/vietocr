@@ -10,13 +10,11 @@ def checkImageIsValid(imageBin):
     imageBuf = np.fromstring(imageBin, dtype=np.uint8)
     try:
         img = cv2.imdecode(imageBuf, cv2.IMREAD_GRAYSCALE)
-        img.verify()
 
         imgH, imgW = img.shape[0], img.shape[1]
         if imgH * imgW == 0:
             return False
     except Exception as e:
-        print(e)
         return False
     return True
 
