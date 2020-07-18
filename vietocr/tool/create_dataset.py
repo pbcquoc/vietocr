@@ -5,18 +5,21 @@ import numpy as np
 from tqdm import tqdm
 
 def checkImageIsValid(imageBin):
-    if imageBin is None:
-        return False
+    isvalid = True
+    imgH = None
+    imgW = None
+
     imageBuf = np.fromstring(imageBin, dtype=np.uint8)
     try:
         img = cv2.imdecode(imageBuf, cv2.IMREAD_GRAYSCALE)
 
         imgH, imgW = img.shape[0], img.shape[1]
         if imgH * imgW == 0:
-            return False
+            isvalid = False
     except Exception as e:
-        return False
-    return True
+        isvalid = False
+
+    return isvalid, imgH, imgW
 
 def writeCache(env, cache):
     with env.begin(write=True) as txn:
@@ -45,7 +48,7 @@ def createDataset(outputPath, root_dir, annotation_path):
     cnt = 0
     error = 0
 
-    for i in tqdm(range(nSamples), ascii = True, ncols = 100):
+    for i in tqdm(range(nSamples), ncols = 100):
         imageFile, label = annotations[i]
         imagePath = os.path.join(root_dir, imageFile)
 
@@ -56,8 +59,9 @@ def createDataset(outputPath, root_dir, annotation_path):
         
         with open(imagePath, 'rb') as f:
             imageBin = f.read()
-        
-        if not checkImageIsValid(imageBin):
+        isvalid, imgH, imgW = checkImageIsValid(imageBin)
+
+        if not isvalid:
             print('%s is not a valid image' % imagePath)
             error += 1
             continue
@@ -65,14 +69,19 @@ def createDataset(outputPath, root_dir, annotation_path):
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt
         pathKey = 'path-%09d' % cnt
+        dimKey = 'dim-%09d' % cnt
+
         cache[imageKey] = imageBin
         cache[labelKey] = label.encode()
         cache[pathKey] = imageFile.encode()
+        cache[dimKey] = np.array([imgH, imgW]).tobytes()
+
         cnt += 1
 
         if cnt % 1000 == 0:
             writeCache(env, cache)
             cache = {}
+
     nSamples = cnt-1
     cache['num-samples'] = str(nSamples).encode()
     writeCache(env, cache)
