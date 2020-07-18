@@ -58,26 +58,25 @@ class OCRDataset(Dataset):
 
     
     def get_bucket(self, idx):
-        buf, label, img_path = self.read_buffer(idx, image_only=True)
-        img = Image.open(buf)
-        w, h = img.size
-        new_w, image_height = resize(w, h, self.image_height, self.image_min_width, self.image_max_width)
+        key = 'dim-%09d'%idx
+
+        dim_img = self.txn.get(key.encode())
+        dim_img = np.fromstring(dim_img, dtype=np.int32)
+        imgH, imgW = dim_img
+
+        new_w, image_height = resize(imgW, imgH, self.image_height, self.image_min_width, self.image_max_width)
 
         return new_w
 
-    def read_buffer(self, idx, image_only=False):
-        label = None
-        img_path = None
-
+    def read_buffer(self):
         img_file = 'image-%09d'%idx
         label_file = 'label-%09d'%idx
         path_file = 'path-%09d'%idx
         
         imgbuf = self.txn.get(img_file.encode())
         
-        if not image_only:
-            label = self.txn.get(label_file.encode()).decode()
-            img_path = self.txn.get(path_file.encode()).decode()
+        label = self.txn.get(label_file.encode()).decode()
+        img_path = self.txn.get(path_file.encode()).decode()
 
         buf = six.BytesIO()
         buf.write(imgbuf)

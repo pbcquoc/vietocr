@@ -74,7 +74,7 @@ def createDataset(outputPath, root_dir, annotation_path):
         cache[imageKey] = imageBin
         cache[labelKey] = label.encode()
         cache[pathKey] = imageFile.encode()
-        cache[dimKey] = np.array([imgH, imgW]).tobytes()
+        cache[dimKey] = np.array([imgH, imgW], dtype=np.int32).tobytes()
 
         cnt += 1
 
