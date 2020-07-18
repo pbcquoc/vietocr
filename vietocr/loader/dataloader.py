@@ -52,7 +52,7 @@ class OCRDataset(Dataset):
 
         self.cluster_indices = defaultdict(list)
         
-        for i in tqdm(range(self.__len__())):
+        for i in tqdm(range(self.__len__()), ascii = True, ncols = 100):
             bucket = self.get_bucket(i)
             self.cluster_indices[bucket].append(i)
 
