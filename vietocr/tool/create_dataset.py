@@ -10,12 +10,13 @@ def checkImageIsValid(imageBin):
     imageBuf = np.fromstring(imageBin, dtype=np.uint8)
     try:
         img = cv2.imdecode(imageBuf, cv2.IMREAD_GRAYSCALE)
+        img.verify()
+
+        imgH, imgW = img.shape[0], img.shape[1]
+        if imgH * imgW == 0:
+            return False
     except Exception as e:
-        print(e)
         return False
-#    imgH, imgW = img.shape[0], img.shape[1]
-#    if imgH * imgW == 0:
-#        return False
     return True
 
 def writeCache(env, cache):
@@ -43,12 +44,15 @@ def createDataset(outputPath, root_dir, annotation_path):
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
     cnt = 0
+    error = 0
+
     for i in tqdm(range(nSamples)):
         imageFile, label = annotations[i]
         imagePath = os.path.join(root_dir, imageFile)
 
         if not os.path.exists(imagePath):
             print('%s does not exist' % imagePath)
+            error += 1
             continue
         
         with open(imagePath, 'rb') as f:
@@ -56,6 +60,7 @@ def createDataset(outputPath, root_dir, annotation_path):
         
         if not checkImageIsValid(imageBin):
             print('%s is not a valid image' % imagePath)
+            error += 1
             continue
 
         imageKey = 'image-%09d' % cnt
@@ -72,5 +77,8 @@ def createDataset(outputPath, root_dir, annotation_path):
     nSamples = cnt-1
     cache['num-samples'] = str(nSamples).encode()
     writeCache(env, cache)
+
+    if error > 0:
+        print('Remove {} invalid images'.format(error))
     print('Created dataset with %d samples' % nSamples)
 
