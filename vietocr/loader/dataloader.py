@@ -52,29 +52,32 @@ class OCRDataset(Dataset):
 
         self.cluster_indices = defaultdict(list)
         
-        for i in tqdm(range(self.__len__()), ascii = True, ncols = 100):
+        for i in tqdm(range(self.__len__()), ncols = 100):
             bucket = self.get_bucket(i)
             self.cluster_indices[bucket].append(i)
 
     
     def get_bucket(self, idx):
-        buf, label, img_path = self.read_buffer(idx)
+        buf, label, img_path = self.read_buffer(idx, image_only=True)
         img = Image.open(buf)
         w, h = img.size
         new_w, image_height = resize(w, h, self.image_height, self.image_min_width, self.image_max_width)
 
         return new_w
 
-    def read_buffer(self, idx):
-        start = time.time()
+    def read_buffer(self, idx, image_only=False):
+        label = None
+        img_path = None
 
         img_file = 'image-%09d'%idx
         label_file = 'label-%09d'%idx
         path_file = 'path-%09d'%idx
-
+        
         imgbuf = self.txn.get(img_file.encode())
-        label = self.txn.get(label_file.encode()).decode()
-        img_path = self.txn.get(path_file.encode()).decode()
+        
+        if not image_only:
+            label = self.txn.get(label_file.encode()).decode()
+            img_path = self.txn.get(path_file.encode()).decode()
 
         buf = six.BytesIO()
         buf.write(imgbuf)
