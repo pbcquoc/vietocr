@@ -40,10 +40,10 @@ class OCRDataset(Dataset):
             lock=False,
             readahead=False,
             meminit=False)
+        self.txn = self.env.begin(write=False)
 
-        with self.env.begin(write=False) as txn:
-            nSamples = int(txn.get('num-samples'.encode()))
-            self.nSamples = nSamples
+        nSamples = int(self.txn.get('num-samples'.encode()))
+        self.nSamples = nSamples
 
         self.build_cluster_indices()
 
@@ -66,20 +66,19 @@ class OCRDataset(Dataset):
         return new_w
 
     def read_buffer(self, idx):
-        with self.env.begin(write=False) as txn:
-            start = time.time()
+        start = time.time()
 
-            img_file = 'image-%09d'%idx
-            label_file = 'label-%09d'%idx
-            path_file = 'path-%09d'%idx
+        img_file = 'image-%09d'%idx
+        label_file = 'label-%09d'%idx
+        path_file = 'path-%09d'%idx
 
-            imgbuf = txn.get(img_file.encode())
-            label = txn.get(label_file.encode()).decode()
-            img_path = txn.get(path_file.encode()).decode()
+        imgbuf = self.txn.get(img_file.encode())
+        label = self.txn.get(label_file.encode()).decode()
+        img_path = self.txn.get(path_file.encode()).decode()
 
-            buf = six.BytesIO()
-            buf.write(imgbuf)
-            buf.seek(0)
+        buf = six.BytesIO()
+        buf.write(imgbuf)
+        buf.seek(0)
     
         return buf, label, img_path
 
