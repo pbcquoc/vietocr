@@ -238,7 +238,7 @@ class Trainer():
 
     def save_checkpoint(self, filename):
         state = {'iter':self.iter, 'state_dict': self.model.state_dict(),
-                'optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
+                'encoder_optimizer': self.encoder_optimizer.state_dict(), 'train_losses': self.train_losses}
         
         path, _ = os.path.split(filename)
         os.makedirs(path, exist_ok=True)
