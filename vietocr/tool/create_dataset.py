@@ -2,6 +2,7 @@ import os
 import lmdb # install lmdb by "pip install lmdb"
 import cv2
 import numpy as np
+from tqdm import tqdm
 
 def checkImageIsValid(imageBin):
     if imageBin is None:
@@ -38,19 +39,20 @@ def createDataset(outputPath, root_dir, annotation_path):
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
     cnt = 0
-    for i in range(nSamples):
+    for i in tqdm(range(nSamples)):
         imageFile, label = annotations[i]
         imagePath = os.path.join(root_dir, imageFile)
 
         if not os.path.exists(imagePath):
             print('%s does not exist' % imagePath)
             continue
+        
         with open(imagePath, 'rb') as f:
             imageBin = f.read()
-#        if checkValid:
-#            if not checkImageIsValid(imageBin):
-#                print('%s is not a valid image' % imagePath)
-#                continue
+        
+        if not checkImageIsValid(imageBin):
+            print('%s is not a valid image' % imagePath)
+            continue
 
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt

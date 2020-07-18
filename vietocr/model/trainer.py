@@ -30,9 +30,12 @@ class Trainer():
         
         self.device = config['device']
         self.num_iters = config['trainer']['iters']
-        self.data_root = config['trainer']['data_root']
-        self.train_annotation = config['trainer']['train_annotation']
-        self.valid_annotation = config['trainer']['valid_annotation']
+        
+        self.data_root = config['dataset']['data_root']
+        self.train_annotation = config['dataset']['train_annotation']
+        self.valid_annotation = config['dataset']['valid_annotation']
+        self.dataset_name = config['dataset']['name']
+
         self.batch_size = config['trainer']['batch_size']
         self.print_every = config['trainer']['print_every']
         self.valid_every = config['trainer']['valid_every']
@@ -73,9 +76,11 @@ class Trainer():
             torchvision.transforms.ColorJitter(hue=.05, saturation=.05)
             ])
 
-        self.train_gen = self.data_gen('train_db', self.data_root, self.train_annotation, transform=transforms)
-        if self.valid_annotation != None:
-            self.valid_gen = self.data_gen('valid_db', self.data_root, self.valid_annotation)
+        self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
+                self.data_root, self.train_annotation, transform=transforms)
+        if self.valid_annotation:
+            self.valid_gen = self.data_gen('valid_{}'.format(self.dataset_name), 
+                    self.data_root, self.valid_annotation)
 
         self.train_losses = []
         
@@ -187,7 +192,7 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize(self, sample=16):
+    def visualize_prediction(self, sample=16):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
         img_files = img_files[:sample]
@@ -204,7 +209,7 @@ class Trainer():
             plt.axis('off')
 
         plt.show()
-
+    
     def visualize_dataset(self, sample=16):
         n = 0
         for batch in self.train_gen:

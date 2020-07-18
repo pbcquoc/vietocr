@@ -26,7 +26,11 @@ class OCRDataset(Dataset):
         self.image_max_width = image_max_width
 
         self.lmdb_path =  lmdb_path
-        createDataset(self.lmdb_path, root_dir, annotation_path)
+
+        if os.path.isdir(self.lmdb_path):
+            print('Dataset exists. Remove folder if you want to create new dataset')
+        else:
+            createDataset(self.lmdb_path, root_dir, annotation_path)
         
         self.env = lmdb.open(
             self.lmdb_path,
