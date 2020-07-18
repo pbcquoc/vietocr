@@ -62,6 +62,7 @@ class OCRDataset(Dataset):
 
         dim_img = self.txn.get(key.encode())
         dim_img = np.fromstring(dim_img, dtype=np.int32)
+        print(dim_img)
         imgH, imgW = dim_img
 
         new_w, image_height = resize(imgW, imgH, self.image_height, self.image_min_width, self.image_max_width)
