@@ -10,7 +10,7 @@ import torch
 import lmdb
 import six
 import time
-from tqdm.autonotebook import tqdm
+from tqdm import tqdm
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
