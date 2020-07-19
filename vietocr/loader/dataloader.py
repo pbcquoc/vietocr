@@ -68,7 +68,7 @@ class OCRDataset(Dataset):
 
         return new_w
 
-    def read_buffer(self):
+    def read_buffer(self, idx):
         img_file = 'image-%09d'%idx
         label_file = 'label-%09d'%idx
         path_file = 'path-%09d'%idx
