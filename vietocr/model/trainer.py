@@ -56,18 +56,19 @@ class Trainer():
 
         self.iter = 0
 
-        self.encoder_optimizer = Adam(self.model.cnn.parameters(), 
+        self.optimizer = Adam(self.model.parameters(), 
                 lr=0.001, betas=(0.9, 0.98), eps=1e-09)
 
-        self.encoder_scheduler = CyclicLR(
-                self.encoder_optimizer,
-                base_lr=0.00001,                
-                max_lr =0.00006,
-                cycle_momentum=False)
+        self.scheduler = CyclicLR(
+                self.optimizer,
+                base_lr=0.000001, 
+                max_lr =0.00001,
+                cycle_momentum=False,
+                mode='exp_range')
 
-        self.decoder_optimizer = ScheduledOptim(
-            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            config['transformer']['d_model'], **config['decoder_optimizer'])
+#        self.decoder_optimizer = ScheduledOptim(
+#            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
+#            config['transformer']['d_model'], **config['decoder_optimizer'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
@@ -112,8 +113,8 @@ class Trainer():
             self.train_losses.append((self.iter, loss))
 
             if self.iter % self.print_every == 0:
-                info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.2e} - decoder_lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
-                        total_loss/self.print_every, self.encoder_optimizer.param_groups[0]['lr'], self.decoder_optimizer.lr, 
+                info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
+                        total_loss/self.print_every, self.optimizer.param_groups[0]['lr'], 
                         total_loader_time, total_gpu_time)
 
                 total_loss = 0
@@ -243,7 +244,7 @@ class Trainer():
 
     def save_checkpoint(self, filename):
         state = {'iter':self.iter, 'state_dict': self.model.state_dict(),
-                'encoder_optimizer': self.encoder_optimizer.state_dict(), 'train_losses': self.train_losses}
+                'encoder_optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
         
         path, _ = os.path.split(filename)
         os.makedirs(path, exist_ok=True)
@@ -313,15 +314,12 @@ class Trainer():
         
         loss = self.criterion(outputs, tgt_output)
 
-        self.encoder_optimizer.zero_grad()
-        self.decoder_optimizer.zero_grad()
+        self.optimizer.zero_grad()
 
         loss.backward()
         
-        self.decoder_optimizer.step()
-        self.encoder_optimizer.step()
-
-        self.encoder_scheduler.step()
+        self.optimizer.step()
+        self.scheduler.step()
 
         loss_item = loss.item()
 
