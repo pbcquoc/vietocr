@@ -1,6 +1,9 @@
 import os
 import random
 from PIL import Image
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 from collections import defaultdict
 import numpy as np
 import torch
