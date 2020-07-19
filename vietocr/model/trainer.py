@@ -61,8 +61,8 @@ class Trainer():
 
         self.encoder_scheduler = CyclicLR(
                 self.encoder_optimizer,
-                base_lr=0.001,
-                max_lr=0.006,
+                base_lr=0.00001,                
+                max_lr =0.00006,
                 cycle_momentum=False)
 
         self.decoder_optimizer = ScheduledOptim(
