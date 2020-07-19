@@ -54,8 +54,8 @@ class OCRDataset(Dataset):
         self.cluster_indices = defaultdict(list)
 
         pbar = tqdm(range(self.__len__()), 
-                desc='{} build cluster indices'.format(self.lmdb_path), 
-                ncols = 100) 
+                desc='{} build cluster'.format(self.lmdb_path), 
+                ncols = 100, position=0, leave=True) 
 
         for i in pbar:
             bucket = self.get_bucket(i)
