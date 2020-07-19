@@ -10,7 +10,7 @@ import torch
 import lmdb
 import six
 import time
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -51,11 +51,13 @@ class OCRDataset(Dataset):
         self.build_cluster_indices()
 
     def build_cluster_indices(self):
-        print('{} build cluster indices'.format(self.lmdb_path)) 
-
         self.cluster_indices = defaultdict(list)
-        
-        for i in tqdm(range(self.__len__()), ncols = 100):
+
+        pbar = tqdm(range(self.__len__()), 
+                desc='{} build cluster indices'.format(self.lmdb_path), 
+                ncols = 100) 
+
+        for i in pbar:
             bucket = self.get_bucket(i)
             self.cluster_indices[bucket].append(i)
 

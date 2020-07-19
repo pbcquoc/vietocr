@@ -122,7 +122,7 @@ class Trainer():
                 print(info) 
                 self.logger.log(info)
 
-            if self.valid_annotation and self.iter % self.valid_every == 0:
+            if self.valid_annotation and self.iter % self.valid_every == 0 and self.iter > self.finetune_backbone:
                 val_loss = self.validate()
                 acc_full_seq, acc_per_char = self.precision(self.metrics)
 
