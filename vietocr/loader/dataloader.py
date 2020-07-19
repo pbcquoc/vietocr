@@ -1,3 +1,4 @@
+import sys
 import os
 import random
 from PIL import Image
@@ -11,6 +12,8 @@ import lmdb
 import six
 import time
 from tqdm import tqdm
+from torch.autograd import Variable
+
 
 from torch.utils.data import Dataset
 from torch.utils.data.sampler import Sampler
@@ -33,6 +36,7 @@ class OCRDataset(Dataset):
 
         if os.path.isdir(self.lmdb_path):
             print('{} exists. Remove folder if you want to create new dataset'.format(self.lmdb_path))
+            sys.stdout.flush()
         else:
             createDataset(self.lmdb_path, root_dir, annotation_path)
         
@@ -180,10 +184,10 @@ def collate_fn(batch):
     tgt_padding_mask = np.array(target_weights)==0
 
     rs = {
-        'img': torch.FloatTensor(img),
-        'tgt_input': torch.LongTensor(tgt_input),
-        'tgt_output': torch.LongTensor(tgt_output),
-        'tgt_padding_mask':torch.BoolTensor(tgt_padding_mask),
+        'img': Variable(torch.FloatTensor(img),  requires_grad=False),
+        'tgt_input': Variable(torch.LongTensor(tgt_input),  requires_grad=False),
+        'tgt_output': Variable(torch.LongTensor(tgt_output),  requires_grad=False),
+        'tgt_padding_mask':Variable(torch.BoolTensor(tgt_padding_mask),  requires_grad=False),
         'filenames': filenames
     }   
     

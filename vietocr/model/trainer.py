@@ -327,7 +327,7 @@ class Trainer():
 
         loss_item = loss.item()
 
-        del outputs
-        del loss
+#        del outputs
+#        del loss
 
         return loss_item
