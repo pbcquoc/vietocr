@@ -62,9 +62,9 @@ class Trainer():
         self.scheduler = CyclicLR(
                 self.optimizer,
                 base_lr=0.000001, 
-                max_lr =0.00001,
+                max_lr =0.0001,
                 cycle_momentum=False,
-                mode='exp_range')
+                mode='triangular2')
 
 #        self.decoder_optimizer = ScheduledOptim(
 #            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
@@ -123,7 +123,7 @@ class Trainer():
                 print(info) 
                 self.logger.log(info)
 
-            if self.valid_annotation and self.iter % self.valid_every == 0 and self.iter > self.finetune_backbone:
+            if self.valid_annotation and self.iter % self.valid_every == 0:
                 val_loss = self.validate()
                 acc_full_seq, acc_per_char = self.precision(self.metrics)
 
