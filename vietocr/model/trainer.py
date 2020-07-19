@@ -12,7 +12,8 @@ from vietocr.loader.DataLoader import DataGen
 from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
 from torch.utils.data import DataLoader
 from einops import rearrange
-from torch.optim.lr_scheduler import CosineAnnealingLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR
+
 import torchvision 
 
 from vietocr.tool.utils import compute_accuracy
@@ -56,16 +57,14 @@ class Trainer():
         self.iter = 0
 
         self.encoder_optimizer = Adam(self.model.cnn.parameters(), 
-                lr=config['encoder_optimizer']['lr'], betas=(0.9, 0.98), eps=1e-09)
+                lr=0.001, betas=(0.9, 0.98), eps=1e-09)
 
-#        self.optimizer = SGD(self.model.parameters(), lr=config['optimizer']['init_lr'], momentum=0.9)
-#
-#        self.scheduler = CosineAnnealingLR(
-#                self.optimizer,
-#                T_max=self.num_iters)
+        self.encoder_scheduler = CyclicLR(
+                self.encoder_optimizer,
+                base_lr=0.001,
+                max_lr=0.006)
 
         self.decoder_optimizer = ScheduledOptim(
-#            SGD(self.model.parameters(), lr=0.1, momentum=0.9, nesterov=True),
             Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
             config['transformer']['d_model'], **config['decoder_optimizer'])
 
@@ -319,11 +318,9 @@ class Trainer():
         loss.backward()
         
         self.decoder_optimizer.step()
-    
-        if self.iter > self.finetune_backbone:
-            self.encoder_optimizer.step()
+        self.encoder_optimizer.step()
 
-#        self.scheduler.step()
+        self.encoder_scheduler.step()
 
         loss_item = loss.item()
 

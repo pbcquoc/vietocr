@@ -3,7 +3,6 @@ from torchvision import models
 import math
 import torch
 from torch import nn
-from torch.autograd import Variable
 
 class LanguageTransformer(nn.Module):
     def __init__(self, vocab_size, 
@@ -83,7 +82,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer('pe', pe)
 
     def forward(self, x):
-        x = x + Variable(self.pe[:x.size(0), :], requires_grad=False)
+        x = x + self.pe[:x.size(0), :]
 
         return self.dropout(x)
  
