@@ -130,6 +130,9 @@ class ClusterRandomSampler(Sampler):
     def __iter__(self):
         batch_lists = []
         for cluster, cluster_indices in self.data_source.cluster_indices.items():
+            if self.shuffle:
+                random.shuffle(cluster_indices)
+
             batches = [cluster_indices[i:i + self.batch_size] for i in range(0, len(cluster_indices), self.batch_size)]
             batches = [_ for _ in batches if len(_) == self.batch_size]
             if self.shuffle:
