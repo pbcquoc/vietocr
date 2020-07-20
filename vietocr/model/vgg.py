@@ -24,7 +24,7 @@ class Vgg(nn.Module):
         self.features = cnn.features
         self.dropout = nn.Dropout(dropout)
         self.last_conv_1x1 = nn.Conv2d(512, hidden, 1)
-        self.batchnorm = nn.BatchNorm2d(hidden)
+#        self.batchnorm = nn.BatchNorm2d(hidden)
 
     def forward(self, x):
         """
@@ -36,7 +36,7 @@ class Vgg(nn.Module):
         conv = self.features(x)
         conv = self.dropout(conv)
         conv = self.last_conv_1x1(conv)
-        conv = self.batchnorm(conv) 
+#        conv = self.batchnorm(conv) 
 
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')
 #        conv = conv.transpose(-1, -2)
