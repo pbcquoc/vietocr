@@ -6,7 +6,7 @@ from torchvision.models._utils import IntermediateLayerGetter
 
 
 class Vgg(nn.Module):
-    def __init__(self, name, ss, ks, hidden, dropout=0.1):
+    def __init__(self, name, ss, ks, hidden, dropout=0.5):
         super(Vgg, self).__init__()
 
         if name == 'vgg11_bn':
@@ -39,7 +39,7 @@ class Vgg(nn.Module):
 #        conv = self.batchnorm(conv) 
 
 #        conv = rearrange(conv, 'b d h w -> b d (w h)')
-#        conv = conv.transpose(-1, -2)
+        conv = conv.transpose(-1, -2)
         conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
         return conv
