@@ -57,7 +57,7 @@ class Trainer():
         self.iter = 0
 
         self.optimizer = AdamW(self.model.parameters(), 
-                lr=0.001, amsgrad=False)
+                lr=0.001, amsgrad=False, weight_decay=0.001)
 
         self.scheduler = CyclicLR(
                 self.optimizer,
