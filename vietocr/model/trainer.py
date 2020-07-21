@@ -56,14 +56,14 @@ class Trainer():
 
         self.iter = 0
 
-        self.optimizer = SGD(self.model.parameters(), 
-                lr=0.001, momentum=0.9)
+        self.optimizer = AdamW(self.model.parameters(), 
+                lr=0.001, amsgrad=True)
 
         self.scheduler = CyclicLR(
                 self.optimizer,
-                base_lr=0.01, 
-                max_lr =0.0001,
-                cycle_momentum=True,
+                base_lr=0.000001, 
+                max_lr =0.001,
+                cycle_momentum=False,
                 mode='triangular2')
 
 #        self.decoder_optimizer = ScheduledOptim(
