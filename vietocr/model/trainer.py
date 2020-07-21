@@ -1,6 +1,6 @@
 from vietocr.optim.optim import ScheduledOptim
 from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
-from torch.optim import Adam, SGD
+from torch.optim import Adam, SGD, AdamW
 from torch import nn
 from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate
@@ -56,25 +56,26 @@ class Trainer():
 
         self.iter = 0
 
-        self.optimizer = Adam(self.model.parameters(), 
-                lr=0.001, betas=(0.9, 0.98), eps=1e-09)
+        self.optimizer = SGD(self.model.parameters(), 
+                lr=0.001, momentum=0.9)
 
         self.scheduler = CyclicLR(
                 self.optimizer,
-                base_lr=0.000001, 
-                max_lr =0.0001,
-                cycle_momentum=False,
+                base_lr=1, 
+                max_lr =0.01,
+                cycle_momentum=True,
                 mode='triangular2')
 
 #        self.decoder_optimizer = ScheduledOptim(
 #            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
 #            config['transformer']['d_model'], **config['decoder_optimizer'])
 
-        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
         transforms = torchvision.transforms.Compose([
-            torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1)
+            torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1),
+            torchvision.transforms.RandomAffine(degrees=0, scale=(3/4, 4/3))
             ])
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
