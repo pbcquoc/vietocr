@@ -70,8 +70,8 @@ class Trainer():
 #            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
 #            config['transformer']['d_model'], **config['decoder_optimizer'])
 
-#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
+        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
+#        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
         transforms = torchvision.transforms.Compose([
             torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1),
