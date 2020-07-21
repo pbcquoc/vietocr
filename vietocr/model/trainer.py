@@ -62,7 +62,7 @@ class Trainer():
         self.scheduler = CyclicLR(
                 self.optimizer,
                 base_lr=0.000001, 
-                max_lr =0.001,
+                max_lr =0.0001,
                 cycle_momentum=False,
                 mode='triangular2')
 
