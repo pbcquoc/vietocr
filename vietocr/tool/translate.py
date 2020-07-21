@@ -8,6 +8,9 @@ from vietocr.model.vocab import Vocab
 def translate(img, model, max_seq_length=128, sos_token=2):
     "data: BxCXHxW"
     model.eval()
+    model.cnn.eval()
+    model.transformer.eval()
+
     device = img.device
 
     with torch.no_grad():
