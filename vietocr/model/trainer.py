@@ -56,19 +56,18 @@ class Trainer():
 
         self.iter = 0
 
-        self.optimizer = AdamW(self.model.parameters(), 
-                lr=0.001, amsgrad=False, weight_decay=0.0001)
+#        self.optimizer = Adam(self.model.parameters(), lr=0.001)
+#
+#        self.scheduler = CyclicLR(
+#                self.optimizer,
+#                base_lr=0.000005, 
+#                max_lr =0.0005,
+#                cycle_momentum=False,
+#                mode='triangular2')
 
-        self.scheduler = CyclicLR(
-                self.optimizer,
-                base_lr=0.000001, 
-                max_lr =0.0001,
-                cycle_momentum=False,
-                mode='triangular2')
-
-#        self.decoder_optimizer = ScheduledOptim(
-#            Adam(self.model.transformer.parameters(), betas=(0.9, 0.98), eps=1e-09),
-#            config['transformer']['d_model'], **config['decoder_optimizer'])
+        self.optimizer = ScheduledOptim(
+            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            config['transformer']['d_model'], **config['decoder_optimizer'])
 
         self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
 #        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
@@ -320,7 +319,7 @@ class Trainer():
         loss.backward()
         
         self.optimizer.step()
-        self.scheduler.step()
+#        self.scheduler.step()
 
         loss_item = loss.item()
 
