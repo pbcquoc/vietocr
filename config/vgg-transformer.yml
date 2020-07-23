@@ -51,13 +51,14 @@ trainer:
     iters: 100000
     export: ./weights/transformerocr.pth
     checkpoint: ./checkpoint/transformerocr_checkpoint.pth
-    data_root: ./img/
-    train_annotation: annotation_train.txt
-    valid_annotation: annotation_val_small.txt
     log: ./train.log
     metrics: null
 
-dataset:
+dataset:    
+    name: data
+    data_root: ./img/
+    train_annotation: annotation_train.txt
+    valid_annotation: annotation_val_small.txt
     image_height: 32
     image_min_width: 32
     image_max_width: 512
@@ -65,5 +66,8 @@ dataset:
 dataloader:
     num_workers: 3
     pin_memory: True
+
+predictor:
+    beamsearch: True
 
 quiet: False 
