@@ -3,7 +3,7 @@ from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
 from torch.optim import Adam, SGD, AdamW
 from torch import nn
 from vietocr.tool.translate import build_model
-from vietocr.tool.translate import translate
+from vietocr.tool.translate import translate, translate_beam_search
 from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
 import yaml
