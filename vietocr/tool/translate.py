@@ -36,7 +36,7 @@ def translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_length=
 def beamsearch(memory, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):    
     # memory: Tx1xE
     model.eval()
-    device = img.device
+    device = memory.device
 
     beam = Beam(beam_size=beam_size, min_length=0, n_top=candidates, ranker=None, start_token_id=sos_token, end_token_id=eos_token)
 
