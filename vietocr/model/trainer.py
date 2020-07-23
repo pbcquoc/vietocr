@@ -3,7 +3,7 @@ from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
 from torch.optim import Adam, SGD, AdamW
 from torch import nn
 from vietocr.tool.translate import build_model
-from vietocr.tool.translate import translate, translate_beam_search
+from vietocr.tool.translate import translate, batch_translate_beam_search
 from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
 import yaml
@@ -31,7 +31,8 @@ class Trainer():
         
         self.device = config['device']
         self.num_iters = config['trainer']['iters']
-        
+        self.beamsearch = config['predictor']['beamsearch']
+
         self.data_root = config['dataset']['data_root']
         self.train_annotation = config['dataset']['train_annotation']
         self.valid_annotation = config['dataset']['valid_annotation']
@@ -169,7 +170,12 @@ class Trainer():
         n = 0
         for batch in  self.valid_gen:
             batch = self.batch_to_device(batch)
-            translated_sentence = translate(batch['img'], self.model)
+
+            if self.beamsearch:
+                translated_sentence = batch_translate_beam_search(batch['img'], self.model)
+            else:
+                translated_sentence = translate(batch['img'], self.model)
+
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
             actual_sent = self.vocab.batch_decode(batch['tgt_input'].T.tolist())
 
