@@ -21,6 +21,8 @@ def batch_translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_l
             sent = beamsearch(memory, model, beam_size, candidates, max_seq_length, sos_token, eos_token)
             sents.append(sent)
 
+    sents = np.asarray(sents)
+
     return sents
    
 def translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):
@@ -61,7 +63,7 @@ def beamsearch(memory, model, beam_size=4, candidates=1, max_seq_length=128, sos
             hypothesis = beam.get_hypothesis(times, k)
             hypothesises.append(hypothesis)
     
-    return torch.LongTensor([int(i) for i in [1] + hypothesises[0][:-1]])
+    return [1] + [int(i) for i in hypothesises[0][:-1]]
 
 def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
     "data: BxCXHxW"
