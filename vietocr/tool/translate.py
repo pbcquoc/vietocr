@@ -6,6 +6,7 @@ from torch.nn.functional import log_softmax
 
 from vietocr.model.transformerocr import VietOCR
 from vietocr.model.vocab import Vocab
+from vietocr.model.beam import Beam
 
 def batch_translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):
     # img: NxCxHxW
