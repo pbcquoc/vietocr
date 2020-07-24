@@ -50,7 +50,7 @@ class Beam:
         self.current_scores = top_scores
         self.all_scores.append(self.current_scores)
         
-        prev_k = top_score_ids / vocabulary_size  # (beam_size, )
+        prev_k = top_score_ids // vocabulary_size  # (beam_size, )
         next_y = top_score_ids - prev_k * vocabulary_size  # (beam_size, )
                 
         
