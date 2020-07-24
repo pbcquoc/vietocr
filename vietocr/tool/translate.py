@@ -57,9 +57,7 @@ def beamsearch(memory, model, beam_size=4, candidates=1, max_seq_length=128, sos
             if beam.done():
                 break
                 
-        scores, ks = beam.sort_finished(minimum=None)
-        if len(ks) == 0:
-            print(beam.finished, beam.next_ys, beam.prev_ks)
+        scores, ks = beam.sort_finished(minimum=1)
 
         hypothesises = []
         for i, (times, k) in enumerate(ks[:candidates]):

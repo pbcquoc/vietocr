@@ -84,8 +84,6 @@ class Beam:
             hypothesis.append(self.next_ys[j + 1][k])
             # for RNN, [:, k, :], and for trnasformer, [k, :, :]
             k = self.prev_ks[j][k]
-        if len(hypothesis)==0:
-            print(self.next_ys, self.prev_ks)
 
         return hypothesis[::-1]
 
