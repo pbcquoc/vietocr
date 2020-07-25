@@ -13,7 +13,7 @@ class resnet_fpn(nn.Module):
         self.backbone = backbone
 
     def forward(self, x):
-        conv = self.backbone(x)['0']
+        conv = self.backbone(x)['1']
         conv = conv.transpose(-1, -2)
         conv = conv.flatten(2)
         conv = conv.permute(-1, 0, 1)
