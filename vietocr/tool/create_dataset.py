@@ -65,7 +65,6 @@ def createDataset(outputPath, root_dir, annotation_path):
         isvalid, imgH, imgW = checkImageIsValid(imageBin)
 
         if not isvalid:
-            print('%s is not a valid image' % imagePath)
             error += 1
             continue
 
