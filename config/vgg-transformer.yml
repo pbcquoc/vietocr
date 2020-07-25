@@ -35,10 +35,7 @@ transformer:
     pos_dropout: 0.1
     trans_dropout: 0.1
 
-encoder_optimizer:
-    lr: 0.0001
-
-decoder_optimizer:
+optimizer:
     n_warmup_steps: 4000
     init_lr: 0.1
 

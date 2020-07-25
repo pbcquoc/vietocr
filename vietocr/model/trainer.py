@@ -41,7 +41,6 @@ class Trainer():
         self.batch_size = config['trainer']['batch_size']
         self.print_every = config['trainer']['print_every']
         self.valid_every = config['trainer']['valid_every']
-        self.finetune_backbone = config['trainer']['finetune_backbone']
 
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
@@ -57,18 +56,9 @@ class Trainer():
 
         self.iter = 0
 
-#        self.optimizer = Adam(self.model.parameters(), lr=0.001)
-#
-#        self.scheduler = CyclicLR(
-#                self.optimizer,
-#                base_lr=0.000005, 
-#                max_lr =0.0005,
-#                cycle_momentum=False,
-#                mode='triangular2')
-
         self.optimizer = ScheduledOptim(
             Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            config['transformer']['d_model'], **config['decoder_optimizer'])
+            config['transformer']['d_model'], **config['optimizer'])
 
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
@@ -114,7 +104,7 @@ class Trainer():
             self.train_losses.append((self.iter, loss))
 
             if self.iter % self.print_every == 0:
-                info = 'iter: {:06d} - train loss: {:.3f} - encoder_lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
+                info = 'iter: {:06d} - train loss: {:.3f} - lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
                         total_loss/self.print_every, self.optimizer.lr, 
                         total_loader_time, total_gpu_time)
 
@@ -237,9 +227,9 @@ class Trainer():
         checkpoint = torch.load(filename)
         
         optim = ScheduledOptim(
-            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            0.2, self.config['transformer']['d_model'], self.config['optimizer']['n_warmup_steps'])
-        
+	       Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            	self.config['transformer']['d_model'], **self.config['optimizer'])
+
         self.optimizer.load_state_dict(checkpoint['optimizer'])
         self.model.load_state_dict(checkpoint['state_dict'])
         self.iter = checkpoint['iter']
@@ -248,7 +238,7 @@ class Trainer():
 
     def save_checkpoint(self, filename):
         state = {'iter':self.iter, 'state_dict': self.model.state_dict(),
-                'encoder_optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
+                'optimizer': self.optimizer.state_dict(), 'train_losses': self.train_losses}
         
         path, _ = os.path.split(filename)
         os.makedirs(path, exist_ok=True)
@@ -323,11 +313,7 @@ class Trainer():
         loss.backward()
         
         self.optimizer.step()
-#        self.scheduler.step()
 
         loss_item = loss.item()
-
-#        del outputs
-#        del loss
 
         return loss_item
