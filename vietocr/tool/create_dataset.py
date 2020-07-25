@@ -2,7 +2,7 @@ import os
 import lmdb # install lmdb by "pip install lmdb"
 import cv2
 import numpy as np
-from tqdm.autonotebook import tqdm
+from tqdm import tqdm
 
 def checkImageIsValid(imageBin):
     isvalid = True
