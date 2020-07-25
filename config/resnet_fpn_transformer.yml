@@ -10,7 +10,7 @@ pretrain:
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
 
 backbone: resnet50_fpn
-cnn: null
+cnn: {}
 
 transformer: 
     d_model: 256
