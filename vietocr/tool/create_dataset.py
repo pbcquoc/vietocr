@@ -51,12 +51,9 @@ def createDataset(outputPath, root_dir, annotation_path):
     pbar = tqdm(range(nSamples), ncols = 100)    
     for i in pbar:
         imageFile, label = annotations[i]
-        pbar.set_description('Processing {}'.format(imageFile))
-        
         imagePath = os.path.join(root_dir, imageFile)
 
         if not os.path.exists(imagePath):
-            print('%s does not exist' % imagePath)
             error += 1
             continue
         
