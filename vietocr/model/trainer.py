@@ -167,7 +167,6 @@ class Trainer():
         actual_sents = []
         img_files = []
 
-        n = 0
         for batch in  self.valid_gen:
             batch = self.batch_to_device(batch)
 
@@ -183,9 +182,8 @@ class Trainer():
 
             pred_sents.extend(pred_sent)
             actual_sents.extend(actual_sent)
-            n += len(actual_sents)
             
-            if sample != None and n > sample:
+            if sample != None and len(pred_sents) > sample:
                 break
 
         return pred_sents, actual_sents, img_files
