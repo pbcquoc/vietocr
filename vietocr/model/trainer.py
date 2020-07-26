@@ -303,8 +303,8 @@ class Trainer():
         
         outputs = self.model(img, tgt_input, tgt_key_padding_mask=tgt_padding_mask)
 #        loss = self.criterion(rearrange(outputs, 'b t v -> (b t) v'), rearrange(tgt_output, 'b o -> (b o)'))
-        outputs = outputs.flatten(0, 1)
-        tgt_output = tgt_output.flatten()
+        outputs = outputs.view(-1, outputs.size(2))#flatten(0, 1)
+        tgt_output = tgt_output.view(-1)#flatten()
         
         loss = self.criterion(outputs, tgt_output)
 
