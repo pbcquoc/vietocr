@@ -1,3 +1,4 @@
+import os
 import gdown
 import yaml
 import numpy as np
@@ -18,6 +19,7 @@ def download_config(id):
     
     with open(output, encoding='utf-8') as f:
         config = yaml.safe_load(f)
+    os.remove(output)
 
     return config
 

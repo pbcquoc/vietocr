@@ -1,7 +1,3 @@
-vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~ '
-
-device: cpu
-    
 pretrain: 
     id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
     md5: 7068030afe2e8fc639d0e1e2c25612b3
@@ -18,47 +14,3 @@ cnn:
         - [2, 1]
         - [1, 1]          
     hidden: 256
-
-transformer:    
-    d_model: 256
-    nhead: 8
-    num_encoder_layers: 6
-    num_decoder_layers: 6
-    dim_feedforward: 2048
-    max_seq_length: 1024
-    pos_dropout: 0.1
-    trans_dropout: 0.1
-
-optimizer:
-    n_warmup_steps: 4000
-    init_lr: 0.1
-
-trainer:
-    batch_size: 32
-    finetune_backbone: 10000
-    visualize_every: 200
-    print_every: 200
-    valid_every: 4000
-    iters: 100000
-    export: ./weights/transformerocr.pth
-    checkpoint: ./checkpoint/transformerocr_checkpoint.pth
-    log: ./train.log
-    metrics: null
-
-dataset:    
-    name: data
-    data_root: ./img/
-    train_annotation: annotation_train.txt
-    valid_annotation: annotation_val_small.txt
-    image_height: 32
-    image_min_width: 32
-    image_max_width: 512
-
-dataloader:
-    num_workers: 3
-    pin_memory: True
-
-predictor:
-    beamsearch: True
-
-quiet: False 
