@@ -1,7 +1,10 @@
+# change to list chars of your dataset or use default vietnamese chars
 vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0123456789!"#$%&''()*+,-./:;<=>?@[\]^_`{|}~ '
 
+# cpu, cuda, cuda:0
 device: cpu
-    
+
+
 transformer:  
     d_model: 256
     nhead: 8
@@ -21,16 +24,21 @@ trainer:
     print_every: 200
     valid_every: 4000
     iters: 100000
+    # where to save our model for prediction
     export: ./weights/transformerocr.pth
     checkpoint: ./checkpoint/transformerocr_checkpoint.pth
     log: ./train.log
+    # null to disable compuate accuracy, or change to number of sample to enable validiation while training
     metrics: null
 
 dataset:    
+    # name of your dataset
     name: data
+    # path to annotation and image
     data_root: ./img/
     train_annotation: annotation_train.txt
     valid_annotation: annotation_val_small.txt
+    # resize image to 32 height, larger height will increase accuracy
     image_height: 32
     image_min_width: 32
     image_max_width: 512
@@ -40,6 +48,7 @@ dataloader:
     pin_memory: True
 
 predictor:
+    # disable or enable beamsearch while prediction, use beamsearch will be slower
     beamsearch: True
 
 quiet: False 
