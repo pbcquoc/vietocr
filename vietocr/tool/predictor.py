@@ -30,7 +30,7 @@ class Predictor():
 
         if self.config['predictor']['beamsearch']:
             sent = translate_beam_search(img, self.model)
-            s = s
+            s = sent
         else:
             sents = translate(img, self.model)
             s = translate(img, self.model)[0].tolist()
