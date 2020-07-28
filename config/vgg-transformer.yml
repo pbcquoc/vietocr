@@ -3,7 +3,7 @@ pretrain:
     md5: 9cc606b70460261de374c56548aead5b
     cached: /tmp/tranformerorc.pth
 
-weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
+weights: https://drive.google.com/uc?id=13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
 
 backbone: vgg19_bn
 cnn:
