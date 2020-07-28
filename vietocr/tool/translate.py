@@ -136,7 +136,7 @@ def process_image(image, image_height, image_min_width, image_max_width):
     return img
 
 def process_input(image, image_height, image_min_width, image_max_width):
-    img = process_image(image, image_height, image_max_width)
+    img = process_image(image, image_height, image_min_width, image_max_width)
     img = img[np.newaxis, ...]
     img = torch.FloatTensor(img)
     return img
