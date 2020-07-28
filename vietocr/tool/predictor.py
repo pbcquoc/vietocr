@@ -24,7 +24,8 @@ class Predictor():
         
 
     def predict(self, img):
-        img = process_input(img, self.config['dataloader']['image_height'], self.config['dataloader']['image_max_width'])
+        img = process_input(img, self.config['dataset']['image_height'], 
+                self.config['dataset']['image_min_width'], self.config['dataset']['image_max_width'])
         img = img.to(self.config['device'])
 
         s = translate(img, self.model)[0].tolist()

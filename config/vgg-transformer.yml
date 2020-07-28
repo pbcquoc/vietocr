@@ -1,6 +1,6 @@
 pretrain: 
     id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
-    md5: 7068030afe2e8fc639d0e1e2c25612b3
+    md5: 9cc606b70460261de374c56548aead5b
     cached: /tmp/tranformerorc.pth
 
 weights: https://drive.google.com/uc?id=12dTOZ9VP7ZVzwQgVvqBWz5JO5RXXW5NY
