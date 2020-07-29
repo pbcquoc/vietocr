@@ -1,6 +1,6 @@
 # VietOCR
 <p align="center">
-<img src="https://github.com/pbcquoc/vietocr/raw/master/image/sample.png" width="600" height="200">
+<img src="https://github.com/pbcquoc/vietocr/raw/master/image/sample.png" width="1000" height="300">
 </p>
 Trong project này, mình cài đặt mô hình Transformer OCR nhận dạng chữ viết tay, chữ đánh máy cho Tiếng Việt. Kiến trúc mô hình là sự kết hợp tuyệt vời giữ mô hình CNN và Transformer (là mô hình nền tảng của BERT khá nổi tiếng). Mô hình TransformerOCR có rất nhiều ưu điểm so với kiến trúc của mô hình CRNN đã được mình cài đặt. Các bạn có thể đọc [tại]() đây về kiến trúc và cách huấn luyện mô hình với các tập dữ liệu khác nhau. 
 
