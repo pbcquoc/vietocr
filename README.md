@@ -27,9 +27,9 @@ Pretrain model các bạn download tại [đây](https://drive.google.com/file/d
 | Backbone         | Config           | Precision |
 | ------------- |:-------------:| ---:|
 | VGG19-bn      | [download](https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/vgg-transformer.yml) | |
-| VGG11-bn      | centered      | |
-| Resnet50 | are neat      | |
-| Resnet50-fpn | are neat     | | 
+| VGG11-bn      | [download](https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/vgg-transformer.yml)      | |
+| Resnet50 | [download](https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/resnet-transformer.yml)      | |
+| Resnet50-fpn | [download](https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/resnet_fpn_transformer.yml)     | | 
 
 # License
 Mình phát hành thư viện này dưới các điều khoản của [Apache 2.0 license]().
