@@ -1,6 +1,6 @@
 pretrain: 
     id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
-    md5: 9cc606b70460261de374c56548aead5b
+    md5: fbefa85079ad9001a71eb1bf47a93785
     cached: /tmp/tranformerorc.pth
 
 # url or local path
