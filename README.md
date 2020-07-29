@@ -17,7 +17,7 @@ Các bạn tham khảo notebook [này](https://colab.research.google.com/drive/1
 
 # Model zoo 
 Mô hình này được huấn luyện trên tập dữ liệu gồm 10m ảnh, bao gồm nhiều loại ảnh khác nhau như ảnh tự phát sinh, chữ viết tay, các văn bản scan thực tế. 
-Pretrain model các bạn download tại [đây]().
+Pretrain model các bạn download tại [đây](https://drive.google.com/file/d/13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA/view?usp=sharing).
 
 Đồng thời mình cũng thử nghiệm kết quả của mô hình trên tập dữ liệu [synth 90k](https://www.robots.ox.ac.uk/~vgg/data/text/) mô hình transformerocr cho có độ chính xác full_sequence là 96% trong khi đó một cài đặt khá phổ biến khác dữ trên cơ chế attention cho kết quả là 93%.
 
@@ -26,5 +26,3 @@ Mình phát hành thư viện này dưới các điều khoản của [Apache 2.
 
 # Liên hệ
 Nếu bạn có bất kì vấn đề gì, vui lòng tạo issue hoặc liên hệ mình tại pbcquoc@gmail.com 
-
-(to be continued)
