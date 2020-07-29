@@ -10,7 +10,7 @@ Mô hình VietOCR có tính tổng quát cực tốt, thậm chí có độ chí
 <img src="https://raw.githubusercontent.com/pbcquoc/vietocr/master/image/vietocr.jpg" width="512" height="614">
 </p>
 
-# Cài đặt
+# Cài Đặt
 Để cài đặt các bạn gõ lệnh sau
 ```
 pip install vietocr
@@ -18,11 +18,18 @@ pip install vietocr
 # Quick Start
 Các bạn tham khảo notebook [này](https://colab.research.google.com/drive/1GVRKGFPsmq_xKJbOuSplrIDJZYp-IyzW?usp=sharing) để biết cách sử dụng nhé. 
 
-# Model zoo 
+# Model Zoo 
 Mô hình này được huấn luyện trên tập dữ liệu gồm 10m ảnh, bao gồm nhiều loại ảnh khác nhau như ảnh tự phát sinh, chữ viết tay, các văn bản scan thực tế. 
 Pretrain model các bạn download tại [đây](https://drive.google.com/file/d/13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA/view?usp=sharing).
 
 Đồng thời mình cũng thử nghiệm kết quả của mô hình trên tập dữ liệu [synth 90k](https://www.robots.ox.ac.uk/~vgg/data/text/) mô hình transformerocr cho có độ chính xác full_sequence là 96% trong khi đó một cài đặt khá phổ biến khác dữ trên cơ chế attention cho kết quả là 93%.
+
+| Backbone         | Config           | Precision |
+| ------------- |:-------------:| ---:|
+| VGG19-bn      | right-aligned | |
+| VGG11-bn      | centered      | |
+| Resnet50 | are neat      | |
+| Resnet50-fpn | are neat     | | 
 
 # License
 Mình phát hành thư viện này dưới các điều khoản của [Apache 2.0 license]().
