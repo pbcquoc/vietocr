@@ -54,7 +54,7 @@ class Trainer():
             download_weights(**config['pretrain'], quiet=config['quiet'])
             state_dict = torch.load(config['pretrain']['cached'], map_location=torch.device(self.device))
 
-            for name, param in sel.model.named_parameters():
+            for name, param in self.model.named_parameters():
                 if state_dict[name].shape != param.shape:
                     print('{} missmatching shape'.format(name))
                     del state_dict[name]
