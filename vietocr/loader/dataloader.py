@@ -183,7 +183,7 @@ def collate_fn(batch):
     tgt_output[:, -1]=0
     
     # random mask token
-    mask = np.random.random(size=tgt_input.shape) < 0.15
+    mask = np.random.random(size=tgt_input.shape) < 0.05
     mask = mask & (tgt_input != 0) & (tgt_input != 1) & (tgt_input != 2)
     tgt_input[mask] = 3
 
