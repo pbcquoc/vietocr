@@ -3,10 +3,12 @@ class Vocab():
         self.pad = 0
         self.go = 1
         self.eos = 2
+        self.mask_token = 3
+
         self.chars = chars
 
-        self.c2i = {c:i+3 for i, c in enumerate(chars)}
-        self.i2c = {i+3:c for i, c in enumerate(chars)}
+        self.c2i = {c:i+4 for i, c in enumerate(chars)}
+        self.i2c = {i+4:c for i, c in enumerate(chars)}
         
     def encode(self, chars):
         return [self.go] + [self.c2i[c] for c in chars] + [self.eos]
@@ -16,7 +18,7 @@ class Vocab():
         return ''.join([self.i2c[i] for i in ids[1:last]])
     
     def __len__(self):
-        return len(self.c2i) + 3
+        return len(self.c2i) + 4
     
     def batch_decode(self, arr):
         texts = [self.decode(ids) for ids in arr]

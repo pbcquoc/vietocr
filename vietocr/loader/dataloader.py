@@ -185,7 +185,7 @@ def collate_fn(batch):
     # random mask token
     mask = np.random.random(size=tgt_input.shape) < 0.15
     mask = mask & (tgt_input != 0) & (tgt_input != 1) & (tgt_input != 2)
-    tgt_input[mask] = 4
+    tgt_input[mask] = 3
 
     tgt_padding_mask = np.array(target_weights)==0
 
