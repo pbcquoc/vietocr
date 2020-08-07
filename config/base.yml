@@ -49,6 +49,6 @@ dataloader:
 
 predictor:
     # disable or enable beamsearch while prediction, use beamsearch will be slower
-    beamsearch: True
+    beamsearch: False
 
 quiet: False 
