@@ -52,7 +52,14 @@ class Trainer():
 
         if pretrained:
             download_weights(**config['pretrain'], quiet=config['quiet'])
-            self.model.load_state_dict(torch.load(config['pretrain']['cached'], map_location=torch.device(self.device)))
+            state_dict = torch.load(config['pretrain']['cached'], map_location=torch.device(self.device))
+
+            for name, param in sel.model.named_parameters():
+                if state_dict[name].shape != param.shape:
+                    print('{} missmatching shape'.format(name))
+                    del state_dict[name]
+
+            self.model.load_state_dict(state_dict)
 
         self.iter = 0
 
