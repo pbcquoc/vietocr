@@ -59,7 +59,7 @@ class Trainer():
                     print('{} missmatching shape'.format(name))
                     del state_dict[name]
 
-            self.model.load_state_dict(state_dict)
+            self.model.load_state_dict(state_dict, strict=False)
 
         self.iter = 0
 
