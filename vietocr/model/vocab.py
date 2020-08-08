@@ -20,10 +20,11 @@ class Vocab():
         try:
             first = 1 if self.go in ids else 0
             last = ids.index(self.eos) if self.eos in ids else None
+            sent = ''.join([self.i2c[i] for i in ids[first:last]])
         except Exception as e:
             print(first, last, ids)
             raise e
-        return ''.join([self.i2c[i] for i in ids[first:last]])
+        return sent
     
     def __len__(self):
         return len(self.c2i) + 4
