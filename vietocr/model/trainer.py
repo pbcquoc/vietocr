@@ -173,7 +173,7 @@ class Trainer():
                 translated_sentence = translate(batch['img'], self.model)
 
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
-            actual_sent = self.vocab.batch_decode(batch['tgt_input'].T.tolist())
+            actual_sent = self.vocab.batch_decode(batch['tgt_output'].T.tolist())
 
             img_files.extend(batch['filenames'])
 
