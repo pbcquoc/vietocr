@@ -19,7 +19,6 @@ class Vocab():
     def decode(self, ids):
         first = 1 if self.go in ids else 0
         last = ids.index(self.eos) if self.eos in ids else None
-        print(first, last, ids)
         return ''.join([self.i2c[i] for i in ids[first:last]])
     
     def __len__(self):
