@@ -17,8 +17,12 @@ class Vocab():
         return [self.go] + [self.c2i[c] for c in chars] + [self.eos]
     
     def decode(self, ids):
-        first = 1 if self.go in ids else 0
-        last = ids.index(self.eos) if self.eos in ids else None
+        try:
+            first = 1 if self.go in ids else 0
+            last = ids.index(self.eos) if self.eos in ids else None
+        except Exception as e:
+            print(first, last, ids)
+            raise e
         return ''.join([self.i2c[i] for i in ids[first:last]])
     
     def __len__(self):
