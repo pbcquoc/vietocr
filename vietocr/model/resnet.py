@@ -127,9 +127,13 @@ class ResNet(nn.Module):
         x = self.relu(x)
         x = self.conv4_2(x)
         x = self.bn4_2(x)
-        x = self.relu(x)
+        conv = self.relu(x)
+        
+        conv = conv.transpose(-1, -2)
+        conv = conv.flatten(2)
+        conv = conv.permute(-1, 0, 1)
 
-        return x
+        return conv
 
 def Resnet50(ss, hidden):
     return ResNet(3, hidden, BasicBlock, [1, 2, 5, 3])
