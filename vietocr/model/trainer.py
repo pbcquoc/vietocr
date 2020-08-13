@@ -194,9 +194,21 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize_prediction(self, sample=16):
+    def visualize_prediction(self, sample=16, errorcase=False, fontname='serif'):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
+
+        if errorcase:
+            wrongs = []
+            for i in range(len(img_files)):
+                if pred_sents[i]!= actual_sents[i]:
+                    wrongs.append(i)
+
+            pred_sents = [pred_sents[i] for i in wrongs]
+            actual_sents = [actual_sents[i] for i in wrongs]
+            img_files = [actual_sents[i] for i in wrongs]
+
+
         img_files = img_files[:sample]
         
         for vis_idx in range(0, len(img_files)):
@@ -207,12 +219,12 @@ class Trainer():
             img = Image.open(open(img_path, 'rb'))
             plt.figure()
             plt.imshow(img)
-            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left')
+            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left', fontname=fontname)
             plt.axis('off')
 
         plt.show()
     
-    def visualize_dataset(self, sample=16):
+    def visualize_dataset(self, sample=16, fontname='serif'):
         n = 0
         for batch in self.train_gen:
             for i in range(self.batch_size):
@@ -220,7 +232,7 @@ class Trainer():
                 sent = self.vocab.decode(batch['tgt_input'].T[i].tolist())
                 
                 plt.figure()
-                plt.title('sent: {}'.format(sent), loc='center')
+                plt.title('sent: {}'.format(sent), loc='center', fontname=fontname)
                 plt.imshow(img)
                 plt.axis('off')
                 
