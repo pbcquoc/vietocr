@@ -1,58 +1,136 @@
 import torch
 from torch import nn
-from torchvision.models import resnet50
-from torchvision.models.resnet import Bottleneck
-from torch.hub import load_state_dict_from_url
 
-resnet50_url = 'https://download.pytorch.org/models/resnet50-19c8e357.pth'
+class BasicBlock(nn.Module):
+    expansion = 1
 
-class Resnet50(nn.Module):
-    def __init__(self, ss, hidden=256):
-        super().__init__()
-        backbone = resnet50(pretrained=False)
-        backbone.inplanes = 64
+    def __init__(self, inplanes, planes, stride=1, downsample=None):
+        super(BasicBlock, self).__init__()
+        self.conv1 = self._conv3x3(inplanes, planes)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = self._conv3x3(planes, planes)
+        self.bn2 = nn.BatchNorm2d(planes)
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
 
-        layers = [3, 4, 6, 3]
-        block = Bottleneck
-        backbone.conv1 = nn.Conv2d(3, backbone.inplanes, kernel_size=7, stride=ss[0], padding=3, bias=False)
-        backbone.layer1 = backbone._make_layer(block, 64, layers[0], stride=ss[1])
-        backbone.layer2 = backbone._make_layer(block, 128, layers[1], stride=ss[2])
-        backbone.layer3 = backbone._make_layer(block, 256, layers[2], stride=ss[3])
-        backbone.layer4 = backbone._make_layer(block, 512, layers[3], stride=ss[4])
+    def _conv3x3(self, in_planes, out_planes, stride=1):
+        "3x3 convolution with padding"
+        return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
+                         padding=1, bias=False)
 
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=(1, 1), padding=1)
+    def forward(self, x):
+        residual = x
 
-                
-        state_dict = load_state_dict_from_url(resnet50_url,
-                                              progress=True)
-        backbone.load_state_dict(state_dict)
-        
-        self.conv1 = backbone.conv1
-        self.bn1 = backbone.bn1
-        self.relu = backbone.relu
-        self.layer1 = backbone.layer1
-        self.layer2 = backbone.layer2
-        self.layer3 = backbone.layer3
-        self.layer4 = backbone.layer4
-        
-        self.last_conv_1x1 = nn.Conv2d(2048, hidden, 1)
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
 
-    def forward(self, inputs):
-        x = self.conv1(inputs)
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+        out += residual
+        out = self.relu(out)
+
+        return out
+    
+class ResNet(nn.Module):
+
+    def __init__(self, input_channel, output_channel, block, layers):
+        super(ResNet, self).__init__()
+
+        self.output_channel_block = [int(output_channel / 4), int(output_channel / 2), output_channel, output_channel]
+
+        self.inplanes = int(output_channel / 8)
+        self.conv0_1 = nn.Conv2d(input_channel, int(output_channel / 16),
+                                 kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn0_1 = nn.BatchNorm2d(int(output_channel / 16))
+        self.conv0_2 = nn.Conv2d(int(output_channel / 16), self.inplanes,
+                                 kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn0_2 = nn.BatchNorm2d(self.inplanes)
+        self.relu = nn.ReLU(inplace=True)
+
+        self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.layer1 = self._make_layer(block, self.output_channel_block[0], layers[0])
+        self.conv1 = nn.Conv2d(self.output_channel_block[0], self.output_channel_block[
+                               0], kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(self.output_channel_block[0])
+
+        self.maxpool2 = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.layer2 = self._make_layer(block, self.output_channel_block[1], layers[1], stride=1)
+        self.conv2 = nn.Conv2d(self.output_channel_block[1], self.output_channel_block[
+                               1], kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(self.output_channel_block[1])
+
+        self.maxpool3 = nn.MaxPool2d(kernel_size=2, stride=(2, 1), padding=(0, 1))
+        self.layer3 = self._make_layer(block, self.output_channel_block[2], layers[2], stride=1)
+        self.conv3 = nn.Conv2d(self.output_channel_block[2], self.output_channel_block[
+                               2], kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(self.output_channel_block[2])
+
+        self.layer4 = self._make_layer(block, self.output_channel_block[3], layers[3], stride=1)
+        self.conv4_1 = nn.Conv2d(self.output_channel_block[3], self.output_channel_block[
+                                 3], kernel_size=2, stride=(2, 1), padding=(0, 1), bias=False)
+        self.bn4_1 = nn.BatchNorm2d(self.output_channel_block[3])
+        self.conv4_2 = nn.Conv2d(self.output_channel_block[3], self.output_channel_block[
+                                 3], kernel_size=2, stride=1, padding=0, bias=False)
+        self.bn4_2 = nn.BatchNorm2d(self.output_channel_block[3])
+
+    def _make_layer(self, block, planes, blocks, stride=1):
+        downsample = None
+        if stride != 1 or self.inplanes != planes * block.expansion:
+            downsample = nn.Sequential(
+                nn.Conv2d(self.inplanes, planes * block.expansion,
+                          kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(planes * block.expansion),
+            )
+
+        layers = []
+        layers.append(block(self.inplanes, planes, stride, downsample))
+        self.inplanes = planes * block.expansion
+        for i in range(1, blocks):
+            layers.append(block(self.inplanes, planes))
+
+        return nn.Sequential(*layers)
+
+    def forward(self, x):
+        x = self.conv0_1(x)
+        x = self.bn0_1(x)
+        x = self.relu(x)
+        x = self.conv0_2(x)
+        x = self.bn0_2(x)
+        x = self.relu(x)
+
+        x = self.maxpool1(x)
+        x = self.layer1(x)
+        x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
-        x = self.maxpool(x)
 
-        x = self.layer1(x)
+        x = self.maxpool2(x)
         x = self.layer2(x)
+        x = self.conv2(x)
+        x = self.bn2(x)
+        x = self.relu(x)
+
+        x = self.maxpool3(x)
         x = self.layer3(x)
+        x = self.conv3(x)
+        x = self.bn3(x)
+        x = self.relu(x)
+
         x = self.layer4(x)
+        x = self.conv4_1(x)
+        x = self.bn4_1(x)
+        x = self.relu(x)
+        x = self.conv4_2(x)
+        x = self.bn4_2(x)
+        x = self.relu(x)
 
-        conv = self.last_conv_1x1(x)
-#        conv = rearrange(conv, 'b d h w -> b d (w h)')
-        conv = conv.transpose(-1, -2)
-        conv = conv.flatten(2)
-        conv = conv.permute(-1, 0, 1)
+        return x
 
-        return conv
+def Resnet50(ss, hidden):
+    return ResNet(3, hidden, BasicBlock, [1, 2, 5, 3])
 
