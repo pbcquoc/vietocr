@@ -1,3 +1,4 @@
+import sys
 import os
 import lmdb # install lmdb by "pip install lmdb"
 import cv2
@@ -88,4 +89,5 @@ def createDataset(outputPath, root_dir, annotation_path):
     if error > 0:
         print('Remove {} invalid images'.format(error))
     print('Created dataset with %d samples' % nSamples)
+    sys.stdout.flush()
 
