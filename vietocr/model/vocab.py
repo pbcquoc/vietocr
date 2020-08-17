@@ -8,9 +8,12 @@ class Vocab():
         self.chars = chars
 
         self.c2i = {c:i+4 for i, c in enumerate(chars)}
-#        self.c2i['[MASK]'] = 3
 
         self.i2c = {i+4:c for i, c in enumerate(chars)}
+        
+        self.i2c[0] = '<pad>'
+        self.i2c[1] = '<sos>'
+        self.i2c[2] = '<eos>'
         self.i2c[3] = '*'
 
     def encode(self, chars):
