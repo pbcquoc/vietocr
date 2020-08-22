@@ -19,18 +19,17 @@ class Cfg(dict):
 
         with open(fname, encoding='utf-8') as f:
             config = yaml.safe_load(f)
-        config.update(base_config)
+        base_config.update(config)
 
-        return Cfg(config)
+        return Cfg(base_config)
 
     @staticmethod
     def load_config_from_name(name):
         base_config = download_config(url_config['base'])
         config = download_config(url_config[name])
 
-        config.update(base_config)
-
-        return Cfg(config)
+        base_config.update(config)
+        return Cfg(base_config)
 
     def save(self, fname):
         with open(fname, 'w') as outfile:
