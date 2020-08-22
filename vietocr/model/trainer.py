@@ -88,6 +88,7 @@ class Trainer():
         
         total_loader_time = 0
         total_gpu_time = 0
+        best_acc = 0
 
         data_iter = iter(self.train_gen)
         for i in range(self.num_iters):
@@ -130,7 +131,11 @@ class Trainer():
                 self.logger.log(info)
 
                 self.save_checkpoint(self.checkpoint)
-                self.save_weight(self.export_weights)
+
+                if acc_full_seq > best_acc:
+                    self.save_weight(self.export_weights)
+                    best_acc = acc_full_seq
+
             
     def validate(self):
         self.model.eval()
