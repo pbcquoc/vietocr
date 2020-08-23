@@ -6,6 +6,8 @@ from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate, batch_translate_beam_search
 from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
+from vietocr.loader.aug import ImgAugTransform
+
 import yaml
 import torch
 from vietocr.loader.DataLoader import DataGen
@@ -70,10 +72,12 @@ class Trainer():
 #        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
-        transforms = torchvision.transforms.Compose([
-            torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1),
-            torchvision.transforms.RandomAffine(degrees=0, scale=(3/4, 4/3))
-            ])
+#        transforms = torchvision.transforms.Compose([
+#            torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1),
+#            torchvision.transforms.RandomAffine(degrees=0, scale=(3/4, 4/3))
+#            ])
+        
+        transforms = ImgAugTransform()
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
                 self.data_root, self.train_annotation, transform=transforms)
