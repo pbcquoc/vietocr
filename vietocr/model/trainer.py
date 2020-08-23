@@ -203,7 +203,7 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize_prediction(self, sample=16, errorcase=False, fontname='serif'):
+    def visualize_prediction(self, sample=16, errorcase=False, fontname='serif', fontsize=20):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
 
@@ -219,7 +219,12 @@ class Trainer():
 
 
         img_files = img_files[:sample]
-        
+
+        fontdict = {
+                'family':fontname,
+                'size':fontsize
+                } 
+
         for vis_idx in range(0, len(img_files)):
             img_path = img_files[vis_idx]
             pred_sent = pred_sents[vis_idx]
@@ -228,7 +233,7 @@ class Trainer():
             img = Image.open(open(img_path, 'rb'))
             plt.figure()
             plt.imshow(img)
-            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left', fontname=fontname)
+            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left', fontdict=fontdict)
             plt.axis('off')
 
         plt.show()
