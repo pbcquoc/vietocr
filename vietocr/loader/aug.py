@@ -1,3 +1,5 @@
+import numpy as np
+
 from imgaug import augmenters as iaa
 import imgaug as ia
 
