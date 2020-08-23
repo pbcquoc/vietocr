@@ -1,3 +1,4 @@
+from PIL import Image
 import numpy as np
 
 from imgaug import augmenters as iaa
@@ -16,4 +17,6 @@ class ImgAugTransform:
       
   def __call__(self, img):
     img = np.array(img)
-    return self.aug.augment_image(img)
+    img = self.aug.augment_image(img)
+    img = Image.fromnumpy(img)
+    return img
