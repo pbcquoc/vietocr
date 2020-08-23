@@ -18,5 +18,5 @@ class ImgAugTransform:
   def __call__(self, img):
     img = np.array(img)
     img = self.aug.augment_image(img)
-    img = Image.fromnumpy(img)
+    img = Image.fromarray(img)
     return img
