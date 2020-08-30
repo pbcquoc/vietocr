@@ -9,8 +9,8 @@ class ImgAugTransform:
     sometimes = lambda aug: iaa.Sometimes(0.5, aug)
 
     self.aug = iaa.Sequential([
-        sometimes(iaa.GaussianBlur(sigma=(0, 1.0))),
-        sometimes(iaa.MotionBlur(k=5)),
+#        sometimes(iaa.GaussianBlur(sigma=(0, 1.0))),
+        sometimes(iaa.MotionBlur(k=3)),
         sometimes(iaa.AddToHueAndSaturation(value=(-10, 10), per_channel=True)),
 #        iaa.PerspectiveTransform(scale=(0.01, 0.15)),
         sometimes(iaa.Affine(scale=(0.7, 1.3), translate_percent=(-0.1, 0.1))),
