@@ -171,9 +171,21 @@ class Seq2Seq(nn.Module):
         self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, dropout)
         self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, dropout, attn)
 
+    def forward_encoder(self, src):        
+        encoder_outputs, hidden = self.encoder(src)
+        self.encoder_ouputs = encoder_outputs
+
+        return hidden
+
+    def forward_decoder(self, tgt, memory):
+        tgt = tgt[-1]
+        output, hidden, _ = self.decoder(tgt, memory, self.encoder_outputs)
+        output = output.unsqueeze(1)
         
+        return output
+
     def forward(self, src, trg, teacher_forcing_ratio = 0.5):
-        #src = [src len, batch size]
+        #src = [src len, batch size, channel]
         #src_len = [batch size]
         #trg = [trg len, batch size]
         #teacher_forcing_ratio is probability to use teacher forcing
