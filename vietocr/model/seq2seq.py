@@ -217,6 +217,9 @@ class Seq2Seq(nn.Module):
             #if teacher forcing, use actual next token as next input
             #if not, use predicted token
             input = trg[t] if teacher_force else top1
-            
+        
+        outputs = outputs.transpose(0, 1)
+        # outputs batch_size, trg_len, vocab_size
+
         return outputs   
 
