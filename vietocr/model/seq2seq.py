@@ -228,14 +228,14 @@ class Seq2Seq(nn.Module):
             outputs[t] = output
             
             #decide if we are going to use teacher forcing or not
-            teacher_force = random.random() < teacher_forcing_ratio
+#            teacher_force = random.random() < teacher_forcing_ratio
             
             #get the highest predicted token from our predictions
             top1 = output.argmax(1) 
             
             #if teacher forcing, use actual next token as next input
             #if not, use predicted token
-            input = trg[t] if teacher_force else top1
+            input = trg[t] #if teacher_force else top1
         
         outputs = outputs.transpose(0, 1).contiguous()
 
