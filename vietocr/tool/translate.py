@@ -108,7 +108,8 @@ def build_model(config):
     model = VietOCR(len(vocab),
             config['backbone'],
             config['cnn'], 
-            config['transformer'])
+            config['transformer'],
+            config['seq_modeling'])
     
     model = model.to(device)
 
