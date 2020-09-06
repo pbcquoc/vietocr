@@ -218,7 +218,8 @@ class Seq2Seq(nn.Module):
             #if not, use predicted token
             input = trg[t] if teacher_force else top1
         
-        outputs = outputs.transpose(0, 1)
+        outputs = outputs.transpose(0, 1).contiguous()
+
         # outputs batch_size, trg_len, vocab_size
 
         return outputs   
