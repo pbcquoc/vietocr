@@ -171,13 +171,20 @@ class Seq2Seq(nn.Module):
         self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, dropout)
         self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, dropout, attn)
 
-    def forward_encoder(self, src):        
+    def forward_encoder(self, src):       
+        """src: timestep, batch size, channel
+           hidden: batchsize x dim
+           encoder_outputs: src len, batch size, enc hid dim * 2
+        """
         encoder_outputs, hidden = self.encoder(src)
-        self.encoder_ouputs = encoder_outputs
+        self.encoder_outputs = encoder_outputs
 
         return hidden
 
     def forward_decoder(self, tgt, memory):
+        """tgt: timestep x batchsize 
+           output: batch size x 1 x vocabsize
+        """
         tgt = tgt[-1]
         output, hidden, _ = self.decoder(tgt, memory, self.encoder_outputs)
         output = output.unsqueeze(1)
