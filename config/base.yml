@@ -4,7 +4,7 @@ vocab: 'aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦ�
 # cpu, cuda, cuda:0
 device: cpu
 
-
+seq_modeling: transformer
 transformer:  
     d_model: 256
     nhead: 8
