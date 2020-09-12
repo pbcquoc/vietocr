@@ -16,7 +16,7 @@ class ImgAugTransform:
         sometimes(iaa.Affine(scale=(0.7, 1.3), translate_percent=(-0.1, 0.1))),
 #        iaa.PiecewiseAffine(scale=(0.01, 0.01)),
         sometimes(iaa.OneOf([iaa.Dropout(p=(0, 0.1)),
-                            iaa.CoarseDropout(0.1, size_percent=0.5)])),
+                            iaa.CoarseDropout(p=(0, 0.1), size_percent=(0.02, 0.25))])),
 
     ])
       

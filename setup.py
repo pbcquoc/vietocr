@@ -17,6 +17,8 @@ setuptools.setup(
         'einops==0.2.0',
         'gdown==3.11.0',
         'prefetch_generator==1.0.1',
+        'imgaug==0.4.0',
+        'lmdb==1.0.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
