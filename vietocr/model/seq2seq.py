@@ -189,7 +189,7 @@ class Seq2Seq(nn.Module):
         output, hidden, _ = self.decoder(tgt, memory, self.encoder_outputs)
         output = output.unsqueeze(1)
         
-        return output
+        return output, hidden
 
     def forward(self, src, trg, teacher_forcing_ratio = 0.5):
         #src = [src len, batch size, channel]
@@ -240,6 +240,6 @@ class Seq2Seq(nn.Module):
         outputs = outputs.transpose(0, 1).contiguous()
 
         # outputs batch_size, trg_len, vocab_size
-
+        print(outputs.shape)
         return outputs   
 

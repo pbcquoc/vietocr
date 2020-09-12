@@ -66,7 +66,7 @@ class LanguageTransformer(nn.Module):
 #        output = rearrange(output, 't n e -> n t e')
         output = output.transpose(0, 1)
 
-        return self.fc(output)
+        return self.fc(output), memory
 
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, dropout=0.1, max_len=100):
