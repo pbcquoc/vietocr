@@ -13,7 +13,7 @@ Mô hình VietOCR có tính tổng quát cực tốt, thậm chí có độ chí
 # Cài Đặt
 Để cài đặt các bạn gõ lệnh sau
 ```
-pip install vietocr
+pip install vietocr==0.1.9
 ```
 # Quick Start
 Các bạn tham khảo notebook [này](https://colab.research.google.com/drive/1GVRKGFPsmq_xKJbOuSplrIDJZYp-IyzW?usp=sharing) để biết cách sử dụng nhé. 
