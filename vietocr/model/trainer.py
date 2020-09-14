@@ -347,6 +347,8 @@ class Trainer():
 
         loss.backward()
         
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1) 
+
         self.optimizer.step()
 
         loss_item = loss.item()
