@@ -53,15 +53,8 @@ class Trainer():
             self.logger = Logger(logger) 
 
         if pretrained:
-            download_weights(**config['pretrain'], quiet=config['quiet'])
-            state_dict = torch.load(config['pretrain']['cached'], map_location=torch.device(self.device))
-
-            for name, param in self.model.named_parameters():
-                if state_dict[name].shape != param.shape:
-                    print('{} missmatching shape'.format(name))
-                    del state_dict[name]
-
-            self.model.load_state_dict(state_dict, strict=False)
+            weight_file = download_weights(**config['pretrain'], quiet=config['quiet'])
+            self.load_weights(weight_file)
 
         self.iter = 0
 
@@ -136,10 +129,10 @@ class Trainer():
                 print(info)
                 self.logger.log(info)
 
-                self.save_checkpoint(self.checkpoint)
+#                self.save_checkpoint(self.checkpoint)
 
                 if acc_full_seq > best_acc:
-                    self.save_weight(self.export_weights)
+                    self.save_weights(self.export_weights)
                     best_acc = acc_full_seq
 
             
@@ -280,8 +273,17 @@ class Trainer():
 
         torch.save(state, filename)
 
-    
-    def save_weight(self, filename):
+    def load_weights(self, filename):
+        state_dict = torch.load(filename, map_location=torch.device(self.device))
+
+        for name, param in self.model.named_parameters():
+            if state_dict[name].shape != param.shape:
+                print('{} missmatching shape'.format(name))
+                del state_dict[name]
+
+        self.model.load_state_dict(state_dict, strict=False)
+
+    def save_weights(self, filename):
         path, _ = os.path.split(filename)
         os.makedirs(path, exist_ok=True)
        
