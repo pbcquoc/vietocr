@@ -7,13 +7,10 @@ import random
 class Encoder(nn.Module):
     def __init__(self, emb_dim, enc_hid_dim, dec_hid_dim, dropout):
         super().__init__()
-        self.emb_dim = emb_dim
-        self.enc_hid_dim = enc_hid_dim
-        self.dec_hid_dim = dec_hid_dim
-
-        self.rnn = nn.GRU(emb_dim, enc_hid_dim, bidirectional = True, dropout=dropout)
+                
+        self.rnn = nn.GRU(emb_dim, enc_hid_dim, bidirectional = True)
         
-        self.fc = nn.Linear(enc_hid_dim, dec_hid_dim)
+        self.fc = nn.Linear(enc_hid_dim * 2, dec_hid_dim)
         
         self.dropout = nn.Dropout(dropout)
         
@@ -47,9 +44,7 @@ class Encoder(nn.Module):
         
         #initial decoder hidden is final hidden state of the forwards and backwards 
         #  encoder RNNs fed through a linear layer
-        hidden = hidden[-2,:,:] + hidden[-1,:,:]
-        hidden = torch.tanh(self.fc(hidden))
-        outputs = outputs[:,:,:self.enc_hid_dim] + outputs[:,:,self.enc_hid_dim:]
+        hidden = torch.tanh(self.fc(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim = 1)))
         
         #outputs = [src len, batch size, enc hid dim * 2]
         #hidden = [batch size, dec hid dim]
@@ -60,7 +55,7 @@ class Attention(nn.Module):
     def __init__(self, enc_hid_dim, dec_hid_dim):
         super().__init__()
         
-        self.attn = nn.Linear(enc_hid_dim + dec_hid_dim, dec_hid_dim)
+        self.attn = nn.Linear((enc_hid_dim * 2) + dec_hid_dim, dec_hid_dim)
         self.v = nn.Linear(dec_hid_dim, 1, bias = False)
         
     def forward(self, hidden, encoder_outputs):
@@ -100,9 +95,9 @@ class Decoder(nn.Module):
         
         self.embedding = nn.Embedding(output_dim, emb_dim)
         
-        self.rnn = nn.GRU(enc_hid_dim + emb_dim, dec_hid_dim)
+        self.rnn = nn.GRU((enc_hid_dim * 2) + emb_dim, dec_hid_dim)
         
-        self.fc_out = nn.Linear(enc_hid_dim + dec_hid_dim + emb_dim, output_dim)
+        self.fc_out = nn.Linear((enc_hid_dim * 2) + dec_hid_dim + emb_dim, output_dim)
         
         self.dropout = nn.Dropout(dropout)
         
