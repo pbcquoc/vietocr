@@ -235,7 +235,7 @@ class Seq2Seq(nn.Module):
             
             #if teacher forcing, use actual next token as next input
             #if not, use predicted token
-            input = trg[t] if t < trg_len -1 and teacher_force else top1
+            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
         
         outputs = outputs.transpose(0, 1).contiguous()
 
