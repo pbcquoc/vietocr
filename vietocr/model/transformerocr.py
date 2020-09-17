@@ -1,5 +1,5 @@
 from vietocr.model.cnn import CNN
-from vietocr.model.transformer import LanguageTransformer
+from vietocr.model.transformerv2 import LanguageTransformer
 from vietocr.model.seq2seq import Seq2Seq
 from torch import nn
 
