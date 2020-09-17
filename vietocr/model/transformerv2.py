@@ -105,7 +105,11 @@ class LanguageTransformer(nn.Module):
         return memory
     
     def forward_decoder(self, tgt, memory):
+        """tgt: timexbatch_size
+        """        
         tgt = tgt.transpose(0, 1)
+        tgt = tgt[:, -1].unsqueeze(-1)
+
         decoder_outputs, decoder_state = self.decoder(tgt, memory, None, state=self.decoder_state)
         self.decoder_state = decoder_state
 #         print(decoder_outputs.shape)
