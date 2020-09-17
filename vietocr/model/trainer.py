@@ -277,7 +277,9 @@ class Trainer():
         state_dict = torch.load(filename, map_location=torch.device(self.device))
 
         for name, param in self.model.named_parameters():
-            if state_dict[name].shape != param.shape:
+            if name not in state_dict:
+                print('{} not found'.format(name))
+            elif state_dict[name].shape != param.shape:
                 print('{} missmatching shape'.format(name))
                 del state_dict[name]
 
