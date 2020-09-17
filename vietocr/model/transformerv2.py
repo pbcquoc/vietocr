@@ -111,7 +111,7 @@ class LanguageTransformer(nn.Module):
 #         print(decoder_outputs.shape)
         return decoder_outputs, memory
     
-    def forward(self, sources, inputs):
+    def forward(self, sources, inputs, tgt_key_padding_mask=None):
         # sources : (batch_size, sources_len)
         # inputs : (batch_size, targets_len - 1)
         
