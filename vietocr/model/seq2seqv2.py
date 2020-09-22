@@ -111,8 +111,9 @@ class Decoder(nn.Module):
         
         self.rnn = nn.GRU(enc_hid_dim + emb_dim, dec_hid_dim, num_layers=num_layers)
         
-        self.fc_out = nn.Linear(enc_hid_dim + dec_hid_dim + emb_dim, output_dim)
-        
+ #       self.fc_out = nn.Linear(enc_hid_dim + dec_hid_dim + emb_dim, output_dim)
+        self.fc_out = nn.Linear(dec_hid_dim, output_dim)
+       
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, input, hidden, encoder_outputs):
