@@ -173,8 +173,9 @@ class Decoder(nn.Module):
         output = output.squeeze(0)
         weighted = weighted.squeeze(0)
         
-        prediction = self.fc_out(torch.cat((output, weighted, embedded), dim = 1))
-        
+        prediction = self.fc_out(output)
+        #prediction = self.fc_out(torch.cat((output, weighted, embedded), dim = 1))
+
         #prediction = [batch size, output dim]
         
         return prediction, hidden , a.squeeze(1)
