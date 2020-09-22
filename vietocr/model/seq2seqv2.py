@@ -10,7 +10,7 @@ class Encoder(nn.Module):
         self.num_layers = num_layers
         self.enc_hid_dim = enc_hid_dim
         
-        self.rnn = nn.GRU(emb_dim, enc_hid_dim, num_layers=num_layers, bidirectional = True)
+        self.rnn = nn.LSTM(emb_dim, enc_hid_dim, num_layers=num_layers, bidirectional = True)
         
 #        self.fc = nn.Linear(enc_hid_dim, dec_hid_dim)
         
@@ -30,7 +30,7 @@ class Encoder(nn.Module):
         #embedded = [src len, batch size, emb dim]
                 
                 
-        outputs, hidden = self.rnn(embedded)
+        outputs, (hidden, cell) = self.rnn(embedded)
                                  
         #packed_outputs is a packed sequence containing all hidden states
         #hidden is now from the final non-padded element in the batch
@@ -52,12 +52,16 @@ class Encoder(nn.Module):
         #  encoder RNNs fed through a linear layer
         hidden = hidden.view(self.num_layers, 2, batch_size, self.enc_hid_dim)
         hidden = torch.sum(hidden, dim=1)
+        
+        cell = cell.view(self.num_layers, 2, batch_size, self.enc_hid_dim)
+        cell = torch.sum(cell, dim=1)
+
 #        hidden = torch.tanh(self.fc(hidden))
         
         outputs = outputs[:,:,:self.enc_hid_dim] + outputs[:,:, self.enc_hid_dim:]
         
 
-        return outputs, hidden
+        return outputs, (hidden, cell)
 
 class Attention(nn.Module):
     def __init__(self, enc_hid_dim, dec_hid_dim):
@@ -108,7 +112,7 @@ class Decoder(nn.Module):
         
         self.embedding = nn.Embedding(output_dim, emb_dim)
         
-        self.rnn = nn.GRU(enc_hid_dim + emb_dim, dec_hid_dim, num_layers=num_layers)
+        self.rnn = nn.LSTM(enc_hid_dim + emb_dim, dec_hid_dim, num_layers=num_layers)
         
         self.fc_out = nn.Linear(enc_hid_dim + dec_hid_dim + emb_dim, output_dim)
         
@@ -124,7 +128,8 @@ class Decoder(nn.Module):
         #hidden = [batch size, dec hid dim]
         #encoder_outputs = [src len, batch size, enc hid dim * 2]
         #mask = [batch size, src len]
-        
+        hidden, cell = hidden
+
         input = input.unsqueeze(0)
         
         #input = [1, batch size]
@@ -157,7 +162,7 @@ class Decoder(nn.Module):
         
         #rnn_input = [1, batch size, (enc hid dim * 2) + emb dim]
             
-        output, hidden = self.rnn(rnn_input, hidden)
+        output, (hidden, cell) = self.rnn(rnn_input, (hidden, cell))
         
         #output = [seq len, batch size, dec hid dim * n directions]
         #hidden = [n layers * n directions, batch size, dec hid dim]
@@ -176,7 +181,7 @@ class Decoder(nn.Module):
         
         #prediction = [batch size, output dim]
         
-        return prediction, hidden, a.squeeze(1)
+        return prediction, (hidden, cell) , a.squeeze(1)
 
     
 class Seq2Seq(nn.Module):
