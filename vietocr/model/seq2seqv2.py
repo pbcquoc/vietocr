@@ -12,7 +12,7 @@ class Encoder(nn.Module):
         
         self.rnn = nn.GRU(emb_dim, enc_hid_dim, num_layers=num_layers, bidirectional = True)
         
-        self.fc = nn.Linear(enc_hid_dim, dec_hid_dim)
+#        self.fc = nn.Linear(enc_hid_dim, dec_hid_dim)
         
         self.dropout = nn.Dropout(dropout)
         
@@ -52,7 +52,7 @@ class Encoder(nn.Module):
         #  encoder RNNs fed through a linear layer
         hidden = hidden.view(self.num_layers, 2, batch_size, self.enc_hid_dim)
         hidden = torch.sum(hidden, dim=1)
-        hidden = torch.tanh(self.fc(hidden))
+#        hidden = torch.tanh(self.fc(hidden))
         
         outputs = outputs[:,:,:self.enc_hid_dim] + outputs[:,:, self.enc_hid_dim:]
         
