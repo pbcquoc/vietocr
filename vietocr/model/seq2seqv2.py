@@ -238,7 +238,7 @@ class Seq2Seq(nn.Module):
         #mask = [batch size, src len]
                 
         for t in range(trg_len):
-           input = trg[t] 
+            input = trg[t] 
             #insert input token embedding, previous hidden state, all encoder hidden states 
             #  and mask
             #receive output tensor (predictions) and new hidden state
