@@ -11,7 +11,7 @@ class Encoder(nn.Module):
                  kernel_size, 
                  dropout, 
                  device,
-                 max_length = 1024):
+                 max_length = 512):
         super().__init__()
         
         assert kernel_size % 2 == 1, "Kernel size must be odd!"
@@ -121,7 +121,7 @@ class Decoder(nn.Module):
                  dropout, 
                  trg_pad_idx, 
                  device,
-                 max_length = 100):
+                 max_length = 512):
         super().__init__()
         
         self.kernel_size = kernel_size
@@ -278,15 +278,26 @@ class Decoder(nn.Module):
         return output, attention
 
 class ConvSeq2Seq(nn.Module):
-    def __init__(self, vocab_size, emb_dim, hid_dim, enc_layers, dec_layers, enc_kernel_size, dec_kernel_size, dropout, pad_idx, device):
+    def __init__(self, vocab_size, emb_dim, hid_dim, enc_layers, dec_layers, enc_kernel_size, dec_kernel_size, enc_max_length, dec_max_length, dropout, pad_idx, device):
         super().__init__()
         
-        enc = Encoder(emb_dim, hid_dim, enc_layers, enc_kernel_size, dropout, device)
-        dec = Decoder(vocab_size, emb_dim, hid_dim, dec_layers, dec_kernel_size, dropout, pad_idx, device)
+        enc = Encoder(emb_dim, hid_dim, enc_layers, enc_kernel_size, dropout, device, enc_max_length)
+        dec = Decoder(vocab_size, emb_dim, hid_dim, dec_layers, dec_kernel_size, dropout, pad_idx, device, dec_max_length)
 
         self.encoder = enc
         self.decoder = dec
+
+    def forward_encoder(self, src):
+        encoder_conved, encoder_combined = self.encoder(src)
         
+        return encoder_conved, encoder_combined
+
+    def forward_decoder(self, trg, memory):
+        encoder_conved, encoder_combined = memory
+        output, attention = self.decoder(trg, encoder_conved, encoder_combined)
+        
+        return output, (encoder_conved, encoder_combined) 
+
     def forward(self, src, trg):
         
         #src = [batch size, src len]
