@@ -6,6 +6,7 @@ url_config = {
         'resnet_transformer':'1GGhQqtMz4WloBh38U4sMlzLN6cpw5iag',
         'resnet_fpn_transformer':'1I3-m8wfVpsro1c3UupwxW97MYmP5evvh',
         'vgg_seq2seq':'1lWUvdYnyZ6HI52I6THS_Zr97YwEzcROn',
+        'vgg_convseq2seq':'1f5On-N-Dc25LZq0ZHLR3uhNlHVPkXl60',
         'base':'1xiw7ZnT3WH_9HXoGpLbhW-m2Sm2nlthi',
         }
 
