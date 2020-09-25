@@ -262,3 +262,89 @@ class Seq2Seq(nn.Module):
         # outputs batch_size, trg_len, vocab_size
         return outputs   
 
+class DecoderSeq2Seq(nn.Module):
+    def __init__(self, vocab_size, decoder_hidden, img_channel, decoder_embedded, num_layers, dropout=0.1):
+        super().__init__()
+        
+        self.num_layers = num_layers
+        attn = Attention(img_channel, img_channel)
+
+        self.decoder = Decoder(vocab_size, decoder_embedded, img_channel, decoder_hidden, num_layers, dropout, attn)
+
+    def forward_encoder(self, src):       
+        """src: timestep, batch size, channel
+           hidden: batchsize x dim
+           encoder_outputs: src len, batch size, enc hid dim * 2
+        """
+        batch_size = src.shape[1]
+        hidden_size = src.shape[2]
+        device = src.device
+        
+        hidden = torch.zeros((self.num_layers, batch_size, hidden_size)).to(device)
+        self.encoder_outputs = src
+
+        return hidden
+
+    def forward_decoder(self, tgt, memory):
+        """tgt: timestep x batchsize 
+           output: batch size x 1 x vocabsize
+        """
+        tgt = tgt[-1]
+        output, hidden, _ = self.decoder(tgt, memory, self.encoder_outputs)
+        output = output.unsqueeze(1)
+        
+        return output, hidden
+
+    def forward(self, src, trg, teacher_forcing_ratio = 0.5):
+        #src = [src len, batch size, channel]
+        #src_len = [batch size]
+        #trg = [trg len, batch size]
+        #teacher_forcing_ratio is probability to use teacher forcing
+        #e.g. if teacher_forcing_ratio is 0.75 we use teacher forcing 75% of the time
+                    
+        batch_size = src.shape[1]
+        trg_len = trg.shape[0]
+        trg_vocab_size = self.decoder.output_dim
+        device = src.device
+        hidden_size = src.shape[2]
+        
+        #tensor to store decoder outputs
+        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size).to(device)
+        
+        #encoder_outputs is all hidden states of the input sequence, back and forwards
+        #hidden is the final forward and backward hidden states, passed through a linear layer
+        encoder_outputs = src
+        hidden = torch.zeros((self.num_layers, batch_size, hidden_size)).to(device)
+                
+        #first input to the decoder is the <sos> tokens
+#        input = trg[0]
+        
+#         mask = self.create_mask(src)
+
+        #mask = [batch size, src len]
+                
+        for t in range(trg_len):
+            input = trg[t] 
+            #insert input token embedding, previous hidden state, all encoder hidden states 
+            #  and mask
+            #receive output tensor (predictions) and new hidden state
+#             print(hidden.shape, encoder_outputs.shape)
+            output, hidden, _ = self.decoder(input, hidden, encoder_outputs)
+            
+            #place predictions in a tensor holding predictions for each token
+            outputs[t] = output
+            
+            #decide if we are going to use teacher forcing or not
+#            teacher_force = random.random() < teacher_forcing_ratio
+            
+            #get the highest predicted token from our predictions
+#            top1 = output.argmax(1) 
+            
+            #if teacher forcing, use actual next token as next input
+            #if not, use predicted token
+#            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
+        
+        outputs = outputs.transpose(0, 1).contiguous()
+
+        # outputs batch_size, trg_len, vocab_size
+        return outputs 

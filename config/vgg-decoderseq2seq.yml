@@ -1,0 +1,33 @@
+pretrain: 
+    id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
+    md5: fbefa85079ad9001a71eb1bf47a93785
+    cached: /tmp/tranformerorc.pth
+
+# url or local path
+weights: https://drive.google.com/uc?id=13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
+
+backbone: vgg19_bn
+cnn:
+    # pooling stride size
+    ss:
+        - [2, 2]
+        - [2, 2]
+        - [2, 1]
+        - [2, 1]
+        - [1, 1]         
+    # pooling kernel size 
+    ks:
+        - [2, 2]
+        - [2, 2]
+        - [2, 1]
+        - [2, 1]
+        - [1, 1]
+    # dim of ouput feature map
+    hidden: 256
+
+seq_modeling: decoderseq2seq
+transformer:
+    decoder_hidden: 256,
+ 	img_channel: 256,
+	decoder_embedded: 256,
+	num_layers: 2
