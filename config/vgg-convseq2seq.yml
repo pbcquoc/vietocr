@@ -35,4 +35,6 @@ transformer:
     dec_kernel_size: 3
     dropout: 0.1
     pad_idx: 0
-    device: cuda:1
+    device: cuda:1,
+    enc_max_length: 512
+    dec_max_length: 512
