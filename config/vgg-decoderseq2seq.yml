@@ -27,7 +27,7 @@ cnn:
 
 seq_modeling: decoderseq2seq
 transformer:
-    decoder_hidden: 256,
-    img_channel: 256,
-    decoder_embedded: 256,
+    decoder_hidden: 256
+    img_channel: 256
+    decoder_embedded: 256
     num_layers: 2
