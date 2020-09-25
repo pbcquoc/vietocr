@@ -310,4 +310,4 @@ class ConvSeq2Seq(nn.Module):
         #output = [batch size, trg len - 1, output dim]
         #attention = [batch size, trg len - 1, src len]
         
-        return output, attention
+        return output#, attention
