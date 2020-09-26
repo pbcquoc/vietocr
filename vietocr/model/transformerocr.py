@@ -1,6 +1,6 @@
 from vietocr.model.cnn import CNN
 from vietocr.model.transformer import LanguageTransformer
-from vietocr.model.seq2seqv2 import Seq2Seq, DecoderSeq2Seq
+from vietocr.model.seq2seqv2 import Seq2Seq
 from vietocr.model.convseq2seq import ConvSeq2Seq
 from torch import nn
 
@@ -21,9 +21,6 @@ class VietOCR(nn.Module):
             self.transformer = Seq2Seq(vocab_size, **transformer_args)
         elif seq_modeling == 'convseq2seq':
             self.transformer = ConvSeq2Seq(vocab_size, **transformer_args)
-        elif seq_modeling == 'decoderseq2seq':
-            self.transformer = DecoderSeq2Seq(vocab_size, **transformer_args)
-           
         else:
             raise('Not Support Seq Model')
 
@@ -43,8 +40,5 @@ class VietOCR(nn.Module):
             outputs = self.transformer(src, tgt_input)
         elif self.seq_modeling == 'convseq2seq': 
             outputs = self.transformer(src, tgt_input)
-        elif self.seq_modeling == 'decoderseq2seq': 
-            outputs = self.transformer(src, tgt_input)
-
         return outputs
 
