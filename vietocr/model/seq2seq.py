@@ -46,7 +46,7 @@ class Attention(nn.Module):
         outputs: batch_size x src_len
         """
 
-        hidden = hidden[-1]
+        hidden = torch.sum(hidden, dim=0)
         
         batch_size = encoder_outputs.shape[1]
         src_len = encoder_outputs.shape[0]

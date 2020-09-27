@@ -57,20 +57,11 @@ class Trainer():
             self.load_weights(weight_file)
 
         self.iter = 0
-
-        self.optimizer = ScheduledOptim(
-            AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            #config['transformer']['d_model'], 
-            512,
-            **config['optimizer'])
-
-#        self.criterion = nn.CrossEntropyLoss(ignore_index=0) 
-        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
-#        transforms = torchvision.transforms.Compose([
-#            torchvision.transforms.ColorJitter(brightness=.1, contrast=.1, hue=.1, saturation=.1),
-#            torchvision.transforms.RandomAffine(degrees=0, scale=(3/4, 4/3))
-#            ])
+        self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
+        self.scheduler = CyclicLR(self.optimizer, **config['optimizer'])
+
+        self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
         transforms = ImgAugTransform()
 
@@ -128,8 +119,6 @@ class Trainer():
                 info = 'iter: {:06d} - valid loss: {:.3f} - acc full seq: {:.4f} - acc per char: {:.4f}'.format(self.iter, val_loss, acc_full_seq, acc_per_char)
                 print(info)
                 self.logger.log(info)
-
-#                self.save_checkpoint(self.checkpoint)
 
                 if acc_full_seq > best_acc:
                     self.save_weights(self.export_weights)
@@ -198,7 +187,7 @@ class Trainer():
     
         return acc_full_seq, acc_per_char
     
-    def visualize_prediction(self, sample=16, errorcase=False, fontname='serif', fontsize=20):
+    def visualize_prediction(self, sample=16, errorcase=False, fontname='serif', fontsize=16):
         
         pred_sents, actual_sents, img_files = self.predict(sample)
 
@@ -330,7 +319,6 @@ class Trainer():
                 image_height = self.config['dataset']['image_height'],        
                 image_min_width = self.config['dataset']['image_min_width'],
                 image_max_width = self.config['dataset']['image_max_width'])
-        
 
         return data_gen
 
@@ -354,6 +342,7 @@ class Trainer():
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1) 
 
         self.optimizer.step()
+        self.scheduler.step()
 
         loss_item = loss.item()
 
