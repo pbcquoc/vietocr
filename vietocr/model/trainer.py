@@ -14,7 +14,7 @@ from vietocr.loader.DataLoader import DataGen
 from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
 from torch.utils.data import DataLoader
 from einops import rearrange
-from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR
+from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR, OneCycleLR
 
 import torchvision 
 
@@ -59,7 +59,7 @@ class Trainer():
         self.iter = 0
         
         self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
-        self.scheduler = CyclicLR(self.optimizer, **config['optimizer'])
+        self.scheduler = OneCycleLR(self.optimizer, **config['optimizer'])
 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
