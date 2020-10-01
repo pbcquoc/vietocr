@@ -58,8 +58,13 @@ class Trainer():
 
         self.iter = 0
         
-        self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
-        self.scheduler = OneCycleLR(self.optimizer, **config['optimizer'])
+ #       self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
+ #       self.scheduler = OneCycleLR(self.optimizer, **config['optimizer'])
+        self.optimizer = ScheduledOptim(
+            AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+            #config['transformer']['d_model'], 
+            512,
+            **config['optimizer'])
 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
@@ -103,7 +108,7 @@ class Trainer():
 
             if self.iter % self.print_every == 0:
                 info = 'iter: {:06d} - train loss: {:.3f} - lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
-                        total_loss/self.print_every, self.optimizer.param_groups[0]['lr'], 
+                        total_loss/self.print_every, self.optimizer.lr, 
                         total_loader_time, total_gpu_time)
 
                 total_loss = 0
@@ -342,7 +347,7 @@ class Trainer():
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1) 
 
         self.optimizer.step()
-        self.scheduler.step()
+#        self.scheduler.step()
 
         loss_item = loss.item()
 
