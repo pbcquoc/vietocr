@@ -177,9 +177,9 @@ class Seq2Seq(nn.Module):
         self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, dropout)
         self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, dropout, attn)
         
-        attn.apply(init_weights)
-        self.encoder.apply(init_weights)
-        self.decoder.apply(init_weights)
+#        attn.apply(init_weights)
+#        self.encoder.apply(init_weights)
+#        self.decoder.apply(init_weights)
         
     def forward_encoder(self, src):       
         """src: timestep, batch size, channel
