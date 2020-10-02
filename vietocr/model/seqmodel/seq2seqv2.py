@@ -179,7 +179,7 @@ class Seq2Seq(nn.Module):
         
         attn.apply(init_weights)
         self.encoder.apply(init_weights)
-        self.decoder.appy(init_weights)
+        self.decoder.apply(init_weights)
         
     def forward_encoder(self, src):       
         """src: timestep, batch size, channel
