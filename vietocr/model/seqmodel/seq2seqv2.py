@@ -5,26 +5,20 @@ import torch.nn.functional as F
 import random
 
 class Encoder(nn.Module):
-    def __init__(self, emb_dim, enc_hid_dim, dec_hid_dim, num_layers, dropout):
+    def __init__(self, emb_dim, enc_hid_dim, dec_hid_dim, dropout):
         super().__init__()
-        self.num_layers = num_layers
-        self.enc_hid_dim = enc_hid_dim
+                
+        self.rnn = nn.GRU(emb_dim, enc_hid_dim, bidirectional = True)
         
-        self.rnn = nn.GRU(emb_dim, enc_hid_dim, num_layers=num_layers, bidirectional = True)
-        
-#        self.fc = nn.Linear(enc_hid_dim, dec_hid_dim)
+        self.fc = nn.Linear(enc_hid_dim * 2, dec_hid_dim)
         
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, src):
-        """
-        src: src_len x batch_size x img_channel
-        outputs: src_len x batch_size x enc_hid_dim 
-        hidden: num_layers x batch_size x dec_hid_dim
-        """
-
         
-        batch_size = src.shape[1]
+        #src = [src len, batch size]
+        #src_len = [batch size]
+        
         embedded = self.dropout(src)
         
         #embedded = [src len, batch size, emb dim]
@@ -50,30 +44,22 @@ class Encoder(nn.Module):
         
         #initial decoder hidden is final hidden state of the forwards and backwards 
         #  encoder RNNs fed through a linear layer
-        hidden = hidden.view(self.num_layers, 2, batch_size, self.enc_hid_dim)
-        hidden = torch.sum(hidden, dim=1)
+        hidden = torch.tanh(self.fc(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim = 1)))
         
-#        hidden = torch.tanh(self.fc(hidden))
+        #outputs = [src len, batch size, enc hid dim * 2]
+        #hidden = [batch size, dec hid dim]
         
-        outputs = outputs[:,:,:self.enc_hid_dim] + outputs[:,:, self.enc_hid_dim:]
-        
-
         return outputs, hidden
 
 class Attention(nn.Module):
     def __init__(self, enc_hid_dim, dec_hid_dim):
         super().__init__()
         
-        self.attn = nn.Linear(enc_hid_dim + dec_hid_dim, dec_hid_dim)
+        self.attn = nn.Linear((enc_hid_dim * 2) + dec_hid_dim, dec_hid_dim)
         self.v = nn.Linear(dec_hid_dim, 1, bias = False)
         
     def forward(self, hidden, encoder_outputs):
-        """
-        hidden: num_layers x batch_size x dec_hid_dim
-        encoder_outputs: src_len x batch_size x enc_hid_dim,
-        outputs: batch_size x src_len
-        """
-        hidden = torch.sum(hidden, dim=0)
+        
         #hidden = [batch size, dec hid dim]
         #encoder_outputs = [src len, batch size, enc hid dim * 2]
         
@@ -88,7 +74,7 @@ class Attention(nn.Module):
         #hidden = [batch size, src len, dec hid dim]
         #encoder_outputs = [batch size, src len, enc hid dim * 2]
         
-        energy = F.relu(self.attn(torch.cat((hidden, encoder_outputs), dim = 2))) 
+        energy = torch.tanh(self.attn(torch.cat((hidden, encoder_outputs), dim = 2))) 
         
         #energy = [batch size, src len, dec hid dim]
 
@@ -101,7 +87,7 @@ class Attention(nn.Module):
         return F.softmax(attention, dim = 1)
 
 class Decoder(nn.Module):
-    def __init__(self, output_dim, emb_dim, enc_hid_dim, dec_hid_dim, num_layers, dropout, attention):
+    def __init__(self, output_dim, emb_dim, enc_hid_dim, dec_hid_dim, dropout, attention):
         super().__init__()
 
         self.output_dim = output_dim
@@ -109,24 +95,19 @@ class Decoder(nn.Module):
         
         self.embedding = nn.Embedding(output_dim, emb_dim)
         
-        self.rnn = nn.GRU(enc_hid_dim + emb_dim, dec_hid_dim, num_layers=num_layers)
+        self.rnn = nn.GRU((enc_hid_dim * 2) + emb_dim, dec_hid_dim)
         
- #       self.fc_out = nn.Linear(enc_hid_dim + dec_hid_dim + emb_dim, output_dim)
-        self.fc_out = nn.Linear(dec_hid_dim, output_dim)
-       
+        self.fc_out = nn.Linear((enc_hid_dim * 2) + dec_hid_dim + emb_dim, output_dim)
+        
         self.dropout = nn.Dropout(dropout)
         
     def forward(self, input, hidden, encoder_outputs):
-        """
-        inputs: batch_size
-        hidden: num_layers x batch_size x dec_hid_dim
-        encoder_outputs: src_len x batch_size x enc_hid_dim
-        """
+             
         #input = [batch size]
         #hidden = [batch size, dec hid dim]
         #encoder_outputs = [src len, batch size, enc hid dim * 2]
         #mask = [batch size, src len]
-
+        
         input = input.unsqueeze(0)
         
         #input = [1, batch size]
@@ -159,7 +140,7 @@ class Decoder(nn.Module):
         
         #rnn_input = [1, batch size, (enc hid dim * 2) + emb dim]
             
-        output, hidden = self.rnn(rnn_input, hidden)
+        output, hidden = self.rnn(rnn_input, hidden.unsqueeze(0))
         
         #output = [seq len, batch size, dec hid dim * n directions]
         #hidden = [n layers * n directions, batch size, dec hid dim]
@@ -168,28 +149,27 @@ class Decoder(nn.Module):
         #output = [1, batch size, dec hid dim]
         #hidden = [1, batch size, dec hid dim]
         #this also means that output == hidden
-#         assert (output == hidden).all()
+        assert (output == hidden).all()
         
         embedded = embedded.squeeze(0)
         output = output.squeeze(0)
         weighted = weighted.squeeze(0)
         
-        prediction = self.fc_out(output)
-        #prediction = self.fc_out(torch.cat((output, weighted, embedded), dim = 1))
-
+        prediction = self.fc_out(torch.cat((output, weighted, embedded), dim = 1))
+        
         #prediction = [batch size, output dim]
         
-        return prediction, hidden , a.squeeze(1)
+        return prediction, hidden.squeeze(0), a.squeeze(1)
 
     
 class Seq2Seq(nn.Module):
-    def __init__(self, vocab_size, encoder_hidden, decoder_hidden, img_channel, decoder_embedded, num_layers, dropout=0.1):
+    def __init__(self, vocab_size, encoder_hidden, decoder_hidden, img_channel, decoder_embedded, dropout=0.1):
         super().__init__()
         
         attn = Attention(encoder_hidden, decoder_hidden)
 
-        self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, num_layers, dropout)
-        self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, num_layers, dropout, attn)
+        self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, dropout)
+        self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, dropout, attn)
 
     def forward_encoder(self, src):       
         """src: timestep, batch size, channel
@@ -197,19 +177,19 @@ class Seq2Seq(nn.Module):
            encoder_outputs: src len, batch size, enc hid dim * 2
         """
         encoder_outputs, hidden = self.encoder(src)
+        self.encoder_outputs = encoder_outputs
 
-        return (hidden, encoder_outputs)
+        return hidden
 
     def forward_decoder(self, tgt, memory):
         """tgt: timestep x batchsize 
            output: batch size x 1 x vocabsize
         """
         tgt = tgt[-1]
-        hidden, encoder_outputs = memory
-        output, hidden, _ = self.decoder(tgt, hidden, encoder_outputs)
+        output, hidden, _ = self.decoder(tgt, memory, self.encoder_outputs)
         output = output.unsqueeze(1)
         
-        return output, (hidden, encoder_outputs)
+        return output, hidden
 
     def forward(self, src, trg, teacher_forcing_ratio = 0.5):
         #src = [src len, batch size, channel]
@@ -260,5 +240,4 @@ class Seq2Seq(nn.Module):
         outputs = outputs.transpose(0, 1).contiguous()
 
         # outputs batch_size, trg_len, vocab_size
-        return outputs   
-
+        return outputs  
