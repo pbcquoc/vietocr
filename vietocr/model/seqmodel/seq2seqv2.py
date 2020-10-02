@@ -161,16 +161,26 @@ class Decoder(nn.Module):
         
         return prediction, hidden.squeeze(0), a.squeeze(1)
 
+def init_weights(m):
+    for name, param in m.named_parameters():
+        if 'weight' in name:
+            nn.init.normal_(param.data, mean=0, std=0.01)
+        else:
+            nn.init.constant_(param.data, 0)
     
 class Seq2Seq(nn.Module):
     def __init__(self, vocab_size, encoder_hidden, decoder_hidden, img_channel, decoder_embedded, dropout=0.1):
         super().__init__()
         
         attn = Attention(encoder_hidden, decoder_hidden)
-
+        
         self.encoder = Encoder(img_channel, encoder_hidden, decoder_hidden, dropout)
         self.decoder = Decoder(vocab_size, decoder_embedded, encoder_hidden, decoder_hidden, dropout, attn)
-
+        
+        attn.apply(init_weights)
+        self.encoder.apply(init_weights)
+        self.decoder.appy(init_weights)
+        
     def forward_encoder(self, src):       
         """src: timestep, batch size, channel
            hidden: batchsize x dim
@@ -211,14 +221,14 @@ class Seq2Seq(nn.Module):
         encoder_outputs, hidden = self.encoder(src)
                 
         #first input to the decoder is the <sos> tokens
-#        input = trg[0]
+        input = trg[0]
         
 #         mask = self.create_mask(src)
 
         #mask = [batch size, src len]
                 
         for t in range(trg_len):
-            input = trg[t] 
+#            input = trg[t] 
             #insert input token embedding, previous hidden state, all encoder hidden states 
             #  and mask
             #receive output tensor (predictions) and new hidden state
@@ -228,14 +238,14 @@ class Seq2Seq(nn.Module):
             outputs[t] = output
             
             #decide if we are going to use teacher forcing or not
-#            teacher_force = random.random() < teacher_forcing_ratio
+            teacher_force = random.random() < teacher_forcing_ratio
             
             #get the highest predicted token from our predictions
-#            top1 = output.argmax(1) 
+            top1 = output.argmax(1) 
             
             #if teacher forcing, use actual next token as next input
             #if not, use predicted token
-#            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
+            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
         
         outputs = outputs.transpose(0, 1).contiguous()
 
