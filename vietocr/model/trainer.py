@@ -58,17 +58,17 @@ class Trainer():
 
         self.iter = 0
         
- #       self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
- #       self.scheduler = OneCycleLR(self.optimizer, **config['optimizer'])
-        self.optimizer = ScheduledOptim(
-            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
-            #config['transformer']['d_model'], 
-            512,
-            **config['optimizer'])
+        self.optimizer = AdamW(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09)
+        self.scheduler = OneCycleLR(self.optimizer, **config['optimizer'])
+#        self.optimizer = ScheduledOptim(
+#            Adam(self.model.parameters(), betas=(0.9, 0.98), eps=1e-09),
+#            #config['transformer']['d_model'], 
+#            512,
+#            **config['optimizer'])
 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
-        transforms = None#ImgAugTransform()
+        transforms = ImgAugTransform()
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
                 self.data_root, self.train_annotation, transform=transforms)
@@ -347,7 +347,7 @@ class Trainer():
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1) 
 
         self.optimizer.step()
-#        self.scheduler.step()
+        self.scheduler.step()
 
         loss_item = loss.item()
 
