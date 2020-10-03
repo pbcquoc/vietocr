@@ -162,18 +162,18 @@ class Seq2Seq(nn.Module):
         outputs = torch.zeros(trg_len, batch_size, self.vocab_size).to(device)
         
         encoder_outputs, hidden = self.encoder(src)
-        input = trg[0,:]
+#        input = trg[0,:]
 
         for t in range(trg_len):
-        #    input = trg[t] 
+            input = trg[t] 
 
             output, hidden, _ = self.decoder(input, hidden, encoder_outputs)
             
             outputs[t] = output
 
-            teacher_force = random.random() < 0.5
-            top1 = output.argmax(1) 
-            input = trg[t+1] if teacher_force and t + 1 < trg_len else top1
+#            teacher_force = random.random() < 0.5
+#            top1 = output.argmax(1) 
+#            input = trg[t+1] if teacher_force and t + 1 < trg_len else top1
 
         outputs = outputs.transpose(0, 1).contiguous()
 

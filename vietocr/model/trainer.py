@@ -68,7 +68,7 @@ class Trainer():
 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
-        transforms = ImgAugTransform()
+        transforms = None#ImgAugTransform()
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
                 self.data_root, self.train_annotation, transform=transforms)

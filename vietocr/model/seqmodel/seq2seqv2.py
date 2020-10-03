@@ -221,14 +221,14 @@ class Seq2Seq(nn.Module):
         encoder_outputs, hidden = self.encoder(src)
                 
         #first input to the decoder is the <sos> tokens
-        input = trg[0]
+#        input = trg[0]
         
 #         mask = self.create_mask(src)
 
         #mask = [batch size, src len]
                 
         for t in range(trg_len):
-#            input = trg[t] 
+            input = trg[t] 
             #insert input token embedding, previous hidden state, all encoder hidden states 
             #  and mask
             #receive output tensor (predictions) and new hidden state
@@ -238,14 +238,14 @@ class Seq2Seq(nn.Module):
             outputs[t] = output
             
             #decide if we are going to use teacher forcing or not
-            teacher_force = random.random() < teacher_forcing_ratio
-            
-            #get the highest predicted token from our predictions
-            top1 = output.argmax(1) 
-            
-            #if teacher forcing, use actual next token as next input
-            #if not, use predicted token
-            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
+#            teacher_force = random.random() < teacher_forcing_ratio
+#            
+#            #get the highest predicted token from our predictions
+#            top1 = output.argmax(1) 
+#            
+#            #if teacher forcing, use actual next token as next input
+#            #if not, use predicted token
+#            input = trg[t+1] if t+1 < trg_len and teacher_force else top1
         
         outputs = outputs.transpose(0, 1).contiguous()
 
