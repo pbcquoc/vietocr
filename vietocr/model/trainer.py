@@ -108,7 +108,7 @@ class Trainer():
 
             if self.iter % self.print_every == 0:
                 info = 'iter: {:06d} - train loss: {:.3f} - lr: {:.2e} - load time: {:.2f} - gpu time: {:.2f}'.format(self.iter, 
-                        total_loss/self.print_every, self.optimizer.lr, 
+                        total_loss/self.print_every, self.optimizer.param_groups[0]['lr'], 
                         total_loader_time, total_gpu_time)
 
                 total_loss = 0
