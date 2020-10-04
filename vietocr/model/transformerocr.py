@@ -1,6 +1,6 @@
 from vietocr.model.backbone.cnn import CNN
 from vietocr.model.seqmodel.transformer import LanguageTransformer
-from vietocr.model.seqmodel.seq2seq import Seq2Seq
+from vietocr.model.seqmodel.seq2seqv2 import Seq2Seq
 from vietocr.model.seqmodel.convseq2seq import ConvSeq2Seq
 from torch import nn
 
