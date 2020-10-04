@@ -135,12 +135,20 @@ class Seq2Seq(nn.Module):
         
         return output, (hidden, encoder_outputs)
 
-    def forward(self, src, trg, teacher_forcing_ratio = 0.5):
+    def forward(self, src, trg):
         """
         src: time_step x batch_size
         trg: time_step x batch_size
         outputs: batch_size x time_step x vocab_size
         """
+
+        batch_size = src.shape[1]
+        trg_len = trg.shape[0]
+        trg_vocab_size = self.decoder.output_dim
+        device = src.device
+
+        outputs = torch.zeros(trg_len, batch_size, trg_vocab_size).to(device)
+        encoder_outputs, hidden = self.encoder(src)
                 
         for t in range(trg_len):
             input = trg[t] 
