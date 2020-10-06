@@ -34,5 +34,5 @@ transformer:
     dropout: 0.1
 
 optimizer:
-    max_lr: 1e-3
+    max_lr: 0.001
     pct_start: 0.1
