@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vietocr",
-    version="0.2.3",
+    version="0.2.4",
     author="pbcquoc",
     author_email="pbcquoc@gmail.com",
     description="Transformer base text detection",

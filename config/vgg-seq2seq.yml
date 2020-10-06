@@ -27,8 +27,12 @@ cnn:
 
 seq_modeling: seq2seq
 transformer:
-    hidden: 256
-    img_dim: 256
+    encoder_hidden: 256
+    decoder_hidden: 256
+    img_channel: 256
     decoder_embedded: 256
-    num_layers: 2
     dropout: 0.1
+
+optimizer:
+    max_lr: 1e-3
+    pct_start: 0.1
