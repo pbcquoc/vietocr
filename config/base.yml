@@ -16,8 +16,8 @@ transformer:
     trans_dropout: 0.1
 
 optimizer:
-    'max_lr':3e-4, 
-    'pct_start':0.1
+    max_lr: 3e-4, 
+    pct_start: 0.1
 
 trainer:
     batch_size: 32
