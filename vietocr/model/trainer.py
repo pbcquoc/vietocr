@@ -274,7 +274,7 @@ class Trainer():
             if name not in state_dict:
                 print('{} not found'.format(name))
             elif state_dict[name].shape != param.shape:
-                print('{} missmatching shape'.format(name))
+                print('{} missmatching shape, required {} but found {}'.format(name, param.shape, state_dict[name].shape))
                 del state_dict[name]
 
         self.model.load_state_dict(state_dict, strict=False)
