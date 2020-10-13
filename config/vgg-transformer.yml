@@ -8,6 +8,7 @@ weights: https://drive.google.com/uc?id=13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
 
 backbone: vgg19_bn
 cnn:
+    pretrained: True
     # pooling stride size
     ss:
         - [2, 2]
