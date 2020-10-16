@@ -1,4 +1,5 @@
 # VietOCR
+**Các bạn vui lòng cập nhật lên version 0.3.2 để không xảy ra lỗi.**
 <p align="center">
 <img src="https://github.com/pbcquoc/vietocr/raw/master/image/sample.png" width="1000" height="300">
 </p>
