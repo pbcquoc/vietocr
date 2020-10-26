@@ -28,8 +28,8 @@ Pretrain model các bạn download tại [đây](https://drive.google.com/file/d
 Đồng thời mình cũng thử nghiệm kết quả của mô hình trên tập dữ liệu [synth 90k](https://www.robots.ox.ac.uk/~vgg/data/text/) mô hình transformerocr cho có độ chính xác full_sequence là 96% trong khi đó một cài đặt khá phổ biến khác dữ trên cơ chế attention cho kết quả là 93%.
 
 | Backbone         | Config           | Precision full sequence | time |
-| ------------- |:-------------:| ---:|
-| VGG19-bn - Transformer | vgg_transformer | (updated) ||
+| ------------- |:-------------:| ---:|---:|
+| VGG19-bn - Transformer | vgg_transformer | (updated) |   |
 | VGG19-bn - Seq2Seq     | vgg_seq2seq     | 0.8701 | 12ms 1080ti |
 
 # License
