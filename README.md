@@ -25,15 +25,16 @@ Thư viện này cài đặt cả 2 kiểu seq model đó là attention seq2seq 
 Mô hình này được huấn luyện trên tập dữ liệu gồm 10m ảnh, bao gồm nhiều loại ảnh khác nhau như ảnh tự phát sinh, chữ viết tay, các văn bản scan thực tế. 
 Pretrain model được cung cấp sẵn.
 
-Đồng thời mình cũng thử nghiệm kết quả của mô hình trên tập dữ liệu [synth 90k](https://www.robots.ox.ac.uk/~vgg/data/text/) mô hình transformerocr cho có độ chính xác full_sequence là 96% trong khi đó một cài đặt khá phổ biến khác dữ trên cơ chế attention cho kết quả là 93%.
-
 # Kết quả thử nghiệm trên tập 10m
 | Backbone         | Config           | Precision full sequence | time |
 | ------------- |:-------------:| ---:|---:|
-| VGG19-bn - Transformer | vgg_transformer | 0.8800 | 86.83 @ 1080ti  |
-| VGG19-bn - Seq2Seq     | vgg_seq2seq     | 0.8701 | 12ms 1080ti |
+| VGG19-bn - Transformer | vgg_transformer | 0.8800 | 86ms @ 1080ti  |
+| VGG19-bn - Seq2Seq     | vgg_seq2seq     | 0.8701 | 12ms @ 1080ti |
 
-Thời gian dự đoán của mô hình vgg-transformer quá lâu so với mô hình seq2seq, trong khi đó không có sự khác biệt rõ ràng giữ độ chính xác của 2 loại kiến trúc này. 
+Thời gian dự đoán của mô hình vgg-transformer quá lâu so với mô hình seq2seq, trong khi đó không có sự khác biệt rõ ràng giữ độ chính xác của 2 loại kiến trúc này.
+
+# Dataset 
+Mình chỉ cung cấp tập dữ liệu mẫu khoảng 1m ảnh tự phát sinh. Các bạn có thể tải về tại [đây (https://drive.google.com/file/d/1T0cmkhTgu3ahyMIwGZeby612RpVdDxOR/view).
 # License
 Mình phát hành thư viện này dưới các điều khoản của [Apache 2.0 license]().
 
