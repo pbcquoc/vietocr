@@ -1,10 +1,10 @@
 pretrain: 
-    id_or_url: 13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
-    md5: fbefa85079ad9001a71eb1bf47a93785
+    id_or_url: 1nTKlEog9YFK74kPyX0qLwCWi60_YHHk4
+    md5: efcabaa6d3adfca8e52bda2fd7d2ee04
     cached: /tmp/tranformerorc.pth
 
 # url or local path
-weights: https://drive.google.com/uc?id=13327Y1tz1ohsm5YZMyXVMPIOjoOA0OaA
+weights: https://drive.google.com/uc?id=1nTKlEog9YFK74kPyX0qLwCWi60_YHHk4
 
 backbone: vgg19_bn
 cnn:
