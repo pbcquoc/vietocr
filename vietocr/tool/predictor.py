@@ -32,7 +32,6 @@ class Predictor():
             sent = translate_beam_search(img, self.model)
             s = sent
         else:
-            sents = translate(img, self.model)
             s = translate(img, self.model)[0].tolist()
 
         s = self.vocab.decode(s)
