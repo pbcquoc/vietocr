@@ -73,7 +73,7 @@ class LanguageTransformer(nn.Module):
         return memory
     
     def get_memory(self, memory, i):
-        memory = memory[:, i, :]
+        memory = memory[:, [i], :]
         return memory
 
 class PositionalEncoding(nn.Module):

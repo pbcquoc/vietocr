@@ -169,7 +169,7 @@ class Seq2Seq(nn.Module):
     
     def get_memory(self, memory, i):
         hidden, encoder_outputs = memory
-        hidden = hidden[i]
-        encoder_outputs = encoder_outputs[:, i,:]
+        hidden = hidden[[i]]
+        encoder_outputs = encoder_outputs[:, [i],:]
 
         return (hidden, encoder_outputs)
