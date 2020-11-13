@@ -47,7 +47,7 @@ def beamsearch(memory, model, device, beam_size=4, candidates=1, max_seq_length=
 
     with torch.no_grad():
 #        memory = memory.repeat(1, beam_size, 1) # TxNxE
-        memory = model.transformer.expand_memory(memory, beam_sze)
+        memory = model.transformer.expand_memory(memory, beam_size)
 
         for _ in range(max_seq_length):
             
