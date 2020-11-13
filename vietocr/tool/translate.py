@@ -52,7 +52,7 @@ def beamsearch(memory, model, device, beam_size=4, candidates=1, max_seq_length=
         for _ in range(max_seq_length):
             
             tgt_inp = beam.get_current_state().transpose(0,1).to(device)  # TxN
-            decoder_outputs = model.transformer.forward_decoder(tgt_inp, memory)
+            decoder_outputs, memory = model.transformer.forward_decoder(tgt_inp, memory)
 
             log_prob = log_softmax(decoder_outputs[:,-1, :].squeeze(0), dim=-1)
             beam.advance(log_prob.cpu())
