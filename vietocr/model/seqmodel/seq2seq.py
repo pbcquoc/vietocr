@@ -158,4 +158,18 @@ class Seq2Seq(nn.Module):
             
         outputs = outputs.transpose(0, 1).contiguous()
 
-        return outputs 
+        return outputs
+
+    def expand_memory(self, memory, beam_size):
+        hidden, encoder_outputs = memory
+        hidden = hidden.repeat(beam_size, 1)
+        encoder_outputs = encoder_outputs.repeat(1, beam_size, 1)
+
+        return (hidden, encoder_outputs)
+    
+    def get_memory(self, memory, i):
+        hidden, encoder_outputs = memory
+        hidden = hidden[i]
+        encoder_outputs = encoder_outputs[:, i,:]
+
+        return (hidden, encoder_outputs)

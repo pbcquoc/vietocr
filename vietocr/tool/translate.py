@@ -11,14 +11,16 @@ from vietocr.model.beam import Beam
 def batch_translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):
     # img: NxCxHxW
     model.eval()
+    device = img.device
     sents = []
 
     with torch.no_grad():
         src = model.cnn(img)
         memories = model.transformer.forward_encoder(src)
         for i in range(memories.size(1)):
-            memory = memories[:,i,:].repeat(1, beam_size, 1) # TxNxE
-            sent = beamsearch(memory, model, beam_size, candidates, max_seq_length, sos_token, eos_token)
+#            memory = memories[:,i,:].repeat(1, beam_size, 1) # TxNxE
+            memory = model.transformer.get_memory(memory, i)
+            sent = beamsearch(memory, model, device, beam_size, candidates, max_seq_length, sos_token, eos_token)
             sents.append(sent)
 
     sents = np.asarray(sents)
@@ -28,24 +30,25 @@ def batch_translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_l
 def translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):
     # img: 1xCxHxW
     model.eval()
-    
+    device = img.device
+
     with torch.no_grad():
         src = model.cnn(img)
         memory = model.transformer.forward_encoder(src) #TxNxE
-        sent = beamsearch(memory, model, beam_size, candidates, max_seq_length, sos_token, eos_token)
+        sent = beamsearch(memory, model, device, beam_size, candidates, max_seq_length, sos_token, eos_token)
 
     return sent
         
-def beamsearch(memory, model, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):    
+def beamsearch(memory, model, device, beam_size=4, candidates=1, max_seq_length=128, sos_token=1, eos_token=2):    
     # memory: Tx1xE
     model.eval()
-    device = memory.device
 
     beam = Beam(beam_size=beam_size, min_length=0, n_top=candidates, ranker=None, start_token_id=sos_token, end_token_id=eos_token)
 
     with torch.no_grad():
-        memory = memory.repeat(1, beam_size, 1) # TxNxE
-         
+#        memory = memory.repeat(1, beam_size, 1) # TxNxE
+        memory = model.transformer.expand_memory(memory, beam_sze)
+
         for _ in range(max_seq_length):
             
             tgt_inp = beam.get_current_state().transpose(0,1).to(device)  # TxN

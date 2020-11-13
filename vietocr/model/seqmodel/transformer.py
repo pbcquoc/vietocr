@@ -67,6 +67,14 @@ class LanguageTransformer(nn.Module):
         output = output.transpose(0, 1)
 
         return self.fc(output), memory
+    
+    def expand_memory(self, memory, beam_size):
+        memory = memory.repeat(1, beam_size, 1)
+        return memory
+    
+    def get_memory(self, memory, i):
+        memory = memory[:, i, :]
+        return memory
 
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, dropout=0.1, max_len=100):
