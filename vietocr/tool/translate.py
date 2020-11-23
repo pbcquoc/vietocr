@@ -92,7 +92,6 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
 #            output = model.transformer(src, tgt_inp, tgt_key_padding_mask=None)
             output, memory = model.transformer.forward_decoder(tgt_inp, memory)
             output = softmax(output, dim=-1)
-            print(output.shape)
             output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
@@ -110,7 +109,9 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
             del output
 
         translated_sentence = np.asarray(translated_sentence).T
-    print(translated_sentence, char_probs)
+        char_probs = np.asarray(char_probs).T
+
+    print(translated_sentence.shape, char_probs.shape)
     return translated_sentence, char_probs
 
 def build_model(config):
