@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import math
 from PIL import Image
-from torch.nn.functional import log_softmax
+from torch.nn.functional import log_softmax, softmax
 
 from vietocr.model.transformerocr import VietOCR
 from vietocr.model.vocab import Vocab
@@ -98,7 +98,7 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
             indices = indices[:, -1, 0]
             indices = indices.tolist()
             
-            values = values[:, -1, 0]
+            values = softmax(values[:, -1, 0], dim=-1)
             values = values.tolist()
             char_probs.append(values)
 
