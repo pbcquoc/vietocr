@@ -80,6 +80,8 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
         memory = model.transformer.forward_encoder(src)
 
         translated_sentence = [[sos_token]*len(img)]
+        char_probs = []
+
         max_length = 0
 
         while max_length <= max_seq_length and not all(np.any(np.asarray(translated_sentence).T==eos_token, axis=1)):
@@ -95,6 +97,10 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
 
             indices = indices[:, -1, 0]
             indices = indices.tolist()
+            
+            values = values[:, -1, 0]
+            values = values.tolist()
+            char_probs.append(values)
 
             translated_sentence.append(indices)   
             max_length += 1
@@ -103,7 +109,7 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
 
         translated_sentence = np.asarray(translated_sentence).T
     
-    return translated_sentence
+    return translated_sentence, probs
 
 def build_model(config):
     vocab = Vocab(config['vocab'])
