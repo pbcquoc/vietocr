@@ -16,6 +16,7 @@ def batch_translate_beam_search(img, model, beam_size=4, candidates=1, max_seq_l
 
     with torch.no_grad():
         src = model.cnn(img)
+        print(src.shap)
         memories = model.transformer.forward_encoder(src)
         for i in range(src.size(0)):
 #            memory = memories[:,i,:].repeat(1, beam_size, 1) # TxNxE

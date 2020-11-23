@@ -18,13 +18,13 @@ class Cfg(dict):
 
     @staticmethod
     def load_config_from_file(fname):
-        base_config = download_config(url_config['base'])
+#        base_config = download_config(url_config['base'])
 
         with open(fname, encoding='utf-8') as f:
             config = yaml.safe_load(f)
-        base_config.update(config)
+#        base_config.update(config)
 
-        return Cfg(base_config)
+        return Cfg(config)
 
     @staticmethod
     def load_config_from_name(name):

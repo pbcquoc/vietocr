@@ -11,7 +11,7 @@ from vietocr.loader.aug import ImgAugTransform
 import yaml
 import torch
 from vietocr.loader.DataLoader import DataGen
-from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, collate_fn
+from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, Collator
 from torch.utils.data import DataLoader
 from einops import rearrange
 from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR, OneCycleLR
@@ -43,6 +43,9 @@ class Trainer():
         self.batch_size = config['trainer']['batch_size']
         self.print_every = config['trainer']['print_every']
         self.valid_every = config['trainer']['valid_every']
+        
+        self.image_aug = config['aug']['image_aug']
+        self.masked_language_model = config['aug']['masked_language_model']
 
         self.checkpoint = config['trainer']['checkpoint']
         self.export_weights = config['trainer']['export']
@@ -68,13 +71,15 @@ class Trainer():
 
         self.criterion = LabelSmoothingLoss(len(self.vocab), padding_idx=self.vocab.pad, smoothing=0.1)
         
-        transforms = ImgAugTransform()
+        transforms = None
+        if self.image_aug:
+            transforms = ImgAugTransform()
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
-                self.data_root, self.train_annotation, transform=transforms)
+                self.data_root, self.train_annotation, self.masked_language_model, transform=transforms)
         if self.valid_annotation:
             self.valid_gen = self.data_gen('valid_{}'.format(self.dataset_name), 
-                    self.data_root, self.valid_annotation)
+                    self.data_root, self.valid_annotation, masked_language_model=False)
 
         self.train_losses = []
         
@@ -299,7 +304,7 @@ class Trainer():
 
         return batch
 
-    def data_gen(self, lmdb_path, data_root, annotation, transform=None):
+    def data_gen(self, lmdb_path, data_root, annotation, masked_language_model=True, transform=None):
         dataset = OCRDataset(lmdb_path=lmdb_path, 
                 root_dir=data_root, annotation_path=annotation, 
                 vocab=self.vocab, transform=transform, 
@@ -308,6 +313,8 @@ class Trainer():
                 image_max_width=self.config['dataset']['image_max_width'])
 
         sampler = ClusterRandomSampler(dataset, self.batch_size, True)
+        collate_fn = Collator(masked_language_model)
+
         gen = DataLoader(
                 dataset,
                 batch_size=self.batch_size, 
