@@ -94,7 +94,7 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
             output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
-
+            print(values.shape, indices.shape)
             indices = indices[:, -1, 0]
             indices = indices.tolist()
             
