@@ -108,8 +108,8 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
             del output
 
         translated_sentence = np.asarray(translated_sentence).T
-    
-    return translated_sentence, probs
+    print(translated_sentence, char_probs)
+    return translated_sentence, char_probs
 
 def build_model(config):
     vocab = Vocab(config['vocab'])
