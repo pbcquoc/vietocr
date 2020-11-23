@@ -111,7 +111,7 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
         translated_sentence = np.asarray(translated_sentence).T
         char_probs = np.asarray(char_probs).T
 
-    print(translated_sentence.shape, char_probs.shape)
+    print(translated_sentence, char_probs)
     return translated_sentence, char_probs
 
 def build_model(config):
