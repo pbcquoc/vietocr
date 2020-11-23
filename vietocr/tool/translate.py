@@ -91,14 +91,16 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
 #            output = model(img, tgt_inp, tgt_key_padding_mask=None)
 #            output = model.transformer(src, tgt_inp, tgt_key_padding_mask=None)
             output, memory = model.transformer.forward_decoder(tgt_inp, memory)
+            output = softmax(output, dim=-1)
+            print(output.shape)
             output = output.to('cpu')
 
             values, indices  = torch.topk(output, 5)
-            print(values.shape, indices.shape)
+            
             indices = indices[:, -1, 0]
             indices = indices.tolist()
             
-            values = softmax(values[:, -1, 0], dim=-1)
+            values = values[:, -1, 0]
             values = values.tolist()
             char_probs.append(values)
 
