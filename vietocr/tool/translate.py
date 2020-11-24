@@ -70,7 +70,7 @@ def beamsearch(memory, model, device, beam_size=4, candidates=1, max_seq_length=
     
     return [1] + [int(i) for i in hypothesises[0][:-1]]
 
-def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
+def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2, return_prob=False):
     "data: BxCXHxW"
     model.eval()
     device = img.device
@@ -80,7 +80,7 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
         memory = model.transformer.forward_encoder(src)
 
         translated_sentence = [[sos_token]*len(img)]
-        char_probs = []
+        char_probs = [[1]*len(img)]
 
         max_length = 0
 
@@ -109,10 +109,15 @@ def translate(img, model, max_seq_length=128, sos_token=1, eos_token=2):
             del output
 
         translated_sentence = np.asarray(translated_sentence).T
-        char_probs = np.asarray(char_probs).T
 
-    print(translated_sentence, char_probs)
-    return translated_sentence, char_probs
+        char_probs = np.multiply(char_probs, translated_sentence>3)
+        char_probs = np.asarray(char_probs).T
+        print(translated_sentence, char_probs)
+    if return_prob:
+        return translated_sentence, char_probs
+    else:
+        return translated_sentence
+
 
 def build_model(config):
     vocab = Vocab(config['vocab'])
