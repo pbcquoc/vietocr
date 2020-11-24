@@ -211,7 +211,7 @@ class Trainer():
             pred_sents = [pred_sents[i] for i in wrongs]
             actual_sents = [actual_sents[i] for i in wrongs]
             img_files = [img_files[i] for i in wrongs]
-            probs = [probs[i] for i im wrongs]
+            probs = [probs[i] for i in wrongs]
 
         img_files = img_files[:sample]
 
