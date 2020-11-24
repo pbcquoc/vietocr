@@ -32,7 +32,7 @@ class Predictor():
             s = sent
             prob = None
         else:
-            pred = translate(img, self.model, return_prob)
+            pred = translate(img, self.model, return_prob=return_prob)
             print(pred) 
             if return_prob:
                 prob = pred[1][0]
