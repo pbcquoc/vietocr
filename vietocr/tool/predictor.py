@@ -32,7 +32,7 @@ class Predictor():
             s = sent
             prob = None
         else:
-            s, prob = translate(img, self.model, return_prob=return_prob)
+            s, prob = translate(img, self.model)
             s = s[0].tolist()
             prob = prob[0]
 
