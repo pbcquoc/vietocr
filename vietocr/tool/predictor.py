@@ -33,7 +33,7 @@ class Predictor():
             prob = None
         else:
             pred = translate(img, self.model, return_prob)
-            
+            print(pred) 
             if return_prob:
                 prob = pred[1][0]
                 s = pred[0][0].tolist()
