@@ -47,6 +47,10 @@ dataloader:
     num_workers: 3
     pin_memory: True
 
+aug:
+    image_aug: true
+    masked_language_model: true
+
 predictor:
     # disable or enable beamsearch while prediction, use beamsearch will be slower
     beamsearch: False
