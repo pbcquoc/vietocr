@@ -32,13 +32,9 @@ class Predictor():
             s = sent
             prob = None
         else:
-            pred = translate(img, self.model, return_prob=return_prob)
-            print(pred) 
-            if return_prob:
-                prob = pred[1][0]
-                s = pred[0][0].tolist()
-            else:
-                s = pred[0].tolist()
+            s, prob = translate(img, self.model, return_prob=return_prob)
+            s = s[0].tolist()
+            prob = prob[0]
 
         s = self.vocab.decode(s)
         
@@ -46,4 +42,3 @@ class Predictor():
             return s, prob
         else:
             return s
-

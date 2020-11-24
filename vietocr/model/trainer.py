@@ -172,8 +172,9 @@ class Trainer():
 
             if self.beamsearch:
                 translated_sentence = batch_translate_beam_search(batch['img'], self.model)
+                prob = None
             else:
-                translated_sentence = translate(batch['img'], self.model)
+                translated_sentence, prob = translate(batch['img'], self.model)
 
             pred_sent = self.vocab.batch_decode(translated_sentence.tolist())
             actual_sent = self.vocab.batch_decode(batch['tgt_output'].tolist())
@@ -186,11 +187,11 @@ class Trainer():
             if sample != None and len(pred_sents) > sample:
                 break
 
-        return pred_sents, actual_sents, img_files
+        return pred_sents, actual_sents, img_files, prob
 
     def precision(self, sample=None):
 
-        pred_sents, actual_sents, _ = self.predict(sample=sample)
+        pred_sents, actual_sents, _, _ = self.predict(sample=sample)
 
         acc_full_seq = compute_accuracy(actual_sents, pred_sents, mode='full_sequence')
         acc_per_char = compute_accuracy(actual_sents, pred_sents, mode='per_char')
@@ -199,7 +200,7 @@ class Trainer():
     
     def visualize_prediction(self, sample=16, errorcase=False, fontname='serif', fontsize=16):
         
-        pred_sents, actual_sents, img_files = self.predict(sample)
+        pred_sents, actual_sents, img_files, probs = self.predict(sample)
 
         if errorcase:
             wrongs = []
@@ -210,7 +211,7 @@ class Trainer():
             pred_sents = [pred_sents[i] for i in wrongs]
             actual_sents = [actual_sents[i] for i in wrongs]
             img_files = [img_files[i] for i in wrongs]
-
+            probs = [probs[i] for i im wrongs]
 
         img_files = img_files[:sample]
 
@@ -223,11 +224,12 @@ class Trainer():
             img_path = img_files[vis_idx]
             pred_sent = pred_sents[vis_idx]
             actual_sent = actual_sents[vis_idx]
+            prob = probs[vis_idx]
 
             img = Image.open(open(img_path, 'rb'))
             plt.figure()
             plt.imshow(img)
-            plt.title('pred: {} - actual: {}'.format(pred_sent, actual_sent), loc='left', fontdict=fontdict)
+            plt.title('prob: {} - pred: {} - actual: {}'.format(prob, pred_sent, actual_sent), loc='left', fontdict=fontdict)
             plt.axis('off')
 
         plt.show()
