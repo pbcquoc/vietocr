@@ -22,8 +22,7 @@ class Predictor():
         self.model = model
         self.vocab = vocab
         
-
-    def predict(self, img):
+    def predict(self, img, return_prob=False):
         img = process_input(img, self.config['dataset']['image_height'], 
                 self.config['dataset']['image_min_width'], self.config['dataset']['image_max_width'])        
         img = img.to(self.config['device'])
@@ -31,10 +30,17 @@ class Predictor():
         if self.config['predictor']['beamsearch']:
             sent = translate_beam_search(img, self.model)
             s = sent
+            prob = None
         else:
-            s = translate(img, self.model)[0].tolist()
+            pred = translate(img, self.model, return_prob)
+
+            prob = pred[1][0]
+            s = pred[0][0].tolist()
 
         s = self.vocab.decode(s)
-
-        return s
+        
+        if return_prob:
+            return s, prob
+        else:
+            return s
 
