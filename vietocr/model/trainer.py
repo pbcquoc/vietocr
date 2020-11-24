@@ -229,7 +229,7 @@ class Trainer():
             img = Image.open(open(img_path, 'rb'))
             plt.figure()
             plt.imshow(img)
-            plt.title('prob: {} - pred: {} - actual: {}'.format(prob, pred_sent, actual_sent), loc='left', fontdict=fontdict)
+            plt.title('prob: {:.3f} - pred: {} - actual: {}'.format(prob, pred_sent, actual_sent), loc='left', fontdict=fontdict)
             plt.axis('off')
 
         plt.show()
