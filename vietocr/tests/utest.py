@@ -1,4 +1,4 @@
-from vietocr.loader.DataLoader import DataGen
+from vietocr.loader.dataloader_v1 import DataGen
 from vietocr.model.vocab import Vocab
 
 def test_loader():
