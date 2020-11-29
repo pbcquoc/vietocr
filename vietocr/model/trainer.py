@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 import time
 
 class Trainer():
-    def __init__(self, config, pretrained=True):
+    def __init__(self, config, pretrained=True, augmentor=ImgAugTransform()):
 
         self.config = config
         self.model, self.vocab = build_model(config)
@@ -73,7 +73,7 @@ class Trainer():
         
         transforms = None
         if self.image_aug:
-            transforms = ImgAugTransform()
+            transforms =  augmentor
 
         self.train_gen = self.data_gen('train_{}'.format(self.dataset_name), 
                 self.data_root, self.train_annotation, self.masked_language_model, transform=transforms)
