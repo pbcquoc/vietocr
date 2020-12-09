@@ -17,7 +17,7 @@ def download_weights(id_or_url, cached=None, md5=None, quiet=False):
 def download_config(id):
     url = 'https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/{}'.format(id)
     r = requests.get(url)
-    config = yaml.sale_load(r.text)
+    config = yaml.safe_load(r.text)
 
     return config
 
