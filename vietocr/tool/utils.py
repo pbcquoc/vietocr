@@ -3,7 +3,7 @@ import gdown
 import yaml
 import numpy as np
 import uuid
-
+import requests
 
 def download_weights(id_or_url, cached=None, md5=None, quiet=False):
     if id_or_url.startswith('http'):
@@ -15,13 +15,9 @@ def download_weights(id_or_url, cached=None, md5=None, quiet=False):
 
 
 def download_config(id):
-    url = 'https://drive.google.com/uc?id={}'.format(id)
-    output = str(uuid.uuid4())
-    output = gdown.download(url, output=output, quiet=True)
-    
-    with open(output, encoding='utf-8') as f:
-        config = yaml.safe_load(f)
-    os.remove(output)
+    url = 'https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/{}'.format(id)
+    r = requests.get(url)
+    config = yaml.sale_load(r.text)
 
     return config
 
