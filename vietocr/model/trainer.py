@@ -166,6 +166,7 @@ class Trainer():
         pred_sents = []
         actual_sents = []
         img_files = []
+        probs = []
 
         for batch in  self.valid_gen:
             batch = self.batch_to_device(batch)
@@ -183,11 +184,12 @@ class Trainer():
 
             pred_sents.extend(pred_sent)
             actual_sents.extend(actual_sent)
+            probs.extend(prob)
             
             if sample != None and len(pred_sents) > sample:
                 break
 
-        return pred_sents, actual_sents, img_files, prob
+        return pred_sents, actual_sents, img_files, probs
 
     def precision(self, sample=None):
 
