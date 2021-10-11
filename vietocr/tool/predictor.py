@@ -78,7 +78,7 @@ class Predictor():
                 sents[j] = sent[i]
                 probs[j] = prob[i]
    
-    if return_prob: 
+        if return_prob: 
             return sents, probs
         else: 
             return sents
