@@ -1,5 +1,5 @@
 # VietOCR
-**Các bạn vui lòng cập nhật lên version vietocr>=0.3.5 để không xảy ra lỗi.**
+**Các bạn vui lòng cập nhật lên version vietocr>=0.3.8 để không xảy ra lỗi.**
 <p align="center">
 <img src="https://github.com/pbcquoc/vietocr/raw/master/image/sample.png" width="1000" height="300">
 </p>
@@ -15,7 +15,7 @@ Mô hình VietOCR có tính tổng quát cực tốt, thậm chí có độ chí
 # Cài Đặt
 Để cài đặt các bạn gõ lệnh sau
 ```
-pip install vietocr==0.3.5
+pip install vietocr
 ```
 # Quick Start
 Các bạn tham khảo notebook [này](https://github.com/pbcquoc/vietocr/blob/master/vietocr_gettingstart.ipynb) để biết cách sử dụng nhé. 
