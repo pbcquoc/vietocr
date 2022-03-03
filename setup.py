@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vietocr",
-    version="0.3.6",
+    version="0.3.7",
     author="pbcquoc",
     author_email="pbcquoc@gmail.com",
     description="Transformer base text detection",
@@ -15,7 +15,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'einops==0.2.0',
-        'gdown==3.11.0',
+        'gdown==4.4.0',
         'prefetch_generator==1.0.1',
         'imgaug==0.4.0',
         'lmdb==1.0.0'
