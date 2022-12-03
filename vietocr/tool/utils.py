@@ -4,7 +4,6 @@ import yaml
 import numpy as np
 import uuid
 import requests
-import wget
 import tempfile
 
 def download_weights(uri, cached=None, md5=None, quiet=False):
