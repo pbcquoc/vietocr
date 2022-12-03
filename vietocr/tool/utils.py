@@ -4,19 +4,35 @@ import yaml
 import numpy as np
 import uuid
 import requests
+import wget
+import tempfile
 
-def download_weights(id_or_url, cached=None, md5=None, quiet=False):
-    if id_or_url.startswith('http'):
-        url = id_or_url
-        return gdown.cached_download(url=url, path=cached, md5=md5, quiet=quiet)
-    elif id_or_url.endswith('.pth'):
-        return id_or_url
-    else:
-        url = 'https://drive.google.com/uc?id={}'.format(id_or_url)
-        return gdown.cached_download(url=url, path=cached, md5=md5, quiet=quiet)
+def download_weights(uri, cached=None, md5=None, quiet=False):
+    if uri.startswith('http'):
+        return download(url=uri)
+    return uri
+
+def download(url):
+    tmp_dir = tempfile.gettempdir()
+    filename = url.split('/')[-1]
+    full_path = os.path.join(tmp_dir, filename)
+    
+    if os.path.exists(full_path):
+        print('Model weight {} exsits. Ignore download!'.format(full_path))
+        return full_path
+
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(full_path, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                # If you have chunk encoded response uncomment if
+                # and set chunk_size parameter to None.
+                #if chunk:
+                f.write(chunk)
+    return full_path
 
 def download_config(id):
-    url = 'https://raw.githubusercontent.com/pbcquoc/vietocr/master/config/{}'.format(id)
+    url = 'https://vocr.vn/data/vietocr/config/{}'.format(id)
     r = requests.get(url)
     config = yaml.safe_load(r.text)
     return config
