@@ -1,10 +1,8 @@
-pretrain: 
-    id_or_url: 1nTKlEog9YFK74kPyX0qLwCWi60_YHHk4
-    md5: efcabaa6d3adfca8e52bda2fd7d2ee04
-    cached: /tmp/tranformerorc.pth
+# for train
+pretrain: https://vocr.vn/data/vietocr/vgg_seq2seq.pth
 
-# url or local path
-weights: https://drive.google.com/uc?id=1nTKlEog9YFK74kPyX0qLwCWi60_YHHk4
+# url or local path (for predict)
+weights: https://vocr.vn/data/vietocr/vgg_seq2seq.pth
 
 backbone: vgg19_bn
 cnn:
