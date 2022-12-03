@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 def download_weights(uri, cached=None, md5=None, quiet=False):
     if uri.startswith('http'):
-        return download(url=uri, quiet)
+        return download(url=uri, quiet=quiet)
     return uri
 
 def download(url, quiet=False):
