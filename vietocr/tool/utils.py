@@ -5,13 +5,14 @@ import numpy as np
 import uuid
 import requests
 import tempfile
+from tqdm import tqdm
 
 def download_weights(uri, cached=None, md5=None, quiet=False):
     if uri.startswith('http'):
-        return download(url=uri)
+        return download(url=uri, quiet)
     return uri
 
-def download(url):
+def download(url, quiet=False):
     tmp_dir = tempfile.gettempdir()
     filename = url.split('/')[-1]
     full_path = os.path.join(tmp_dir, filename)
@@ -23,7 +24,7 @@ def download(url):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         with open(full_path, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=8192):
+            for chunk in tqdm(r.iter_content(chunk_size=8192)):
                 # If you have chunk encoded response uncomment if
                 # and set chunk_size parameter to None.
                 #if chunk:
