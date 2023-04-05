@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()	
 
 setuptools.setup(	
-    name="vietocr",	
+    name="viocr",	
     version="0.3.11",	
-    author="pbcquoc",	
-    author_email="pbcquoc@gmail.com",	
-    description="Transformer base text detection",	
+    author="tanthml",	
+    author_email="tanthm1102@gmail.com",	
+    description="Transformer base text detection from pbcquoc@gmail.com",	
     long_description=long_description,	
     long_description_content_type="text/markdown",	
-    url="https://github.com/pbcquoc/vietocr",	
+    url="https://github.com/tanthml/viocr",	
     packages=setuptools.find_packages(),	
     install_requires=[	
         'einops==0.2.0',	
