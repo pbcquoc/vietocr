@@ -1,0 +1,8 @@
+[build-system]
+requires = [
+  "setuptools>=45", "setuptools_scm[toml]>=6.2",
+  "einops==0.2.0", "gdown==4.4.0", "prefetch_generator==1.0.1", "imgaug==0.4.0", "lmdb>=1.0.0"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
