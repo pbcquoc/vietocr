@@ -136,3 +136,9 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+#data test
+data_*/*
+sample/*
+train_hw/*
+valid_hw/*
