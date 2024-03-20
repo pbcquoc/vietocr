@@ -150,5 +150,22 @@ open(fname_path, 'w', encoding='utf-8')
 - Lỗi `AttributeError: module 'numpy' has no attribute 'bool'.` Đây là do từ `NumPy 1.24` thì `np.bool` không được dùng nữa và loại bỏ hoàn toàn thay vào đó được kê thừa thành `np.bool_`. Nhưng thư viện imgaug vẫn sử dụng. Bạn vào và tại [meta.py](\imgaug\augmenters\meta.py) dòng 3368 sửa `dtype=np.bool` thành `dtype=np.bool_` .
   Bạn có thể xem chi tiết tại [1.20.0-notes](https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations)
 
-**Trên đây là hướng dẫn fix những lỗi gặp phải khi mình thực hiện. Cảm ơn các bạn đã xem.**
-======================
+# **Trên đây là hướng dẫn fix những lỗi gặp phải khi mình thực hiện. Cảm ơn các bạn đã xem.**
+
+**Note**:
+Bạn có thể tìm tất cả `'r') ` sửa thành `'r', encoding='utf-8')`
+
+Có một lỗi nữa là
+`AttributeError: module 'PIL.Image' has no attribute 'ANTIALIAS'`
+trong `site-packages\vietocr\tool\translate.py` dòng 149
+sửa
+
+```
+img = img.resize((new_w, image_height), Image.ANTIALIAS)
+```
+
+thành
+
+```
+img = img.resize((new_w, image_height), Image.BILINEAR)
+```
