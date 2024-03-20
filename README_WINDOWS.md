@@ -153,7 +153,7 @@ open(fname_path, 'w', encoding='utf-8')
 # **Trên đây là hướng dẫn fix những lỗi gặp phải khi mình thực hiện. Cảm ơn các bạn đã xem.**
 
 **Note**:
-Bạn có thể tìm tất cả `'r') ` sửa thành `'r', encoding='utf-8')`
+Bạn có thể tìm tất cả `with open(...,'r') ` sửa thành `'r', encoding='utf-8')`
 
 Có một lỗi nữa là
 `AttributeError: module 'PIL.Image' has no attribute 'ANTIALIAS'`
