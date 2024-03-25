@@ -18,8 +18,8 @@ setuptools.setup(
         'gdown==4.4.0',
         'prefetch_generator==1.0.1',
         'imgaug==0.4.0',
-        'lmdb>=1.0.0',
-        'scikit-image>=0.21.0',
+        'lmdb==1.0.0',
+        'scikit-image==0.21.0',
         'pillow==10.2.0'
     ],
     classifiers=[
@@ -27,5 +27,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='==3.6',
 )
