@@ -8,11 +8,16 @@ from torchvision.models._utils import IntermediateLayerGetter
 class Vgg(nn.Module):
     def __init__(self, name, ss, ks, hidden, pretrained=True, dropout=0.5):
         super(Vgg, self).__init__()
+        
+        if pretrained:
+            weights = 'DEFAULT'
+        else:
+            weights = None
 
         if name == 'vgg11_bn':
-            cnn = models.vgg11_bn(pretrained=pretrained)
+            cnn = models.vgg11_bn(weights=weights)
         elif name == 'vgg19_bn':
-            cnn = models.vgg19_bn(pretrained=pretrained)
+            cnn = models.vgg19_bn(weights=weights)
 
         pool_idx = 0
         

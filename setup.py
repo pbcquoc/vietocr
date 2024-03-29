@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vietocr",
-    version="0.3.12",
+    version="0.3.13",
     author="pbcquoc",
     author_email="pbcquoc@gmail.com",
     description="Transformer base text detection",
@@ -18,6 +18,7 @@ setuptools.setup(
         'gdown==4.4.0',
         'prefetch_generator==1.0.1',
         'imgaug==0.4.0',
+        'albumentations==0.0.10',
         'lmdb>=1.0.0',
         'scikit-image>=0.21.0',
         'pillow==10.2.0'
