@@ -35,6 +35,6 @@ class Cfg(dict):
         return Cfg(base_config)
 
     def save(self, fname):
-        with open(fname, 'w') as outfile:
+        with open(fname, 'w', encoding='utf-8') as outfile:
             yaml.dump(dict(self), outfile, default_flow_style=False, allow_unicode=True)
 

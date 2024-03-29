@@ -6,7 +6,7 @@ from vietocr.tool.translate import build_model
 from vietocr.tool.translate import translate, batch_translate_beam_search
 from vietocr.tool.utils import download_weights
 from vietocr.tool.logger import Logger
-from vietocr.loader.aug import ImgAugTransform
+from vietocr.loader.aug import ImgAugTransform, ImgAugTransformV2
 
 import yaml
 import torch
@@ -26,7 +26,7 @@ import matplotlib.pyplot as plt
 import time
 
 class Trainer():
-    def __init__(self, config, pretrained=True, augmentor=ImgAugTransform()):
+    def __init__(self, config, pretrained=True, augmentor=ImgAugTransformV2()):
 
         self.config = config
         self.model, self.vocab = build_model(config)

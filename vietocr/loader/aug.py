@@ -3,6 +3,7 @@ import numpy as np
 
 from imgaug import augmenters as iaa
 import imgaug as ia
+import albumentations as A
 
 class ImgAugTransform:
   def __init__(self):
@@ -46,3 +47,17 @@ class ImgAugTransform:
     img = self.aug.augment_image(img)
     img = Image.fromarray(img)
     return img
+
+class ImgAugTransformV2:
+    def __init__(self):
+        self.aug = A.Compose([
+            A.RandomBrightnessContrast(p=0.2),
+            A.Perspective(scale=(0.01, 0.05))
+            ])
+
+    def __call__(self, img):
+        img = np.array(img)
+        transformed = self.aug(img)
+        img = transformed["image"]
+        img = Image.fromarray(img)
+        return img
