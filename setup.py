@@ -18,7 +18,7 @@ setuptools.setup(
         'gdown==4.4.0',
         'prefetch_generator==1.0.1',
         'imgaug==0.4.0',
-        'albumentations==0.0.10',
+        'albumentations==1.4.2',
         'lmdb>=1.0.0',
         'scikit-image>=0.21.0',
         'pillow==10.2.0'
