@@ -21,7 +21,7 @@ setuptools.setup(
         'albumentations==1.4.2',
         'lmdb>=1.0.0',
         'scikit-image>=0.21.0',
-        'pillow==10.2.0'
+        'pillow==10.3.0'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
