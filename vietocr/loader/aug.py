@@ -9,7 +9,7 @@ import random
 
 class RandomDottedLine(ImageOnlyTransform):
     def __init__(self, num_lines=1, p=0.5):
-        super(RandomDottedLine, self).__init__(p)
+        super(RandomDottedLine, self).__init__(p=p)
         self.num_lines = num_lines
 
     def apply(self, img, **params):
@@ -54,7 +54,7 @@ class RandomDottedLine(ImageOnlyTransform):
         return img
 
     def get_transform_init_args_names(self):
-        return "num_lines"
+        return ("num_lines",)
 
 
 class ImgAugTransformV2:
