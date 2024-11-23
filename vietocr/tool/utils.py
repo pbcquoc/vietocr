@@ -7,37 +7,41 @@ import requests
 import tempfile
 from tqdm import tqdm
 
+
 def download_weights(uri, cached=None, md5=None, quiet=False):
-    if uri.startswith('http'):
+    if uri.startswith("http"):
         return download(url=uri, quiet=quiet)
     return uri
 
+
 def download(url, quiet=False):
     tmp_dir = tempfile.gettempdir()
-    filename = url.split('/')[-1]
+    filename = url.split("/")[-1]
     full_path = os.path.join(tmp_dir, filename)
-    
+
     if os.path.exists(full_path):
-        print('Model weight {} exsits. Ignore download!'.format(full_path))
+        print("Model weight {} exsits. Ignore download!".format(full_path))
         return full_path
 
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
-        with open(full_path, 'wb') as f:
+        with open(full_path, "wb") as f:
             for chunk in tqdm(r.iter_content(chunk_size=8192)):
                 # If you have chunk encoded response uncomment if
                 # and set chunk_size parameter to None.
-                #if chunk:
+                # if chunk:
                 f.write(chunk)
     return full_path
 
+
 def download_config(id):
-    url = 'https://vocr.vn/data/vietocr/config/{}'.format(id)
+    url = "https://vocr.vn/data/vietocr/config/{}".format(id)
     r = requests.get(url)
     config = yaml.safe_load(r.text)
     return config
 
-def compute_accuracy(ground_truth, predictions, mode='full_sequence'):
+
+def compute_accuracy(ground_truth, predictions, mode="full_sequence"):
     """
     Computes accuracy
     :param ground_truth:
@@ -51,7 +55,7 @@ def compute_accuracy(ground_truth, predictions, mode='full_sequence'):
                  avg_label_accuracy = sum(single_label_accuracy) / label_nums
     :return: avg_label_accuracy
     """
-    if mode == 'per_char':
+    if mode == "per_char":
 
         accuracy = []
 
@@ -74,7 +78,7 @@ def compute_accuracy(ground_truth, predictions, mode='full_sequence'):
                     else:
                         accuracy.append(0)
         avg_accuracy = np.mean(np.array(accuracy).astype(np.float32), axis=0)
-    elif mode == 'full_sequence':
+    elif mode == "full_sequence":
         try:
             correct_count = 0
             for index, label in enumerate(ground_truth):
@@ -88,6 +92,8 @@ def compute_accuracy(ground_truth, predictions, mode='full_sequence'):
             else:
                 avg_accuracy = 0
     else:
-        raise NotImplementedError('Other accuracy compute mode has not been implemented')
+        raise NotImplementedError(
+            "Other accuracy compute mode has not been implemented"
+        )
 
     return avg_accuracy

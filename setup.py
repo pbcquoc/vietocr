@@ -14,19 +14,17 @@ setuptools.setup(
     url="https://github.com/pbcquoc/vietocr",
     packages=setuptools.find_packages(),
     install_requires=[
-        'einops==0.2.0',
-        'gdown==4.4.0',
-        'prefetch_generator==1.0.1',
-        'imgaug==0.4.0',
-        'albumentations==1.4.2',
-        'lmdb>=1.0.0',
-        'scikit-image>=0.21.0',
-        'pillow==10.2.0'
+        "einops>=0.2.0",
+        "gdown>=4.4.0",
+        "albumentations>=1.4.2",
+        "lmdb>=1.0.0",
+        "scikit-image>=0.21.0",
+        "pillow>=10.2.0",
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

@@ -1,62 +1,74 @@
 from PIL import Image
 import numpy as np
 
-from imgaug import augmenters as iaa
-import imgaug as ia
 import albumentations as A
+from albumentations.core.transforms_interface import ImageOnlyTransform
+import cv2
+import random
 
-class ImgAugTransform:
-  def __init__(self):
-    sometimes = lambda aug: iaa.Sometimes(0.3, aug)
 
-    self.aug = iaa.Sequential(iaa.SomeOf((1, 5), 
-        [
-        # blur
+class RandomDottedLine(ImageOnlyTransform):
+    def __init__(self, num_lines=1, p=0.5):
+        super(RandomDottedLine, self).__init__(p)
+        self.num_lines = num_lines
 
-        sometimes(iaa.OneOf([iaa.GaussianBlur(sigma=(0, 1.0)),
-                            iaa.MotionBlur(k=3)])),
-        
-        # color
-        sometimes(iaa.AddToHueAndSaturation(value=(-10, 10), per_channel=True)),
-        sometimes(iaa.SigmoidContrast(gain=(3, 10), cutoff=(0.4, 0.6), per_channel=True)),
-        sometimes(iaa.Invert(0.25, per_channel=0.5)),
-        sometimes(iaa.Solarize(0.5, threshold=(32, 128))),
-        sometimes(iaa.Dropout2d(p=0.5)),
-        sometimes(iaa.Multiply((0.5, 1.5), per_channel=0.5)),
-        sometimes(iaa.Add((-40, 40), per_channel=0.5)),
+    def apply(self, img, **params):
+        h, w = img.shape[:2]
+        for _ in range(self.num_lines):
+            # Random start and end points
+            x1, y1 = np.random.randint(0, w), np.random.randint(0, h)
+            x2, y2 = np.random.randint(0, w), np.random.randint(0, h)
+            # Random color
+            color = tuple(np.random.randint(0, 256, size=3).tolist())
+            # Random thickness
+            thickness = np.random.randint(1, 5)
+            # Draw dotted or dashed line
+            line_type = random.choice(["dotted", "dashed", "solid"])
+            if line_type != "solid":
+                self._draw_dotted_line(
+                    img, (x1, y1), (x2, y2), color, thickness, line_type
+                )
+            else:
+                cv2.line(img, (x1, y1), (x2, y2), color, thickness)
 
-        sometimes(iaa.JpegCompression(compression=(5, 80))),
-        
-        # distort
-        sometimes(iaa.Crop(percent=(0.01, 0.05), sample_independently=True)),
-        sometimes(iaa.PerspectiveTransform(scale=(0.01, 0.01))),
-        sometimes(iaa.Affine(scale=(0.7, 1.3), translate_percent=(-0.1, 0.1), 
-#                            rotate=(-5, 5), shear=(-5, 5), 
-                            order=[0, 1], cval=(0, 255), 
-                            mode=ia.ALL)),
-        sometimes(iaa.PiecewiseAffine(scale=(0.01, 0.01))),
-        sometimes(iaa.OneOf([iaa.Dropout(p=(0, 0.1)),
-                            iaa.CoarseDropout(p=(0, 0.1), size_percent=(0.02, 0.25))])),
+        return img
 
-    ],
-        random_order=True),
-    random_order=True)
-      
-  def __call__(self, img):
-    img = np.array(img)
-    img = self.aug.augment_image(img)
-    img = Image.fromarray(img)
-    return img
+    def _draw_dotted_line(self, img, pt1, pt2, color, thickness, line_type):
+        # Calculate the distance between the points
+        dist = np.hypot(pt2[0] - pt1[0], pt2[1] - pt1[1])
+        # Number of segments
+        num_segments = max(int(dist // 5), 1)
+        # Generate points along the line
+        x_points = np.linspace(pt1[0], pt2[0], num_segments)
+        y_points = np.linspace(pt1[1], pt2[1], num_segments)
+        # Draw segments
+        for i in range(num_segments - 1):
+            if line_type == "dotted" and i % 2 == 0:
+                pt_start = (int(x_points[i]), int(y_points[i]))
+                pt_end = (int(x_points[i]), int(y_points[i]))
+                cv2.circle(img, pt_start, thickness, color, -1)
+            elif line_type == "dashed" and i % 4 < 2:
+                pt_start = (int(x_points[i]), int(y_points[i]))
+                pt_end = (int(x_points[i + 1]), int(y_points[i + 1]))
+                cv2.line(img, pt_start, pt_end, color, thickness)
+        return img
+
+    def get_transform_init_args_names(self):
+        return "num_lines"
+
 
 class ImgAugTransformV2:
     def __init__(self):
-        self.aug = A.Compose([
-            A.InvertImg(p=0.2),
-            A.ColorJitter(p=0.2),
-            A.MotionBlur(blur_limit=3, p=0.2),
-            A.RandomBrightnessContrast(p=0.2),
-            A.Perspective(scale=(0.01, 0.05))
-            ])
+        self.aug = A.Compose(
+            [
+                A.InvertImg(p=0.2),
+                A.ColorJitter(p=0.2),
+                A.MotionBlur(blur_limit=3, p=0.2),
+                A.RandomBrightnessContrast(p=0.2),
+                A.Perspective(scale=(0.01, 0.05)),
+                RandomDottedLine(),
+            ]
+        )
 
     def __call__(self, img):
         img = np.array(img)

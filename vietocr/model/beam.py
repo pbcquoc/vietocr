@@ -1,9 +1,17 @@
 import torch
 
+
 class Beam:
 
-    def __init__(self, beam_size=8, min_length=0, n_top=1, ranker=None,
-                 start_token_id=1, end_token_id=2):
+    def __init__(
+        self,
+        beam_size=8,
+        min_length=0,
+        n_top=1,
+        ranker=None,
+        start_token_id=1,
+        end_token_id=2,
+    ):
         self.beam_size = beam_size
         self.min_length = min_length
         self.ranker = ranker
@@ -12,7 +20,9 @@ class Beam:
         self.top_sentence_ended = False
 
         self.prev_ks = []
-        self.next_ys = [torch.LongTensor(beam_size).fill_(start_token_id)] # remove padding
+        self.next_ys = [
+            torch.LongTensor(beam_size).fill_(start_token_id)
+        ]  # remove padding
 
         self.current_scores = torch.FloatTensor(beam_size).zero_()
         self.all_scores = []
@@ -35,34 +45,39 @@ class Beam:
                 next_log_probs[beam_index][self.end_token_id] = -1e10
 
         if len(self.prev_ks) > 0:
-            beam_scores = next_log_probs + self.current_scores.unsqueeze(1).expand_as(next_log_probs)
+            beam_scores = next_log_probs + self.current_scores.unsqueeze(1).expand_as(
+                next_log_probs
+            )
             # Don't let EOS have children.
             last_y = self.next_ys[-1]
             for beam_index in range(last_y.size(0)):
                 if last_y[beam_index] == self.end_token_id:
-                    beam_scores[beam_index] = -1e10 # -1e20 raises error when executing
+                    beam_scores[beam_index] = -1e10  # -1e20 raises error when executing
         else:
             beam_scores = next_log_probs[0]
-            
+
         flat_beam_scores = beam_scores.view(-1)
-        top_scores, top_score_ids = flat_beam_scores.topk(k=self.beam_size, dim=0, largest=True, sorted=True)
+        top_scores, top_score_ids = flat_beam_scores.topk(
+            k=self.beam_size, dim=0, largest=True, sorted=True
+        )
 
         self.current_scores = top_scores
         self.all_scores.append(self.current_scores)
-        
+
         prev_k = top_score_ids // vocabulary_size  # (beam_size, )
         next_y = top_score_ids - prev_k * vocabulary_size  # (beam_size, )
-                
-        
+
         self.prev_ks.append(prev_k)
         self.next_ys.append(next_y)
 
         for beam_index, last_token_id in enumerate(next_y):
-            
+
             if last_token_id == self.end_token_id:
-                
+
                 # skip scoring
-                self.finished.append((self.current_scores[beam_index], len(self.next_ys) - 1, beam_index))
+                self.finished.append(
+                    (self.current_scores[beam_index], len(self.next_ys) - 1, beam_index)
+                )
 
         if next_y[0] == self.end_token_id:
             self.top_sentence_ended = True

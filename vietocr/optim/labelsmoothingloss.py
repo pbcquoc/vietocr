@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 
+
 class LabelSmoothingLoss(nn.Module):
     def __init__(self, classes, padding_idx, smoothing=0.0, dim=-1):
         super(LabelSmoothingLoss, self).__init__()
@@ -21,5 +22,5 @@ class LabelSmoothingLoss(nn.Module):
             mask = torch.nonzero(target.data == self.padding_idx, as_tuple=False)
             if mask.dim() > 0:
                 true_dist.index_fill_(0, mask.squeeze(), 0.0)
-            
+
         return torch.mean(torch.sum(-true_dist * pred, dim=self.dim))
