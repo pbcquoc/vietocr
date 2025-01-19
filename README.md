@@ -1,7 +1,7 @@
 # VietOCR
-**[DORI](https://dorify.net/vi) là end-to-end OCR platform, hỗ trợ các bạn đánh nhãn, huấn luyện, deploy mô hình dễ dàng. Tham khảo tại [dorify.net](https://dorify.net/vi)**
-
-**Tài liệu hướng dẫn [tại đây](https://pbcquoc.github.io/dori_guideline/).**
+**[DORI](https://dorify.net/vi) là end-to-end OCR platform, hỗ trợ các bạn đánh nhãn, huấn luyện, deploy mô hình dễ dàng.** 
+- Tham khảo tại [dorify.net](https://dorify.net/vi).
+- Tài liệu hướng dẫn [tại đây](https://pbcquoc.github.io/dori_guideline/).
 
 ----
 **Các bạn vui lòng cập nhật lên version mới nhất để không xảy ra lỗi.**
