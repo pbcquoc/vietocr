@@ -136,3 +136,15 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# update
+.DS_Store
+sample/
+data_line/
+train_hw/
+valid_hw/
+weights/
+data_line.zip
+sample.zip
+config.yml
+train.log
