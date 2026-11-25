@@ -31,7 +31,7 @@ File train/test có 2 cột, cột đầu tiên là tên file, cột thứ 2 là
 20160518_0151_25432_1_tg_3_5.png để nghe phổ biến chủ trương của UBND tỉnh Phú Yên
 20160421_0102_25464_2_tg_0_4.png môi trường lại đều đồng thanh
 ```
-Tham khảo file mẫu tại [đây](https://vocr.vn/data/vietocr/data_line.zip)
+Tham khảo file mẫu tại [đây](https://vocr.vn/data/vietocr/synthtext_line.zip)
 
 # Model Zoo 
 Thư viện này cài đặt cả 2 kiểu seq model đó là attention seq2seq và transfomer. Seq2seq có tốc độ dự đoán rất nhanh và được dùng trong industry khá nhiều, tuy nhiên transformer lại chính xác hơn nhưng lúc dự đoán lại khá chậm. Do đó mình cung cấp cả 2 loại cho các bạn lựa chọn. 
